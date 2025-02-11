@@ -32,6 +32,25 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+    // jwt
+    implementation group: 'com.auth0', name: 'java-jwt', version: '3.14.0'
+    // oauth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.4'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.4'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.4'
+    // aws s3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    // mongodb
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    // websocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    // json
+    implementation 'com.vladmihalcea:hibernate-types-60:2.21.1'
 }
 
 tasks.named('test') {
