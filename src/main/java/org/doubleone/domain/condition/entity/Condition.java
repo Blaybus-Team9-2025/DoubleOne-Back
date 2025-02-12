@@ -26,7 +26,7 @@ import org.doubleone.global.BaseTimeEntity;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "condition")
+@Table(name = "senior_condition")
 @Getter
 @Log4j2
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,8 +34,8 @@ public class Condition extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "condition_id", updatable = false)
-  private Long conditionId;
+  @Column(name = "senior_condition_id", updatable = false)
+  private Long seniorConditionId;
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "senior_id", updatable = false)
