@@ -95,7 +95,9 @@ public class SecurityConfig {
 //        .addFilterBefore(new JwtFilter(jwtUtil), LogoutFilter.class)
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(AUTH_WHITELIST).permitAll()
-            .anyRequest().authenticated()
+//            .anyRequest().authenticated()
+              .anyRequest().permitAll() // jwt 구현 후 authenticated()로 변경
+
 //            // oauth2
 //            .oauth2Login(oauth -> oauth
 //                .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))

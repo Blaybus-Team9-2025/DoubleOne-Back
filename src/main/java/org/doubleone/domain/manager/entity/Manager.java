@@ -14,6 +14,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -30,7 +31,7 @@ public class Manager extends BaseTimeEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "manager_id", updatable = false)
-  private Long workerId;
+  private Long managerId;
 
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "member_id", updatable = false)
@@ -60,6 +61,16 @@ public class Manager extends BaseTimeEntity {
   @Column(name = "center_period")
   private String centerPeriod;
 
+  @Builder
+  public Manager(Member member, String phoneNum, boolean hasTruck, String address, String centerName, String centerGrade, String centerPeriod) {
+    this.member = member;
+    this.phoneNum = phoneNum;
+    this.hasTruck = hasTruck;
+    this.address = address;
+    this.centerName = centerName;
+    this.centerGrade = centerGrade;
+    this.centerPeriod = centerPeriod;
+  }
 
 
 }

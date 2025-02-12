@@ -8,6 +8,7 @@ public class LoginDto {
     private String name;
     private String email;
     private String password;
+    private String phoneNum;
     private String centerName;
     private String address;
     private boolean hasTruck;
