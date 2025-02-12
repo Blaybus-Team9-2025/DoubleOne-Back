@@ -7,6 +7,15 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
 
+  // Auth
+  UNAUTHORIZED(401, "인증 정보가 누락되거나 잘못되었습니다."),
+  ACCESS_DENIED(403, "접근 권한이 없습니다."),
+  INVALID_SIGNATURE(401, "잘못된 JWT 서명입니다."),
+  EXPIRED_ACCESS_TOKEN(401, "만료된 엑세스 토큰입니다."),
+  INVALID_TOKEN(400, "잘못된 토큰입니다."),
+  UNSUPPORTED_TOKEN(400, "지원하지 않는 토큰입니다."),
+  EMPTY_CLAIMS(400, "JWT 클레임이 비어있습니다."),
+
   // Member
   MEMBER_NOT_FOUND(404, "멤버를 찾을 수 없습니다."),
 

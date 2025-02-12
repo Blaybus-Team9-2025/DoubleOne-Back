@@ -40,6 +40,13 @@ public class Worker extends BaseTimeEntity {
   @JsonIgnore
   private Member member;
 
+  @Column(name = "name", unique = true)
+  @NotNull
+  private String name;
+
+  @Column(name = "profile_img", columnDefinition = "TEXT")
+  private String profileImg;
+
   @Column(name = "gender")
   @NotNull
   @Enumerated(EnumType.STRING)
@@ -64,15 +71,5 @@ public class Worker extends BaseTimeEntity {
   @Column(name = "license")
   @NotNull
   private String license;
-
-
-
-
-
-
-
-
-
-
 
 }
