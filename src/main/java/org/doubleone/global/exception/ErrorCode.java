@@ -20,8 +20,8 @@ public enum ErrorCode {
   // Member
   MEMBER_NOT_FOUND(404, "멤버를 찾을 수 없습니다."),
 
-  // Manager
-  MANAGER_CANNOT_CREATE_CHAT(409, "관리자는 채팅을 시작할 수 없습니다."),
+    // Manager
+    MANAGER_CANNOT_CREATE_CHAT(409, "관리자는 채팅을 시작할 수 없습니다."),
 
   // Worker
   WORKER_NOT_FOUND(404, "요양사를 찾을 수 없습니다."),
@@ -37,7 +37,7 @@ public enum ErrorCode {
 
 
 
-  private final int status;
-  private final String message;
+    private final int status;
+    private final String message;
 
 }
