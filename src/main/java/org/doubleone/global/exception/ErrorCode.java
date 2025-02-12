@@ -2,6 +2,7 @@ package org.doubleone.global.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
@@ -42,6 +43,7 @@ public enum ErrorCode {
 
   // Matching
   MATCHING_NOT_FOUND(404, "매칭을 찾을 수 없습니다.");
+
 
 
   private final int status;
