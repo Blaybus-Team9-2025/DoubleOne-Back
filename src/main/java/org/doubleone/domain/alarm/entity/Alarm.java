@@ -47,7 +47,7 @@ public class Alarm extends BaseTimeEntity {
   @Column(name = "content")
   private String content;
 
-  @Column(name = "content")
+  @Column(name = "content_two")
   @NotNull
   private boolean isRead;
 
