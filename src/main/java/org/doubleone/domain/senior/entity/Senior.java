@@ -2,34 +2,26 @@ package org.doubleone.domain.senior.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.util.Map;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.manager.entity.Gender;
 import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.global.BaseTimeEntity;
 import org.hibernate.annotations.Type;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+
 @Entity
 @Table(name = "senior")
 @Getter
 @Log4j2
+@AllArgsConstructor
+@Builder
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Senior extends BaseTimeEntity {
 
@@ -59,15 +51,20 @@ public class Senior extends BaseTimeEntity {
 
   @Column(name = "care_level")
   @NotNull
-  private int care_level;
+  @Enumerated(EnumType.STRING)
+  private CareLevel careLevel; // 장기요양등급 (정책서 추가)
 
   @Column(name = "weight")
   @NotNull
   private int weight;
 
-  @Column(name = "address")
+  @Column(name = "zip_code")
   @NotNull
-  private String address;
+  private String zipCode; // 우편번호 추가 (정책서 추가)
+
+  @Column(name = "detailed_address")
+  @NotNull
+  private String detailedAddress; // 상세주소 추가 (정책서 추가)
 
   @Column(name = "profile_img", columnDefinition = "TEXT")
   private String profileImg;
@@ -75,10 +72,22 @@ public class Senior extends BaseTimeEntity {
   @Column(name = "cohabitation_status")
   @NotNull
   @Enumerated(EnumType.STRING)
-  private CohabitationStatus cohabitationstatus;
+  private CohabitationStatus cohabitationStatus;
 
   @Column(name = "dementia_symptoms", columnDefinition = "json")
   @Type(JsonType.class)
-  private Map<String, Object> dementiaSymptoms;
+  private List<String> dementiaSymptoms; // 치매 증상 다중 선택 가능 (정책서 추가)
+
+  @Column(name = "etc_disease")
+  private String etcDisease; // 기타 보유 질병 (정책서 추가)
+
+  // 어르신 정보 수정
+  public void update(CareLevel careLevel, String detailedAddress, String profileImg, String etcDisease) {
+    if (careLevel != null) this.careLevel = careLevel;  // CareLevel Enum 적용
+    if (detailedAddress != null) this.detailedAddress = detailedAddress;
+    if (profileImg != null) this.profileImg = profileImg;
+    if (etcDisease != null) this.etcDisease = etcDisease;
+  }
 
 }
+
