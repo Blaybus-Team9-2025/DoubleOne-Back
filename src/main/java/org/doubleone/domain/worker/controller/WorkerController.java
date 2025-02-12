@@ -17,20 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Tag(name = "Worker")
 @RequiredArgsConstructor
-@RequestMapping("/worker")
+@RequestMapping("/workers")
 public class WorkerController {
 
     private final WorkerService workerService;
 
-    @Autowired
-    public WorkerController(WorkerService workerService, WorkerService workerService1) {
-
-        this.workerService = workerService1;
-    }
-
     // 요양사 상세 정보 조회
     @Operation(summary = "요양사 상세 정보 조회", description = "요양사 상세 정보를 조회합니다.")
-    @GetMapping("workers/{workerId}")
+    @GetMapping("/{workerId}")
     public ResponseEntity<WorkerDetailResponse> getWorkDetail(@PathVariable Long workerId) {
         WorkerDetailResponse response = workerService.getWorkerDetail(workerId);
         return ResponseEntity.ok(response);
