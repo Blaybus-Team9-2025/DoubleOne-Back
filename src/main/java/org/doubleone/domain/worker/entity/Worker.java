@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -63,18 +64,31 @@ public class Worker extends BaseTimeEntity {
   @NotNull
   private String phoneNum;
 
+  @Column(name = "has_trained")
+  @NotNull
+  private boolean hasTrained;
+
+  @Column(name = "has_vehicle")
+  @NotNull
+  private boolean hasVehicle;
+
   @Column(name = "address")
   @NotNull
   private String address;
 
+  @Column(name = "license")
+  @NotNull
+  private String license;
+
   @Builder
-  public Worker(String name, String ProfileImg, Member member, LocalDate birthDate, Gender gender, String phoneNum, String address) {
-    this.name = name;
-    this.profileImg = profileImg;
-    this.member = member;
-    this.birthDate = birthDate;
-    this.gender = gender;
-    this.phoneNum = phoneNum;
-    this.address = address;
+  public Worker(String name, String ProfileImg, Member member, LocalDate birthDate, org.doubleone.domain.worker.entity.Gender gender, String phoneNum, String address, String license) {
+      this.name = name;
+      this.profileImg = profileImg;
+      this.member = member;
+      this.birthDate = birthDate;
+      this.gender = gender;
+      this.phoneNum = phoneNum;
+      this.address = address;
+      this.license = license;
   }
 }

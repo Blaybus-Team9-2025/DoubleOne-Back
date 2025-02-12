@@ -22,6 +22,9 @@ public enum ErrorCode {
   MEMBER_ALREADY_EXISTS(409, "해당 이메일을 가진 멤버가 존재합니다."),
   PASSWORD_MISMATCH(400, "비밀번호가 일치하지 않습니다."),
 
+  // Manager
+  MANAGER_CANNOT_CREATE_CHAT(409, "관리자는 채팅을 시작할 수 없습니다."),
+
   // Worker
   WORKER_NOT_FOUND(404, "요양사를 찾을 수 없습니다."),
   WORKER_CONDITION_NOT_FOUND(404, "요양사의 희망근무조건을 찾을 수 없습니다."),
@@ -40,6 +43,8 @@ public enum ErrorCode {
   // Matching
   MATCHING_NOT_FOUND(404, "매칭을 찾을 수 없습니다.");
 
+
   private final int status;
   private final String message;
+
 }
