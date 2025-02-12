@@ -53,29 +53,5 @@ public class WorkerDetailResponse {
                 .map(WorkerSchedule::toString)
                 .collect(Collectors.toList()))
             .build();
-//        this.workerId = worker.getWorkerId();
-//        this.gender = String.valueOf(worker.getGender());
-//        this.phoneNum = worker.getPhoneNum();
-//        this.hasTrained = worker.isHasTrained();
-//        this.hasVehicle = worker.isHasVehicle();
-//        this.address = worker.getAddress();
-//        this.license = worker.getLicense();
-//
-//        this.workerConditions = conditions.stream()
-//            .map(condition -> "급여: " + condition.getWage() + ", 소개: " + condition.getIntroduce())
-//            .collect(Collectors.toList());
-//
-//        this.workerLicenses = licenses.stream()
-//            .map(WorkerLicense::toString)
-//            .collect(Collectors.toList());
-//
-//        this.workerRegions = regions.stream()
-//            .map(WorkerRegion::toString)
-//            .collect(Collectors.toList());
-//
-//        this.workerSchedules = schedules.stream()
-//            .map(WorkerSchedule::toString)
-//            .collect(Collectors.toList());
-//    }
     }
 }

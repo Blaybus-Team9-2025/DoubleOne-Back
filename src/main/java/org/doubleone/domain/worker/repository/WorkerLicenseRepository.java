@@ -7,5 +7,7 @@ import org.doubleone.domain.workerLicense.entity.WorkerLicense;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WorkerLicenseRepository extends JpaRepository<WorkerLicense, Long> {
+
     List<WorkerLicense> findByWorker(Worker worker);
+
 }
