@@ -10,9 +10,6 @@ public enum ErrorCode {
   // Member
   MEMBER_NOT_FOUND(404, "멤버를 찾을 수 없습니다."),
 
-  // Manager
-  MANAGER_CANNOT_CREATE_CHAT(409, "관리자는 채팅을 시작할 수 없습니다."),
-  MANAGER_NOT_FOUND(404, "매니저를 찾을 수 없습니다."),
 
   // Chat
   CHATROOM_NOT_FOUND(404, "채팅방을 찾을 수 없습니다."),

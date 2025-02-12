@@ -2,9 +2,6 @@ package org.doubleone.domain.senior.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.doubleone.domain.manager.entity.Gender;
-import org.doubleone.domain.manager.entity.Manager;
-import org.doubleone.domain.manager.repository.ManagerRepository;
 import org.doubleone.domain.senior.dto.SeniorDto;
 import org.doubleone.domain.senior.dto.SeniorUpdateDto;
 import org.doubleone.domain.senior.entity.Senior;
@@ -27,15 +24,11 @@ import java.util.stream.Collectors;
 public class SeniorService {
 
   private final SeniorRepository seniorRepository;
-  private final ManagerRepository managerRepository;
 
   public SeniorDto registerSenior(SeniorDto seniorDto) {
-    Manager manager = managerRepository.findById(seniorDto.getManagerId())
-            .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
-
     Senior senior = Senior.builder()
             .name(seniorDto.getName())
-            .gender(Gender.valueOf(seniorDto.getGender().toUpperCase()))
+            .gender(org.doubleone.domain.manager.entity.Gender.valueOf(seniorDto.getGender().toUpperCase()))
             .birthDate(LocalDate.parse(seniorDto.getBirthDate()))
             .careLevel(CareLevel.valueOf(seniorDto.getCareLevel().toUpperCase()))
             .weight(seniorDto.getWeight())
@@ -45,7 +38,6 @@ public class SeniorService {
             .cohabitationStatus(CohabitationStatus.valueOf(seniorDto.getCohabitationStatus().toUpperCase()))
             .dementiaSymptoms(List.of(seniorDto.getDementiaSymptoms().split(",")))
             .etcDisease(seniorDto.getEtcDisease())
-            .manager(manager)  //  Manager 추가
             .build();
 
     senior = seniorRepository.save(senior);

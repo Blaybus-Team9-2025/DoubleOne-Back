@@ -20,7 +20,6 @@ public class SeniorDto {
     private String cohabitationStatus;
     private String dementiaSymptoms;
     private String etcDisease;
-    private Long managerId;
 
     public static SeniorDto fromEntity(Senior senior) {
         SeniorDto dto = new SeniorDto();
