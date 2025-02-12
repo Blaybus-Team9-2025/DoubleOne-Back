@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Tag(name = "Worker")
 @RequiredArgsConstructor
-@RequestMapping("/worker")
+@RequestMapping("/workers")
 public class WorkerController {
 
     private final WorkerService workerService;
