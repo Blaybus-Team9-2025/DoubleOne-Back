@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.doubleone.domain.worker.entity.Gender;
+import org.springframework.cglib.core.Local;
+
+import java.time.LocalDate;
 
 @Data
 public class WorkerSignupDto {
@@ -17,9 +20,16 @@ public class WorkerSignupDto {
             message = "비밀번호는 6~20자 이내이며, 영문 대소문자, 숫자, 특수문자 중 2가지 이상을 포함해야 합니다.")
     @NotBlank(message = "이름은 필수입니다.")
     private String name;
+
+    @NotBlank(message = "성별은 필수입니다.")
     private Gender gender;
-    private String birth;
+
+    @NotBlank(message = "생년월일은 필수입니다.")
+    private LocalDate birthDate;
+
+    @NotBlank(message = "전화번호는 필수입니다.")
     private String phoneNum;
+
+    @NotBlank(message = "주소는 필수입니다.")
     private String address;
-    private String license;
 }

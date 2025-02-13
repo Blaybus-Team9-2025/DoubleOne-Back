@@ -17,6 +17,7 @@ public enum ErrorCode {
 
   // Member
   MEMBER_NOT_FOUND(404, "멤버를 찾을 수 없습니다."),
+  MEMBER_ALREADY_EXIST(409, "이미 존재하는 이메일입니다."),
 
   // Manager
   MANAGER_CANNOT_CREATE_CHAT(409, "관리자는 채팅을 시작할 수 없습니다."),

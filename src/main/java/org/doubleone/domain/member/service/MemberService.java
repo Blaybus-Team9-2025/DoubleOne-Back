@@ -45,7 +45,7 @@ public class MemberService {
   public void signUpManager(ManagerSignupDto request) {
     // 이메일 중복 체크
     if (memberRepository.existsByEmail(request.getEmail())) {
-      throw new RuntimeException("이미 사용 중인 이메일입니다.");
+      throw new CustomException(ErrorCode.MEMBER_ALREADY_EXIST);
     }
 
     //멤버에 기본정보 저장(이름,이메일,비번)
@@ -74,7 +74,7 @@ public class MemberService {
   public void signUpWorker(WorkerSignupDto request) {
     // 이메일 중복 체크
     if (memberRepository.existsByEmail(request.getEmail())) {
-      throw new RuntimeException("이미 사용 중인 이메일입니다.");
+      throw new CustomException(ErrorCode.MEMBER_ALREADY_EXIST);
     }
 
     //멤버에 기본정보 등록
@@ -89,8 +89,8 @@ public class MemberService {
     Worker worker = Worker.builder()
             .name(request.getName())
             .phoneNum(request.getPhoneNum())
+            .birthDate(request.getBirthDate())
             .address(request.getAddress())
-            .license(request.getLicense())
             .gender(request.getGender())
             .member(member)
             .build();
