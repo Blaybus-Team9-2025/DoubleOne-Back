@@ -2,6 +2,7 @@ package org.doubleone.domain.condition.service;
 
 import lombok.RequiredArgsConstructor;
 import org.doubleone.domain.condition.dto.ConditionRequestDto;
+import org.doubleone.domain.condition.dto.ConditionResponseDto;
 import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.condition.repository.ConditionRepository;
 import org.doubleone.domain.senior.entity.Senior;
@@ -53,5 +54,14 @@ public class ConditionService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 근무 조건이 존재하지 않습니다."));
 
         conditionRepository.delete(condition);
+
+
+    }
+
+    // 상세 조회
+    public ConditionResponseDto getConditionDetail(Long conditionId) {
+        Condition condition = conditionRepository.findById(conditionId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 근무 조건이 존재하지 않습니다."));
+        return new ConditionResponseDto(condition);
     }
 }

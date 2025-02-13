@@ -2,6 +2,7 @@ package org.doubleone.domain.condition.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.doubleone.domain.condition.dto.ConditionRequestDto;
+import org.doubleone.domain.condition.dto.ConditionResponseDto;
 import org.doubleone.domain.condition.service.ConditionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,4 +34,11 @@ public class ConditionController {
         conditionService.deleteCondition(conditionId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{conditionId}")
+    public ResponseEntity<ConditionResponseDto> getConditionDetail(@PathVariable Long conditionId) {
+        ConditionResponseDto responseDto = conditionService.getConditionDetail(conditionId);
+        return ResponseEntity.ok(responseDto);
+    }
+
 }
