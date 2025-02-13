@@ -1,10 +1,13 @@
 package org.doubleone.global.config;
 
 import lombok.RequiredArgsConstructor;
+import org.doubleone.domain.member.service.CustomOAuth2UserService;
+import org.doubleone.global.handler.OAuth2AuthenticationSuccessHandler;
+import org.doubleone.global.jwt.JwtAuthenticationFilter;
+import org.doubleone.global.jwt.TokenProvider;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -12,13 +15,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -30,7 +31,9 @@ import java.util.Arrays;
 @EnableMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
-
+  private final TokenProvider tokenProvider;
+  private final CustomOAuth2UserService customOAuth2UserService;
+  private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
@@ -76,32 +79,28 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-    http
-        .csrf(AbstractHttpConfigurer::disable)
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-        .formLogin(AbstractHttpConfigurer::disable)
-        .logout(logout -> logout
-                .logoutUrl("/logout")
-                .deleteCookies("refreshToken")
-//            .addLogoutHandler(logoutHandler)
-                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
-        )
+    return http
+        // 기본 인증 방식 비활성화 (UI 대신 토큰을 통한 인증을 사용하기 때문)
         .httpBasic(AbstractHttpConfigurer::disable)
-        .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .headers(header -> header
-            .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
-//        // jwt
-//        .addFilterBefore(new JwtFilter(jwtUtil), LogoutFilter.class)
+        // CSRF 보호 비활성화 (토큰 기반 인증이므로 필요하지 않음)
+        .csrf(AbstractHttpConfigurer::disable)
+        // CORS 설정 비활성화
+        .cors(AbstractHttpConfigurer::disable)
+        // 요청에 따른 인증 인가 설정
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(AUTH_WHITELIST).permitAll()
             .anyRequest().permitAll() // jwt 구현 후 authenticated()로 변경
-//            // oauth2
-//            .oauth2Login(oauth -> oauth
-//                .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
-//                .successHandler(oAuth2SuccessHandler));
-        );
-
-    return http.build();
+        )
+        // JWT를 사용하므로 sateless
+        .sessionManagement(
+            sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        )
+        // JWT 인증 필터를 UsernamePAsswordAuthenticationFilter 앞에 추가하여 JWT를 통한 인증 수행
+        .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
+        // OAuth2 로그인 설정 - 인증된 사용자 정보(프로필)를 가져오는 방식 정의, 인증 성공시 동작을 정의하는 successHandler 설정
+        .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+            .successHandler(oAuth2AuthenticationSuccessHandler))
+        .build();
   }
 }
+
