@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -22,6 +23,10 @@ import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.worker.entity.Gender;
 import org.doubleone.domain.member.entity.Member;
+import org.doubleone.domain.workerCondition.entity.WorkerCondition;
+import org.doubleone.domain.workerLicense.entity.WorkerLicense;
+import org.doubleone.domain.workerRegion.entity.WorkerRegion;
+import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;
 import org.doubleone.global.BaseTimeEntity;
 import java.time.LocalDate;
 
