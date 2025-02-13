@@ -4,15 +4,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.Signup.ManagerSignupDto;
 import org.doubleone.domain.Signup.WorkerSignupDto;
+import org.doubleone.domain.jwt.JwtToken;
+import org.doubleone.domain.jwt.JwtTokenProvider;
 import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.manager.repository.ManagerRepository;
 import org.doubleone.domain.member.entity.Member;
 import org.doubleone.domain.member.repository.MemberRepository;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.worker.repository.WorkerRepository;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @Slf4j
 @Service
@@ -24,6 +31,7 @@ public class MemberService {
   private final ManagerRepository managerRepository;
   private final WorkerRepository workerRepository;
   private final PasswordEncoder passwordEncoder;
+
 
   @Transactional
   public void signUpManager(ManagerSignupDto request) {
@@ -77,11 +85,10 @@ public class MemberService {
             .member(member)
             .build();
     workerRepository.save(worker);
-
   }
 
   public Member getMemberById(Long memberId){
+
     return memberRepository.findById(memberId).get();
   }
-
 }

@@ -35,13 +35,13 @@ public class SecurityConfig {
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
     return web -> web.ignoring()
-        .requestMatchers("/error", "/favicon.ico",
-            "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs", "/v3/api-docs/**")
-        .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+            .requestMatchers("/error", "/favicon.ico",
+                    "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs", "/v3/api-docs/**")
+            .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
   }
 
   private static final String[] AUTH_WHITELIST = {
-      // whitelist
+          // whitelist
   };
 
   @Bean
@@ -49,11 +49,11 @@ public class SecurityConfig {
     CorsConfiguration configuration = new CorsConfiguration();
 
     configuration.setAllowedOrigins(Arrays.asList(
-        "http://localhost:80800",
-        "http://localhost:3000"));
+            "http://localhost:80800",
+            "http://localhost:3000"));
 
     configuration.setAllowedMethods(
-        Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"));
+            Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"));
     configuration.addAllowedHeader("*");
     configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Location"));
     configuration.setAllowCredentials(true);
@@ -70,39 +70,38 @@ public class SecurityConfig {
 
   @Bean
   public AuthenticationManager authenticationManager(
-      AuthenticationConfiguration authenticationConfiguration) throws Exception {
+          AuthenticationConfiguration authenticationConfiguration) throws Exception {
     return authenticationConfiguration.getAuthenticationManager();
   }
-
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
     http
-        .csrf(AbstractHttpConfigurer::disable)
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-        .formLogin(AbstractHttpConfigurer::disable)
-        .logout(logout -> logout
-                .logoutUrl("/logout")
-                .deleteCookies("refreshToken")
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .formLogin(AbstractHttpConfigurer::disable)
+            .logout(logout -> logout
+                            .logoutUrl("/logout")
+                            .deleteCookies("refreshToken")
 //            .addLogoutHandler(logoutHandler)
-                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
-        )
-        .httpBasic(AbstractHttpConfigurer::disable)
-        .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .headers(header -> header
-            .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                            .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
+            )
+            .httpBasic(AbstractHttpConfigurer::disable)
+            .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .headers(header -> header
+                    .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
 //        // jwt
 //        .addFilterBefore(new JwtFilter(jwtUtil), LogoutFilter.class)
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers(AUTH_WHITELIST).permitAll()
-//            .anyRequest().authenticated()
-              .anyRequest().permitAll() // jwt 구현 후 authenticated()로 변경
-
+            .authorizeHttpRequests(auth -> auth
+                            .requestMatchers(AUTH_WHITELIST).permitAll()
+                            .requestMatchers("/signup/**").permitAll()  // ✅ 회원가입 관련 요청 허용
+                            .anyRequest().authenticated()
+//                            .anyRequest().permitAll() // jwt 구현 후 authenticated()로 변경
 //            // oauth2
 //            .oauth2Login(oauth -> oauth
 //                .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
 //                .successHandler(oAuth2SuccessHandler));
-        );
+            );
 
     return http.build();
   }

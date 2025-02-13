@@ -49,4 +49,6 @@ public class Member extends BaseTimeEntity {
     this.memberType = MemberType.UNKNOWN;
   }
 
+
+
 }
