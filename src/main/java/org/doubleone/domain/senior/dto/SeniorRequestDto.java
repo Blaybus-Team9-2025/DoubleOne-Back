@@ -6,7 +6,7 @@ import org.doubleone.domain.senior.entity.Senior;
 
 @Getter
 @NoArgsConstructor
-public class SeniorDto {
+public class SeniorRequestDto {
 
     private Long id;
     private String name;
@@ -21,8 +21,8 @@ public class SeniorDto {
     private String dementiaSymptoms;
     private String etcDisease;
 
-    public static SeniorDto fromEntity(Senior senior) {
-        SeniorDto dto = new SeniorDto();
+    public static SeniorRequestDto fromEntity(Senior senior) {
+        SeniorRequestDto dto = new SeniorRequestDto();
         dto.id = senior.getSeniorId();
         dto.name = senior.getName();
         dto.gender = senior.getGender().name();
