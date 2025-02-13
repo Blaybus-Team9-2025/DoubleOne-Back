@@ -41,6 +41,14 @@ public class Worker extends BaseTimeEntity {
   @JsonIgnore
   private Member member;
 
+  @Column(name = "name", unique = true)
+  @NotNull
+  private String name;
+
+  @Column(name = "profile_img", columnDefinition = "TEXT")
+  private String profileImg;
+
+
   @Column(name = "gender")
   @NotNull
   @Enumerated(EnumType.STRING)
@@ -67,7 +75,9 @@ public class Worker extends BaseTimeEntity {
   private String license;
 
   @Builder
-  public Worker(Member member, Gender gender, String phoneNum, String address, String license) {
+  public Worker(String name, String ProfileImg, Member member, Gender gender, String phoneNum, String address, String license) {
+    this.name = name;
+    this.profileImg = profileImg;
     this.member = member;
     this.gender = gender;
     this.phoneNum = phoneNum;

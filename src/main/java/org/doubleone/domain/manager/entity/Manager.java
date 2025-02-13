@@ -39,6 +39,13 @@ public class Manager extends BaseTimeEntity {
   @JsonIgnore
   private Member member;
 
+  @Column(name = "name", unique = true)
+  @NotNull
+  private String name;
+
+  @Column(name = "profile_img", columnDefinition = "TEXT")
+  private String profileImg;
+
   @Column(name = "phone_num", unique = true)
   @NotNull
   private String phoneNum;
@@ -62,7 +69,9 @@ public class Manager extends BaseTimeEntity {
   private String centerPeriod;
 
   @Builder
-  public Manager(Member member, String phoneNum, boolean hasTruck, String address, String centerName, String centerGrade, String centerPeriod) {
+  public Manager(String name, String profileImg, Member member, String phoneNum, boolean hasTruck, String address, String centerName, String centerGrade, String centerPeriod) {
+    this.name = name;
+    this.profileImg = profileImg;
     this.member = member;
     this.phoneNum = phoneNum;
     this.hasTruck = hasTruck;
