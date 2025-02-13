@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 //import jakarta.validation.constraints.NotNull.List;
 import java.util.List;
@@ -21,6 +22,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.codec.language.bm.Rule.Phoneme;
 import org.doubleone.domain.manager.entity.Gender;
 import org.doubleone.domain.member.entity.Member;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
@@ -71,6 +73,35 @@ public class Worker extends BaseTimeEntity {
   @Column(name = "license")
   @NotNull
   private String license;
+
+  @Transactional
+  public void updateWorkerInfo(String phoneNum, String address, boolean hasTrained, boolean hasVehicle, String license) {
+    if (phoneNum != null) this.phoneNum = phoneNum;
+    if (address != null) this.address = address;
+    this.hasTrained = hasTrained;
+    this.hasVehicle = hasVehicle;
+    if (license != null) this.license = license;
+  }
+
+//  public void setPhoneNum(String phoneNum) {
+//    this.phoneNum = phoneNum;
+//  }
+//
+//  public void setAddress(String address) {
+//    this.address = address;
+//  }
+//
+//  public void setHasTrained(boolean hasTrained) {
+//    this.hasTrained = hasTrained;
+//  }
+//
+//  public void setHasVehicle(boolean hasVehicle) {
+//    this.hasVehicle = hasVehicle;
+//  }
+//
+//  public void setLicense(String license) {
+//    this.license = license;
+//  }
 
 //  // workerCondition 설정
 //  @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, orphanRemoval = true)

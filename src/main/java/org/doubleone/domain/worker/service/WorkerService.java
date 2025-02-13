@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.worker.dto.WorkerDetailResponse;
+import org.doubleone.domain.worker.dto.WorkerUpdateRequest;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.worker.repository.WorkerConditionRepository;
 import org.doubleone.domain.worker.repository.WorkerLicenseRepository;
@@ -31,6 +32,18 @@ public class WorkerService {
   private final WorkerRegionRepository workerRegionRepository;
   private final WorkerScheduleRepository workerScheduleRepository;
 
+
+  // 요양사 정보 수정
+  @Transactional
+  public void updateWorker(Long workerId, WorkerUpdateRequest request) {
+    Worker worker = workerRepository.findById(workerId)
+        .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
+
+    worker.updateWorkerInfo(request.getPhoneNum(), request.getAddress(),
+        request.isHasTrained(), request.isHasVehicle(), request.getLicense());
+  }
+
+
   // 요양사 상세정보 조회
   @Transactional(readOnly = true)
   public WorkerDetailResponse getWorkerDetail(Long workerId) {
@@ -45,4 +58,6 @@ public class WorkerService {
 
     return WorkerDetailResponse.from(worker, conditions, license, regions, schedules);
   }
+
+
 }
