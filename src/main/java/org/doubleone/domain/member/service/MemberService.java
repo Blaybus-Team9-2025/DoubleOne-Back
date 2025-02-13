@@ -9,6 +9,7 @@ import org.doubleone.domain.jwt.JwtTokenProvider;
 import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.manager.repository.ManagerRepository;
 import org.doubleone.domain.member.entity.Member;
+import org.doubleone.domain.member.entity.MemberType;
 import org.doubleone.domain.member.repository.MemberRepository;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.worker.repository.WorkerRepository;
@@ -44,6 +45,7 @@ public class MemberService {
     Member member = Member.builder()
             .email(request.getEmail())
             .password(passwordEncoder.encode(request.getPassword())) // 비밀번호 암호화
+            .memberType(MemberType.MANAGER)
             .build();
     memberRepository.save(member);
 
@@ -72,6 +74,7 @@ public class MemberService {
     Member member = Member.builder()
             .email(request.getEmail())
             .password(passwordEncoder.encode(request.getPassword())) // 비밀번호 암호화
+            .memberType(MemberType.WORKER)
             .build();
     memberRepository.save(member);
 

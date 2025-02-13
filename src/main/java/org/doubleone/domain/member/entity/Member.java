@@ -42,11 +42,11 @@ public class Member extends BaseTimeEntity {
   private MemberStatus memberstatus;
 
   @Builder
-  public Member(String email, String password) {
+  public Member(String email, String password, MemberType memberType) {
     this.email = email;
     this.password = password;
     this.memberstatus = MemberStatus.ACTIVE;
-    this.memberType = MemberType.UNKNOWN;
+    this.memberType = memberType;
   }
 
 
