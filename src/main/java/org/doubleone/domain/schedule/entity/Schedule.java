@@ -10,7 +10,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -20,6 +23,8 @@ import org.doubleone.global.BaseTimeEntity;
 @Table(name = "schedule")
 @Getter
 @Log4j2
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Schedule extends BaseTimeEntity {
 
@@ -33,12 +38,12 @@ public class Schedule extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private Day day;
 
-  @Column(name = "start_date")
+  @Column(name = "start_at")
   @NotNull
-  private LocalDate startDate;
+  private String startTime;
 
-  @Column(name = "end_date")
+  @Column(name = "end_at")
   @NotNull
-  private LocalDate endDate;
+  private String endTime;
 
 }
