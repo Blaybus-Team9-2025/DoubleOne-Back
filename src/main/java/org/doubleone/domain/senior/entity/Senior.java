@@ -1,6 +1,7 @@
 package org.doubleone.domain.senior.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,7 +23,6 @@ import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.manager.entity.Gender;
 import org.doubleone.domain.manager.entity.Manager;
-import com.vladmihalcea.hibernate.type.json.JsonType;
 import org.doubleone.global.BaseTimeEntity;
 import org.hibernate.annotations.Type;
 

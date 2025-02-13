@@ -20,8 +20,10 @@ public enum ErrorCode {
 
   // Manager
   MANAGER_CANNOT_CREATE_CHAT(409, "관리자는 채팅을 시작할 수 없습니다."),
+
   // Chat
   CHATROOM_NOT_FOUND(404, "채팅방을 찾을 수 없습니다.");
+
   private final int status;
   private final String message;
 }

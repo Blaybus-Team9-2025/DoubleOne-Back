@@ -18,6 +18,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.doubleone.domain.member.entity.Member;
+import org.doubleone.domain.member.repository.MemberRepository;
+import org.doubleone.global.BaseTimeEntity;
+import org.doubleone.global.exception.CustomException;
+import org.doubleone.global.exception.ErrorCode;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -91,7 +98,15 @@ public class MemberService {
   }
 
   public Member getMemberById(Long memberId){
-
     return memberRepository.findById(memberId).get();
   }
+
+  @Transactional(readOnly = true)
+  public Member getCurrentMember() throws CustomException {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    Member member = memberRepository.findByEmail(authentication.getName())
+        .orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED));
+    return member;
+  }
+
 }

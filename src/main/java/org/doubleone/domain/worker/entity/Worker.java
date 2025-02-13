@@ -48,7 +48,6 @@ public class Worker extends BaseTimeEntity {
   @Column(name = "profile_img", columnDefinition = "TEXT")
   private String profileImg;
 
-
   @Column(name = "gender")
   @NotNull
   @Enumerated(EnumType.STRING)
@@ -84,13 +83,4 @@ public class Worker extends BaseTimeEntity {
     this.address = address;
     this.license = license;
   }
-
-
-
-
-
-
-
-
-
 }

@@ -3,6 +3,11 @@ package org.doubleone.domain.member.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.global.BaseTimeEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -46,9 +51,15 @@ public class Member extends BaseTimeEntity {
     this.email = email;
     this.password = password;
     this.memberstatus = MemberStatus.ACTIVE;
-    this.memberType = memberType;
+    this.memberType = MemberType.memberType;
   }
-
-
+  
+  @Builder
+  public Member(String email, String password) {
+    this.email = email;
+    this.password = password;
+    this.memberstatus = MemberStatus.ACTIVE;
+    this.memberType = MemberType.UNKNOWN;
+  }
 
 }
