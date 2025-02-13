@@ -54,4 +54,8 @@ public class WorkerDetailResponse {
                 .collect(Collectors.toList()))
             .build();
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 67fa96a (변경사항저장)

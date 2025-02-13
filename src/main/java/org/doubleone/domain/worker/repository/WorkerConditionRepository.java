@@ -8,4 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface WorkerConditionRepository extends JpaRepository<WorkerCondition, Long> {
 
     List<WorkerCondition> findByWorker(Worker worker);
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 67fa96a (변경사항저장)

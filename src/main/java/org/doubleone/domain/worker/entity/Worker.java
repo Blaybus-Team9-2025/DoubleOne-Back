@@ -38,28 +38,28 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Worker extends BaseTimeEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "worker_id", updatable = false)
-  private Long workerId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "worker_id", updatable = false)
+    private Long workerId;
 
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "member_id", updatable = false)
-  @NotNull
-  @JsonIgnore
-  private Member member;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "member_id", updatable = false)
+    @NotNull
+    @JsonIgnore
+    private Member member;
 
-  @Column(name = "name", unique = true)
-  @NotNull
-  private String name;
+    @Column(name = "name", unique = true)
+    @NotNull
+    private String name;
 
-  @Column(name = "profile_img", columnDefinition = "TEXT")
-  private String profileImg;
+    @Column(name = "profile_img", columnDefinition = "TEXT")
+    private String profileImg;
 
-  @Column(name = "gender")
-  @NotNull
-  @Enumerated(EnumType.STRING)
-  private Gender gender;
+    @Column(name = "gender")
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
   @Column(name = "birth_date", unique = true)
   @NotNull
@@ -69,21 +69,21 @@ public class Worker extends BaseTimeEntity {
   @NotNull
   private String phoneNum;
 
-  @Column(name = "has_trained")
-  @NotNull
-  private boolean hasTrained;
+    @Column(name = "has_trained")
+    @NotNull
+    private boolean hasTrained;
 
-  @Column(name = "has_vehicle")
-  @NotNull
-  private boolean hasVehicle;
+    @Column(name = "has_vehicle")
+    @NotNull
+    private boolean hasVehicle;
 
-  @Column(name = "address")
-  @NotNull
-  private String address;
+    @Column(name = "address")
+    @NotNull
+    private String address;
 
-  @Column(name = "license")
-  @NotNull
-  private String license;
+    @Column(name = "license")
+    @NotNull
+    private String license;
 
   @Builder
   public Worker(String name, String ProfileImg, Member member, LocalDate birthDate, org.doubleone.domain.worker.entity.Gender gender, String phoneNum, String address, String license) {

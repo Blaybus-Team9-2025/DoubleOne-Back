@@ -11,4 +11,8 @@ public interface WorkerRegionRepository extends JpaRepository<WorkerRegion, Long
 
     List<WorkerRegion> findByWorker(Worker worker);
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 67fa96a (변경사항저장)
