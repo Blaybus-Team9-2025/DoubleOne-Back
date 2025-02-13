@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SeniorUpdateDto {
     private String careLevel;
-    private String detailedAddress;  // getAddress() → getDetailedAddress()로 수정
+    private String address;
     private String profileImg;
     private String etcDisease;
 }

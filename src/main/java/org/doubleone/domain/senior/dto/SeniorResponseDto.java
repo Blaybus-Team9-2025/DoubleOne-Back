@@ -12,14 +12,14 @@ public class SeniorResponseDto {
     private String name;
     private int age;
     private String gender;
-    private String detailedAddress;
+    private String address;
 
     public SeniorResponseDto(Senior senior) {
         this.seniorId = senior.getSeniorId();
         this.name = senior.getName();
         this.age = calculateAge(senior.getBirthDate());
         this.gender = senior.getGender().name();
-        this.detailedAddress = senior.getDetailedAddress();
+        this.address = senior.getAddress();
     }
 
     private int calculateAge(LocalDate birthDate) {

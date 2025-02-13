@@ -1,5 +1,7 @@
 package org.doubleone.domain.condition.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.doubleone.domain.condition.entity.Condition;
@@ -10,6 +12,8 @@ import java.util.Map;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ConditionResponseDto {
 
     private Long seniorConditionId;
@@ -18,11 +22,13 @@ public class ConditionResponseDto {
     private ServiceType serviceType;
     private Map<String, List<String>> services;
 
-    public ConditionResponseDto(Condition condition) {
-        this.seniorConditionId = condition.getSeniorConditionId();
-        this.wage = condition.getWage();
-        this.welfares = condition.getWelfares();
-        this.serviceType = condition.getServiceType();
-        this.services = condition.getServices();
+    public static ConditionResponseDto from(Condition condition) {
+        return ConditionResponseDto.builder()
+                .seniorConditionId(condition.getSeniorConditionId())
+                .wage(condition.getWage())
+                .welfares(condition.getWelfares())
+                .serviceType(condition.getServiceType())
+                .services(condition.getServices())
+                .build();
     }
 }
