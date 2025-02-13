@@ -11,4 +11,8 @@ public interface WorkerScheduleRepository extends JpaRepository<WorkerSchedule, 
 
     List<WorkerSchedule> findByWorker(Worker worker);
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 67fa96a (변경사항저장)
