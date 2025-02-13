@@ -21,7 +21,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.doubleone.domain.manager.entity.Gender;
+import org.doubleone.domain.member.entity.Gender;
 import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.global.BaseTimeEntity;
 import org.hibernate.annotations.Type;
