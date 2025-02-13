@@ -7,6 +7,8 @@ import org.doubleone.domain.member.repository.MemberRepository;
 import org.doubleone.global.BaseTimeEntity;
 import org.doubleone.global.exception.CustomException;
 import org.doubleone.global.exception.ErrorCode;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,13 +20,12 @@ public class MemberService {
 
   private final MemberRepository memberRepository;
 
-  // 개발 진행을 위한 임시 메서드
-  public Member getCurrentMember(){
-    return memberRepository.findById((long)1).get();
-  }
-
-  public Member getOtherMember(){
-    return memberRepository.findById((long)2).get();
+  @Transactional(readOnly = true)
+  public Member getCurrentMember() throws CustomException {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    Member member = memberRepository.findByEmail(authentication.getName())
+        .orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED));
+    return member;
   }
 
   public Member getMemberById(Long memberId){

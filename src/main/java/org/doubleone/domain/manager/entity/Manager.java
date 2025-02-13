@@ -30,13 +30,20 @@ public class Manager extends BaseTimeEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "manager_id", updatable = false)
-  private Long workerId;
+  private Long managerId;
 
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "member_id", updatable = false)
   @NotNull
   @JsonIgnore
   private Member member;
+
+  @Column(name = "name", unique = true)
+  @NotNull
+  private String name;
+
+  @Column(name = "profile_img", columnDefinition = "TEXT")
+  private String profileImg;
 
   @Column(name = "phone_num", unique = true)
   @NotNull
