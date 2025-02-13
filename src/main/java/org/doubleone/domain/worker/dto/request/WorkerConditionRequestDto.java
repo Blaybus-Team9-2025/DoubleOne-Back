@@ -7,6 +7,7 @@ import org.doubleone.domain.worker.dto.response.WorkerRegionDto;
 import org.doubleone.domain.worker.dto.response.WorkerScheduleDto;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.workerCondition.entity.WageType;
+import org.doubleone.domain.workerCondition.entity.WorkPeriod;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 
 public record WorkerConditionRequestDto(
@@ -15,7 +16,7 @@ public record WorkerConditionRequestDto(
     @NotNull
     int wage,
     String introduce,
-    Map<String, List<String>> workPeriods,
+    List<WorkPeriod> workPeriods,
     List<WorkerScheduleDto> scheduleDtoList,
     List<WorkerRegionDto> regionDtoList
 ) {
