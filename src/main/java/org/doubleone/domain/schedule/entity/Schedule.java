@@ -1,5 +1,8 @@
 package org.doubleone.domain.schedule.entity;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,12 +16,15 @@ import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+import org.doubleone.domain.senior.entity.SeniorCare;
 import org.doubleone.global.BaseTimeEntity;
 
 @Entity
 @Table(name = "schedule")
 @Getter
+@Setter
 @Log4j2
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Schedule extends BaseTimeEntity {
@@ -40,5 +46,6 @@ public class Schedule extends BaseTimeEntity {
   @Column(name = "end_date")
   @NotNull
   private LocalDate endDate;
+
 
 }
