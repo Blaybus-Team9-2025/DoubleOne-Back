@@ -1,13 +1,6 @@
 package org.doubleone.domain.member.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -15,6 +8,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.global.BaseTimeEntity;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "member")
@@ -53,6 +52,7 @@ public class Member extends BaseTimeEntity {
   @NotNull
   @Enumerated(EnumType.STRING)
   private MemberStatus memberstatus;
+
 
   @Builder
   public Member(Long kakaoId, String email, String password, String name, MemberType memberType) {

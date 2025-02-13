@@ -1,10 +1,10 @@
-package org.doubleone.domain.login;
+package org.doubleone.domain.Signup;
 
 
 import lombok.Data;
 
 @Data
-public class LoginDto {
+public class ManagerSignupDto {
     private String name;
     private String email;
     private String password;

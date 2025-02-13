@@ -2,12 +2,19 @@ package org.doubleone.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.doubleone.domain.login.LoginDto;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.doubleone.domain.Signup.LoginDto;
+import org.doubleone.domain.Signup.ManagerSignupDto;
+import org.doubleone.domain.Signup.WorkerSignupDto;
+import org.doubleone.domain.jwt.JwtToken;
 import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.manager.repository.ManagerRepository;
 import org.doubleone.domain.member.entity.Member;
 import org.doubleone.domain.member.entity.MemberType;
 import org.doubleone.domain.member.repository.MemberRepository;
+import org.doubleone.domain.worker.entity.Worker;
+import org.doubleone.domain.worker.repository.WorkerRepository;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +27,11 @@ public class MemberService {
 
   private final MemberRepository memberRepository;
   private final ManagerRepository managerRepository;
+  private final WorkerRepository workerRepository;
   private final PasswordEncoder passwordEncoder;
 
   @Transactional
-  public void signUp(LoginDto request) {
+  public void signUpManager(ManagerSignupDto request) {
     // 이메일 중복 체크
     if (memberRepository.existsByEmail(request.getEmail())) {
       throw new RuntimeException("이미 사용 중인 이메일입니다.");
@@ -51,4 +59,32 @@ public class MemberService {
             .build();
     managerRepository.save(manager);
   }
+
+  public void signUpWorker(WorkerSignupDto request) {
+    // 이메일 중복 체크
+    if (memberRepository.existsByEmail(request.getEmail())) {
+      throw new RuntimeException("이미 사용 중인 이메일입니다.");
+    }
+
+    //멤버에 기본정보 등록
+    Member member = Member.builder()
+            .email(request.getEmail())
+            .name(request.getName())
+            .memberType(MemberType.WORKER)
+            .password(passwordEncoder.encode(request.getPassword())) // 비밀번호 암호화
+            .build();
+    memberRepository.save(member);
+
+    //요양보호사 정보 저장
+    Worker worker = Worker.builder()
+            .phoneNum(request.getPhoneNum())
+            .address(request.getAddress())
+            .license(request.getLicense())
+            .gender(request.getGender())
+            .member(member)
+            .build();
+    workerRepository.save(worker);
+
+  }
+
 }

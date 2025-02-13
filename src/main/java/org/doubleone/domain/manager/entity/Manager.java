@@ -71,6 +71,4 @@ public class Manager extends BaseTimeEntity {
     this.centerGrade = centerGrade;
     this.centerPeriod = centerPeriod;
   }
-
-
 }

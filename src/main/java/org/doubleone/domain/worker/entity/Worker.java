@@ -15,10 +15,11 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.doubleone.domain.manager.entity.Gender;
+import org.doubleone.domain.worker.entity.Gender;
 import org.doubleone.domain.member.entity.Member;
 import org.doubleone.global.BaseTimeEntity;
 
@@ -65,7 +66,14 @@ public class Worker extends BaseTimeEntity {
   @NotNull
   private String license;
 
-
+  @Builder
+  public Worker(Member member, Gender gender, String phoneNum, String address, String license) {
+    this.member = member;
+    this.gender = gender;
+    this.phoneNum = phoneNum;
+    this.address = address;
+    this.license = license;
+  }
 
 
 
