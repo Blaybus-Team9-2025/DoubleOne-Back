@@ -31,7 +31,6 @@ public class LoginService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
     public JwtToken signIn(String email, String password) {
-        log.info("INFO 로그: JWT Token Service 시작");
 
         //사용자 인증정보 감싸기
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
