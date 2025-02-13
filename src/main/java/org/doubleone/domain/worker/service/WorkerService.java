@@ -32,7 +32,6 @@ public class WorkerService {
   private final WorkerRegionRepository workerRegionRepository;
   private final WorkerScheduleRepository workerScheduleRepository;
 
-
   // 요양사 정보 수정
   @Transactional
   public void updateWorker(Long workerId, WorkerUpdateRequest request) {
@@ -42,7 +41,6 @@ public class WorkerService {
     worker.updateWorkerInfo(request.getPhoneNum(), request.getAddress(),
         request.isHasTrained(), request.isHasVehicle(), request.getLicense());
   }
-
 
   // 요양사 상세정보 조회
   @Transactional(readOnly = true)
@@ -58,6 +56,4 @@ public class WorkerService {
 
     return WorkerDetailResponse.from(worker, conditions, license, regions, schedules);
   }
-
-
 }

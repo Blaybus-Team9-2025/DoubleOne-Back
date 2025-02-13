@@ -14,7 +14,7 @@ import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;
 @Builder
 public class WorkerDetailResponse {
     private Long workerId;
-    private String gender; // 수정불가
+    private String gender;
     private String phoneNum;
     private boolean hasTrained;
     private boolean hasVehicle;

@@ -11,24 +11,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
-//import jakarta.validation.constraints.NotNull.List;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.codec.language.bm.Rule.Phoneme;
 import org.doubleone.domain.manager.entity.Gender;
 import org.doubleone.domain.member.entity.Member;
-import org.doubleone.domain.workerCondition.entity.WorkerCondition;
-import org.doubleone.domain.workerLicense.entity.WorkerLicense;
-import org.doubleone.domain.workerRegion.entity.WorkerRegion;
-import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;
 import org.doubleone.global.BaseTimeEntity;
 
 @Entity
@@ -82,40 +74,4 @@ public class Worker extends BaseTimeEntity {
     this.hasVehicle = hasVehicle;
     if (license != null) this.license = license;
   }
-
-//  public void setPhoneNum(String phoneNum) {
-//    this.phoneNum = phoneNum;
-//  }
-//
-//  public void setAddress(String address) {
-//    this.address = address;
-//  }
-//
-//  public void setHasTrained(boolean hasTrained) {
-//    this.hasTrained = hasTrained;
-//  }
-//
-//  public void setHasVehicle(boolean hasVehicle) {
-//    this.hasVehicle = hasVehicle;
-//  }
-//
-//  public void setLicense(String license) {
-//    this.license = license;
-//  }
-
-//  // workerCondition 설정
-//  @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, orphanRemoval = true)
-//  private List<WorkerCondition> workerCondition;
-//
-//  // workerLicense 설정
-//  @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, orphanRemoval = true)
-//  private List<WorkerLicense> workerLicense;
-//
-//  // workerRegion 설정
-//  @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, orphanRemoval = true)
-//  private List<WorkerRegion> workerRegion;
-//
-//  // workerSchedule 설정
-//  @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, orphanRemoval = true)
-//  private List<WorkerSchedule> workerSchedule;
 }

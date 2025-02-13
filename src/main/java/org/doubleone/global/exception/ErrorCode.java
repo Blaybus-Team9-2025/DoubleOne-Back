@@ -8,6 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
 
+
   // Member
   MEMBER_NOT_FOUND(404, "멤버를 찾을 수 없습니다."),
 
@@ -19,7 +20,6 @@ public enum ErrorCode {
 
   // Worker
   WORKER_NOT_FOUND(404, "요양보호사를 찾을 수 없습니다");
-
 
   private final int status;
   private final String message;
