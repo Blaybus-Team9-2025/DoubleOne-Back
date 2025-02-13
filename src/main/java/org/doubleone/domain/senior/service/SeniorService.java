@@ -3,6 +3,7 @@ package org.doubleone.domain.senior.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.senior.dto.SeniorDto;
+import org.doubleone.domain.senior.dto.SeniorResponseDto;
 import org.doubleone.domain.senior.dto.SeniorUpdateDto;
 import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.senior.entity.CareLevel;
@@ -68,10 +69,20 @@ public class SeniorService {
     log.info("어르신 정보 삭제 완료: ID={}", seniorId);
   }
 
-  public List<SeniorDto> getAllSeniors() {
-    return seniorRepository.findAll()
-            .stream()
-            .map(SeniorDto::fromEntity)
+  @Transactional(readOnly = true)
+  public List<SeniorResponseDto> getSeniorList() {
+    List<Senior> seniors = seniorRepository.findAll();
+
+    return seniors.stream()
+            .map(SeniorResponseDto::new)
             .collect(Collectors.toList());
   }
+
+  @Transactional(readOnly = true)
+  public SeniorResponseDto getSeniorDetail(Long seniorId) {
+    Senior senior = seniorRepository.findById(seniorId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 어르신이 존재하지 않습니다."));
+    return new SeniorResponseDto(senior);
+  }
+
 }
