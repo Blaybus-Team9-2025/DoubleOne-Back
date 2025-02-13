@@ -99,6 +99,12 @@ public class TokenProvider {
     return null;
   }
 
+  public Member extractMember(String accessToken) {
+    String email = getClaims(accessToken).getSubject();
+    return memberRepository.findByEmail(email)
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+  }
+
   /**
    * 유효한 토큰인지 검증
    */
