@@ -7,6 +7,7 @@ import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.worker.repository.WorkerRepository;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.doubleone.domain.workerCondition.repository.WorkerConditionRepository;
+import org.doubleone.domain.workerLicense.service.WorkerLicenseService;
 import org.doubleone.domain.workerRegion.service.WorkerRegionService;
 import org.doubleone.domain.workerSchedule.service.WorkerScheduleService;
 import org.doubleone.global.exception.CustomException;
@@ -23,6 +24,7 @@ public class WorkerConditionService {
   private final WorkerRepository workerRepository;
   private final WorkerScheduleService workerScheduleService;
   private final WorkerRegionService workerRegionService;
+  private final WorkerLicenseService workerLicenseService;
 
   public void createWorkerCondition(Long workerId, WorkerConditionRequestDto requestDto) {
     Worker worker = workerRepository.findById(workerId)
@@ -35,6 +37,10 @@ public class WorkerConditionService {
     if (requestDto.regionDtoList() != null && !requestDto.regionDtoList().isEmpty()) {
       requestDto.regionDtoList().forEach(regionDto ->
           workerRegionService.createWorkerRegion(workerCondition, regionDto));
+    }
+    if (requestDto.licenseDtoList() != null && !requestDto.licenseDtoList().isEmpty()) {
+      requestDto.licenseDtoList().forEach(licenseDto ->
+          workerLicenseService.createWorkerLicense(workerCondition, licenseDto));
     }
   }
 
@@ -49,6 +55,10 @@ public class WorkerConditionService {
     if (requestDto.regionDtoList() != null && !requestDto.regionDtoList().isEmpty()) {
       requestDto.regionDtoList().forEach(regionDto ->
           workerRegionService.update(workerCondition, regionDto));
+    }
+    if (requestDto.licenseDtoList() != null && !requestDto.licenseDtoList().isEmpty()) {
+      requestDto.licenseDtoList().forEach(licenseDto ->
+          workerLicenseService.update(workerCondition, licenseDto));
     }
   }
 
