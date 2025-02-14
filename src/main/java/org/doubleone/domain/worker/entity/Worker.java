@@ -96,4 +96,12 @@ public class Worker extends BaseTimeEntity {
       this.address = address;
       this.license = license;
   }
+  @Transactional
+  public void updateWorkerInfo(String phoneNum, String address, boolean hasTrained, boolean hasVehicle, String license) {
+    if (phoneNum != null) this.phoneNum = phoneNum;
+    if (address != null) this.address = address;
+    this.hasTrained = hasTrained;
+    this.hasVehicle = hasVehicle;
+    if (license != null) this.license = license;
+  }
 }
