@@ -8,6 +8,8 @@ import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.senior.repository.SeniorRepository;
 import org.doubleone.domain.senior.service.SeniorService;
 import org.doubleone.domain.worker.service.WorkerService;
+import org.doubleone.domain.workerCondition.entity.WorkerCondition;
+import org.doubleone.domain.workerCondition.service.WorkerConditionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,8 @@ public class SeniorController {
     private final SeniorService seniorService;
     private final WorkerService workerService;
     private final SeniorRepository seniorRepository;
+    private final WorkerConditionService workerConditionService;
+
 
     @PostMapping
     public ResponseEntity<SeniorRequestDto> registerSenior(@RequestBody SeniorRequestDto seniorRequestDto) {
@@ -79,5 +83,11 @@ public class SeniorController {
         List<Long> workerIds = workerService.getWorkerIdsBySeniorAddress(senior);
 
         return ResponseEntity.ok(workerIds);
+    }
+
+    //매칭된 요양사의 구인정보
+    @GetMapping("/match/worker/{workerId}")
+    public WorkerCondition getWorkerCondition(@PathVariable Long workerId) {
+        return workerConditionService.getWorkerConditionById(workerId);
     }
 }

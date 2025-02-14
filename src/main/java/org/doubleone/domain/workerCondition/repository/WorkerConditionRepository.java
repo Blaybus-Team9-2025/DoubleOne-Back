@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WorkerConditionRepository extends JpaRepository<WorkerCondition, Long> {
     @Query("SELECT wc.worker.workerId FROM WorkerCondition wc " +
@@ -21,6 +22,9 @@ public interface WorkerConditionRepository extends JpaRepository<WorkerCondition
             "ORDER BY 1")
     List<Long> findWorkerIdsByAddress(@Param("neighborhood") String neighborhood,
                                        @Param("district") String district);
+
+    Optional<WorkerCondition> findById(Long id);
+
 
 //    @Query("SELECT wc.worker.workerId FROM WorkerCondition wc " +
 //            "JOIN wc.workerRegions wr " +
