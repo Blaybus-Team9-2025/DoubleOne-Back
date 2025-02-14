@@ -16,6 +16,10 @@ public record WorkerConditionRequestDto(
     @NotNull
     int wage,
     String introduce,
+    @NotNull
+    boolean hasTrained,
+    @NotNull
+    boolean hasVehicle,
     List<WorkPeriod> workPeriods,
     List<WorkerScheduleDto> scheduleDtoList,
     List<WorkerRegionDto> regionDtoList
@@ -27,6 +31,8 @@ public record WorkerConditionRequestDto(
         .wageType(wageType)
         .wage(wage)
         .introduce(introduce)
+        .hasTrained(hasTrained)
+        .hasVehicle(hasVehicle)
         .workPeriods(workPeriods)
         .build();
   }

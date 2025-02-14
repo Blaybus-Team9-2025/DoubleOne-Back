@@ -62,6 +62,14 @@ public class WorkerCondition extends BaseTimeEntity {
   @Column(name = "introduce")
   private String introduce;
 
+  @Column(name = "has_trained")
+  @NotNull
+  private boolean hasTrained;
+
+  @Column(name = "has_vehicle")
+  @NotNull
+  private boolean hasVehicle;
+
   @Column(name = "work_periods", columnDefinition = "json")
   @Type(JsonType.class)
   private List<WorkPeriod> workPeriods;
