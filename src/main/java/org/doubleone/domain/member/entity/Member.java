@@ -51,7 +51,7 @@ public class Member extends BaseTimeEntity {
     this.email = email;
     this.password = password;
     this.memberstatus = MemberStatus.ACTIVE;
-    this.memberType = MemberType.memberType;
+    this.memberType = memberType;
   }
   
   @Builder

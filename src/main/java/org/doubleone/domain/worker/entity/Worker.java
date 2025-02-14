@@ -63,24 +63,12 @@ public class Worker extends BaseTimeEntity {
   @NotNull
   private String phoneNum;
 
-  @Column(name = "has_trained")
-  @NotNull
-  private boolean hasTrained;
-
-  @Column(name = "has_vehicle")
-  @NotNull
-  private boolean hasVehicle;
-
   @Column(name = "address")
   @NotNull
   private String address;
 
-  @Column(name = "license")
-  @NotNull
-  private String license;
-
   @Builder
-  public Worker(String name, String ProfileImg, Member member, LocalDate birthDate, Gender gender, String phoneNum, String address, String license) {
+  public Worker(String name, String ProfileImg, Member member, LocalDate birthDate, Gender gender, String phoneNum, String address) {
     this.name = name;
     this.profileImg = profileImg;
     this.member = member;
@@ -88,6 +76,5 @@ public class Worker extends BaseTimeEntity {
     this.gender = gender;
     this.phoneNum = phoneNum;
     this.address = address;
-    this.license = license;
   }
 }

@@ -1,4 +1,4 @@
-package org.doubleone.domain.Signup;
+package org.doubleone.domain.member.dto.request;
 
 
 import jakarta.validation.constraints.Email;
@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-public class ManagerSignupDto {
+public class SignupManagerDto {
     @NotBlank(message="이름은 필수입니다.")
     private String name;
 
@@ -20,10 +20,15 @@ public class ManagerSignupDto {
             message = "비밀번호는 6~20자 이내이며, 영문 대소문자, 숫자, 특수문자 중 2가지 이상을 포함해야 합니다.")
     private String password;
 
+    @NotBlank(message = "비밀번호 확인은 필수입니다.")
+    @Pattern(regexp = "^(?=(.*[A-Za-z]){1,})(?=(.*\\d){1,})(?=(.*[!.?,@#$%^&*()-_+=]){1,})[A-Za-z\\d!.?,@#$%^&*()-_+=]{6,20}$",
+        message = "비밀번호는 6~20자 이내이며, 영문 대소문자, 숫자, 특수문자 중 2가지 이상을 포함해야 합니다.")
+    private String confirmPassword;
+
     @NotBlank(message="전화번호는 필수입니다.")
     private String phoneNum;
 
-    @NotBlank(message="센터이름은 필수입니다.")
+    @NotBlank(message="센터 이름은 필수입니다.")
     private String centerName;
 
     @NotBlank(message="주소는 필수입니다.")
