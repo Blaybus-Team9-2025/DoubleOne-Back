@@ -6,7 +6,9 @@ import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.manager.repository.ManagerRepository;
 import org.doubleone.domain.member.dto.request.LoginRequestDto;
 import org.doubleone.domain.member.dto.request.SignupManagerDto;
+import org.doubleone.domain.member.dto.request.SignupManagerForKakaoDto;
 import org.doubleone.domain.member.dto.request.SignupWorkerDto;
+import org.doubleone.domain.member.dto.request.SignupWorkerForKakaoDto;
 import org.doubleone.domain.member.dto.response.LoginResponseDto;
 import org.doubleone.domain.member.dto.response.TokenResponseDto;
 import org.doubleone.domain.member.entity.Member;
@@ -20,7 +22,6 @@ import org.doubleone.global.jwt.TokenProvider;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -72,12 +73,31 @@ public class AuthService {
     managerRepository.save(manager);
   }
 
+  public void signUpManagerForKakao(SignupManagerForKakaoDto requestDto) {
+    Member member = memberRepository.findById(requestDto.memberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+    if(member.getMemberType() != MemberType.UNKNOWN){
+      throw new CustomException(ErrorCode.ACCESS_DENIED);
+    }
+    Manager manager = Manager.builder()
+        .name(requestDto.name())
+        .centerName(requestDto.centerName())
+        .phoneNum(requestDto.phoneNum())
+        .address(requestDto.address())
+        .hasTruck(requestDto.hasTruck())
+        .centerGrade(requestDto.centerGrade())
+        .centerPeriod(requestDto.centerPeriod())
+        .centerGrade(requestDto.centerGrade())
+        .member(member)
+        .build();
+    managerRepository.save(manager);
+  }
+
   public void signUpWorker(SignupWorkerDto requestDto) {
     // 이메일 중복 체크
     if (memberRepository.existsByEmail(requestDto.getEmail())) {
       throw new CustomException(ErrorCode.MEMBER_ALREADY_EXISTS);
     }
-
     // 멤버에 기본정보 등록
     Member member = Member.builder()
         .email(requestDto.getEmail())
@@ -98,8 +118,25 @@ public class AuthService {
     workerRepository.save(worker);
   }
 
-  public LoginResponseDto login(LoginRequestDto requestDto){
+  public void signUpWorkerForKakao(SignupWorkerForKakaoDto requestDto) {
+    Member member = memberRepository.findById(requestDto.memberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+    if(member.getMemberType() != MemberType.UNKNOWN){
+      throw new CustomException(ErrorCode.ACCESS_DENIED);
+    }
+    // 요양보호사 정보 저장
+    Worker worker = Worker.builder()
+        .name(requestDto.name())
+        .phoneNum(requestDto.phoneNum())
+        .birthDate(requestDto.birthDate())
+        .address(requestDto.address())
+        .gender(requestDto.gender())
+        .member(member)
+        .build();
+    workerRepository.save(worker);
+  }
 
+  public LoginResponseDto login(LoginRequestDto requestDto){
     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword());
     Authentication authentication =  authenticationManager.authenticate(authenticationToken);
       Member member = memberRepository.findByEmail(authentication.getName())
