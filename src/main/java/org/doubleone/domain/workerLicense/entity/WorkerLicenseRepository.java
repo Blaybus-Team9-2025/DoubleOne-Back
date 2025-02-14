@@ -1,4 +1,4 @@
-package org.doubleone.domain.worker.repository;
+package org.doubleone.domain.workerLicense.entity;
 
 import java.util.List;
 import org.doubleone.domain.worker.entity.Worker;

@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
+import org.doubleone.domain.license.entity.License;
 import org.doubleone.domain.worker.entity.Worker;
+
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.doubleone.domain.workerLicense.entity.WorkerLicense;
 import org.doubleone.domain.workerRegion.entity.WorkerRegion;
@@ -14,16 +16,15 @@ import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;
 @Builder
 public class WorkerDetailResponse {
     private Long workerId;
-    private String gender; // 수정불가
-    private String phoneNum;
-    private boolean hasTrained;
-    private boolean hasVehicle;
-    private String address;
-    private String license;
-    private List<String> workerConditions;
-    private List<String> workerLicenses;
-    private List<String> workerRegions;
-    private List<String> workerSchedules;
+    private String name;  // 이름
+    private String gender; // 성별 (수정불가)
+    private List<String> workerRegions;  // 희망 근무 지역
+    private List<String> workerSchedules;  // 희망 근무 일시
+    private List<String> workerConditions;  // 급여 조건
+    private String workerLicenses;  // 자격증
+    private String career;  // 경력사항
+    private String introduction;  // 자기소개
+    private Long memberId;  // 채팅용 memberId
 
     public static WorkerDetailResponse from(
         Worker worker,
@@ -33,29 +34,27 @@ public class WorkerDetailResponse {
         List<WorkerSchedule> schedules
     ) {
         return WorkerDetailResponse.builder()
-            .workerId(worker.getWorkerId())
-            .gender(String.valueOf(worker.getGender()))
-            .phoneNum(worker.getPhoneNum())
-            .hasTrained(worker.isHasTrained())
-            .hasVehicle(worker.isHasVehicle())
-            .address(worker.getAddress())
-            .license(worker.getLicense())
-            .workerConditions(conditions.stream()
-                .map(condition -> "급여: " + condition.getWage() + "소개: " + condition.getIntroduce())
+            .workerId(worker.getWorkerId()) // Id
+            .name(worker.getName())  // 이름
+            .gender(String.valueOf(worker.getGender())) // 성별
+            .workerRegions(regions.stream() // 지역
+                .map(region -> region.getRegion().getCity())
                 .collect(Collectors.toList()))
-            .workerLicenses(licenses.stream()
-                .map(WorkerLicense::toString)
+            .workerSchedules(schedules.stream() // 근무일정
+                .map(schedule -> schedule.getSchedule().getStartTime() + schedule.getSchedule()
+                    .getEndTime())
                 .collect(Collectors.toList()))
-            .workerRegions(regions.stream()
-                .map(WorkerRegion::toString)
+            .workerConditions(conditions.stream() // 급여
+                .map(condition -> condition.getWageType() + "" + condition.getWage() + "원")
                 .collect(Collectors.toList()))
-            .workerSchedules(schedules.stream()
-                .map(WorkerSchedule::toString)
-                .collect(Collectors.toList()))
+            .workerLicenses(worker.getLicense()) // 자격증
+            .introduction( // 소개
+                conditions.stream()
+                    .map(WorkerCondition::getIntroduce)
+                    .findFirst()
+                    .orElse(null)  // introduce가 없으면 null 반환
+            )
+            .memberId(worker.getMember().getMemberId()) // memberId
             .build();
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 67fa96a (변경사항저장)

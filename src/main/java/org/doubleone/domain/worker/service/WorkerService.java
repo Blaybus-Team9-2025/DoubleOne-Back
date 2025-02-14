@@ -6,15 +6,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.worker.dto.WorkerDetailResponse;
 import org.doubleone.domain.worker.dto.WorkerUpdateRequest;
 import org.doubleone.domain.worker.entity.Worker;
-import org.doubleone.domain.worker.repository.WorkerConditionRepository;
-import org.doubleone.domain.worker.repository.WorkerLicenseRepository;
-import org.doubleone.domain.worker.repository.WorkerRegionRepository;
+import org.doubleone.domain.workerCondition.repository.WorkerConditionRepository;
+import org.doubleone.domain.workerLicense.entity.WorkerLicenseRepository;
 import org.doubleone.domain.worker.repository.WorkerRepository;
-import org.doubleone.domain.worker.repository.WorkerScheduleRepository;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.doubleone.domain.workerLicense.entity.WorkerLicense;
 import org.doubleone.domain.workerRegion.entity.WorkerRegion;
+import org.doubleone.domain.workerRegion.repository.WorkerRegionRepository;
 import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;
+import org.doubleone.domain.workerSchedule.repository.WorkerScheduleRepository;
 import org.doubleone.global.exception.CustomException;
 import org.doubleone.global.exception.ErrorCode;
 import org.doubleone.domain.worker.repository.WorkerRepository;
@@ -47,16 +47,14 @@ public class WorkerService {
     public void updateWorker(Long workerId, WorkerUpdateRequest request) {
         Worker worker = workerRepository.findById(workerId)
             .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
-
         worker.updateWorkerInfo(request.getPhoneNum(), request.getAddress(),
             request.isHasTrained(), request.isHasVehicle(), request.getLicense());
     }
 
-
     // 요양사 상세정보 조회
     @Transactional(readOnly = true)
     public WorkerDetailResponse getWorkerDetail(Long workerId) {
-        // Worker 기본 정보 조회
+
         Worker worker = workerRepository.findById(workerId)
             .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
 
