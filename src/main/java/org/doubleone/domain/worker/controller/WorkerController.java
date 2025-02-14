@@ -6,15 +6,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.worker.dto.WorkerDetailResponse;
 import org.doubleone.domain.worker.dto.WorkerUpdateRequest;
-import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.worker.service.WorkerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,11 +25,6 @@ public class WorkerController {
 
     private final WorkerService workerService;
 
-//    public ResponseEntity<?> deleteWorkerCondition(@PathVariable("workerId") Long workerId, @PathVariable("workerConditionId") Long workerConditionId) {
-//        workerConditionService.deleteWorkerCondition(workerConditionId);
-//        return ResponseEntity.status(HttpStatus.OK).build();
-//    }
-
     // 요양사 상세 정보 조회
     @Operation(summary = "요양사 상세 정보 조회", description = "요양사 상세 정보를 조회합니다.")
     @GetMapping("/{workerId}")
@@ -41,11 +33,11 @@ public class WorkerController {
         return ResponseEntity.ok(response);
     }
 
-//    @Operation(summary = "요양사 정보 수정", description = "요양사 정보를 수정합니다")
-//    @PatchMapping("/{workerId}")
-//    public ResponseEntity<String> updateWorker(@PathVariable Long workerId,
-//        @RequestBody WorkerUpdateRequest request) {
-//        workerService.updateWorker(workerId, request);
-//        return ResponseEntity.ok("요양보호사 정보가 성공적으로 수정되었습니다.");
-//    }
+    @Operation(summary = "요양사 정보 수정", description = "요양사 정보를 수정합니다")
+    @PatchMapping("/{workerId}")
+    public ResponseEntity<String> updateWorker(@PathVariable Long workerId,
+        @RequestBody WorkerUpdateRequest request) {
+        workerService.updateWorker(workerId, request);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }

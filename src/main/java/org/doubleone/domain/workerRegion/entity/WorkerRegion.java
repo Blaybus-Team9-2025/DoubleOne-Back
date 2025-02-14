@@ -19,7 +19,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.region.entity.Region;
-import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.doubleone.global.BaseTimeEntity;
 

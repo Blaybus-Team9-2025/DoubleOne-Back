@@ -8,7 +8,6 @@ import org.doubleone.domain.worker.repository.WorkerRepository;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.doubleone.domain.workerCondition.repository.WorkerConditionRepository;
 import org.doubleone.domain.workerRegion.service.WorkerRegionService;
-import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;
 import org.doubleone.domain.workerSchedule.service.WorkerScheduleService;
 import org.doubleone.global.exception.CustomException;
 import org.doubleone.global.exception.ErrorCode;
