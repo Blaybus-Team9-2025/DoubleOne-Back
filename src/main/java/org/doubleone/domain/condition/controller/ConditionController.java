@@ -1,9 +1,11 @@
 package org.doubleone.domain.condition.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.doubleone.domain.condition.dto.ConditionRequestDto;
 import org.doubleone.domain.condition.dto.ConditionResponseDto;
 import org.doubleone.domain.condition.service.ConditionService;
+import org.doubleone.domain.worker.dto.request.WorkerConditionRequestDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,20 +17,18 @@ public class ConditionController {
 
     private final ConditionService conditionService;
 
+
     @PostMapping("/{seniorId}")
     public ResponseEntity<?> createCondition(@PathVariable("seniorId") Long seniorId, @RequestBody ConditionRequestDto requestDto) {
-        conditionService.createSeniorCondition(seniorId, requestDto);
+        conditionService.createCondition(seniorId, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-//    @PatchMapping("/{conditionId}")
-//    public ResponseEntity<Void> updateCondition(
-//            @PathVariable Long conditionId,
-//            @RequestBody ConditionRequestDto requestDto
-//    ) {
-//        conditionService.updateCondition(conditionId, requestDto);
-//        return ResponseEntity.noContent().build();
-//    }
+    @PatchMapping("/{seniorId}/workerConditions/{seniorConditionId}")
+    public ResponseEntity<?> updateCondition(@PathVariable("seniorId") Long seniorId, @PathVariable("seniorConditionId") Long seniorConditionId, @RequestBody @Valid ConditionRequestDto requestDto) {
+        conditionService.updateCondition(seniorConditionId, requestDto);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 
     @DeleteMapping("/{conditionId}")
     public ResponseEntity<Void> deleteCondition(@PathVariable Long conditionId) {

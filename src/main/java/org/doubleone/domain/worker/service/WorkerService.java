@@ -24,7 +24,7 @@ public class WorkerService {
     String district = addressParts[addressParts.length - 2]; // "강남구"
     String neighborhood = addressParts[addressParts.length - 1]; // "역삼동"
 
-    return workerConditionRepository.findWorkerIdsByAddress(neighborhood, district);
+    return workerConditionRepository.findWorkerIdsByMatchingSchedule(neighborhood, district);
   }
 
 

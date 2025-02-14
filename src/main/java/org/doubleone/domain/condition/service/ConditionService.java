@@ -28,7 +28,7 @@ public class ConditionService {
                 .orElseThrow(()->new CustomException(ErrorCode.SENIOR_NOT_FOUND));
     }
     // 등록
-    public void createSeniorCondition(Long seniorId, ConditionRequestDto requestDto){
+    public void createCondition(Long seniorId, ConditionRequestDto requestDto){
         Senior senior = seniorRepository.findById(seniorId)
                 .orElseThrow(()->new CustomException(ErrorCode.SENIOR_NOT_FOUND));
         Condition condition = conditionRepository.save(requestDto.toEntity(senior));
@@ -38,18 +38,17 @@ public class ConditionService {
         }
     }
 
-    // 수정
-//    public void updateCondition(Long conditionId, ConditionRequestDto requestDto) {
-//        Condition condition = conditionRepository.findById(conditionId)
-//                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_SENIOR_REQUEST));
-//
-//        condition.updateCondition(
-//                requestDto.getWage(),
-//                requestDto.getWelfares(),
-//                requestDto.getServiceType(),
-//                requestDto.getServices()
-//        );
-//    }
+     //수정
+     public void updateCondition(Long seniorConditionId, ConditionRequestDto requestDto){
+         Condition condition = conditionRepository.findById(seniorConditionId)
+                 .orElseThrow(()->new CustomException(ErrorCode.SENIOR_NOT_FOUND));
+         condition.updateCondition(requestDto.wage(), requestDto.welfares(), requestDto.serviceType(), requestDto.services());
+         if(requestDto.seniorSchedules()!=null && !requestDto.seniorSchedules().isEmpty()){
+             requestDto.seniorSchedules().forEach(scheduleDto ->
+                     seniorScheduleService.update(condition, scheduleDto));
+         }
+     }
+
 
     // 삭제
     public void deleteCondition(Long conditionId) {
