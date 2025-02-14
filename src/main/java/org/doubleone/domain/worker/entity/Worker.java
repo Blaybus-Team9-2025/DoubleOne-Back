@@ -11,22 +11,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDate;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.doubleone.domain.worker.entity.Gender;
 import org.doubleone.domain.member.entity.Member;
-import org.doubleone.domain.workerCondition.entity.WorkerCondition;
-import org.doubleone.domain.workerLicense.entity.WorkerLicense;
-import org.doubleone.domain.workerRegion.entity.WorkerRegion;
-import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;
 import org.doubleone.global.BaseTimeEntity;
 
 import java.time.LocalDate;
@@ -85,15 +78,12 @@ public class Worker extends BaseTimeEntity {
     @NotNull
     private String license;
 
-  @Builder
-  public Worker(String name, String ProfileImg, Member member, LocalDate birthDate, org.doubleone.domain.worker.entity.Gender gender, String phoneNum, String address, String license) {
-      this.name = name;
-      this.profileImg = profileImg;
-      this.member = member;
-      this.birthDate = birthDate;
-      this.gender = gender;
-      this.phoneNum = phoneNum;
-      this.address = address;
-      this.license = license;
+  @Transactional
+  public void updateWorkerInfo(String phoneNum, String address, boolean hasTrained, boolean hasVehicle, String license) {
+    if (phoneNum != null) this.phoneNum = phoneNum;
+    if (address != null) this.address = address;
+    this.hasTrained = hasTrained;
+    this.hasVehicle = hasVehicle;
+    if (license != null) this.license = license;
   }
 }

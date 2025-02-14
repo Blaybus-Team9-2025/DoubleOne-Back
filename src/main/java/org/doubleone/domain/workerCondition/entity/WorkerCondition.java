@@ -1,5 +1,7 @@
 package org.doubleone.domain.workerCondition.entity;
 
+
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.CascadeType;

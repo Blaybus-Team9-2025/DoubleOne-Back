@@ -14,12 +14,15 @@ import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;
 @Builder
 public class WorkerDetailResponse {
     private Long workerId;
-    private String gender; // 수정불가
+    private String name;
+    private String gender;
     private String phoneNum;
     private boolean hasTrained;
     private boolean hasVehicle;
     private String address;
     private String license;
+    private String introduction;
+    private Long memberId;
     private List<String> workerConditions;
     private List<String> workerLicenses;
     private List<String> workerRegions;
@@ -33,29 +36,22 @@ public class WorkerDetailResponse {
         List<WorkerSchedule> schedules
     ) {
         return WorkerDetailResponse.builder()
-            .workerId(worker.getWorkerId())
-            .gender(String.valueOf(worker.getGender()))
-            .phoneNum(worker.getPhoneNum())
-            .hasTrained(worker.isHasTrained())
-            .hasVehicle(worker.isHasVehicle())
-            .address(worker.getAddress())
-            .license(worker.getLicense())
-            .workerConditions(conditions.stream()
-                .map(condition -> "급여: " + condition.getWage() + "소개: " + condition.getIntroduce())
+            .workerId(worker.getWorkerId()) // Id
+            .name(worker.getName())  // 이름
+            .gender(String.valueOf(worker.getGender())) // 성별
+            .workerRegions(regions.stream() // 지역
+                .map(region -> region.getRegion().getCity())
                 .collect(Collectors.toList()))
-            .workerLicenses(licenses.stream()
-                .map(WorkerLicense::toString)
+            .workerSchedules(schedules.stream() // 근무일정
+                .map(schedule -> schedule.getSchedule().getStartTime() + schedule.getSchedule()
+                    .getEndTime())
                 .collect(Collectors.toList()))
-            .workerRegions(regions.stream()
-                .map(WorkerRegion::toString)
+            .workerConditions(conditions.stream() // 급여
+                .map(condition -> condition.getWageType() + "" + condition.getWage() + "원")
                 .collect(Collectors.toList()))
-            .workerSchedules(schedules.stream()
-                .map(WorkerSchedule::toString)
-                .collect(Collectors.toList()))
+            .license(licenses.toString())
+            .introduction(conditions.toString())
+            .memberId(worker.getMember().getMemberId())
             .build();
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 67fa96a (변경사항저장)
