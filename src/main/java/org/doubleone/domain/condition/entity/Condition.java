@@ -71,7 +71,6 @@ public class Condition extends BaseTimeEntity {
     return condition;
   }
 
-
   // 근무 조건 편집용
   public void updateCondition(int wage, Map<String, List<String>> welfares, ServiceType serviceType, Map<String, List<String>> services) {
     this.wage = wage;
