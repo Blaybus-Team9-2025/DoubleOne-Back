@@ -19,7 +19,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.license.entity.License;
-import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.doubleone.global.BaseTimeEntity;
 
@@ -38,7 +37,7 @@ public class WorkerLicense extends BaseTimeEntity {
   private Long workerLicenseId;
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-  @JoinColumn(name = "worker_contion_id", updatable = false)
+  @JoinColumn(name = "worker_condition_id", updatable = false)
   @NotNull
   @JsonIgnore
   private WorkerCondition workerCondition;

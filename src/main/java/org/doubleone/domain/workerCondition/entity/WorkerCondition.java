@@ -25,6 +25,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.worker.entity.Worker;
+import org.doubleone.domain.workerLicense.entity.WorkerLicense;
 import org.doubleone.domain.workerRegion.entity.WorkerRegion;
 import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;
 import org.doubleone.global.BaseTimeEntity;
@@ -74,13 +75,13 @@ public class WorkerCondition extends BaseTimeEntity {
   @Type(JsonType.class)
   private List<WorkPeriod> workPeriods;
 
-  @OneToMany(mappedBy = "workerLicense", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<WorkerRegion> workerLicenses;
+  @OneToMany(mappedBy = "workerCondition", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<WorkerLicense> workerLicenses;
 
   @OneToMany(mappedBy = "workerCondition", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<WorkerRegion> workerRegions;
 
-  @OneToMany(mappedBy = "workerSchedule", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "workerCondition", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<WorkerSchedule> workerSchedules;
 
   public void update(WageType wageType, int wage, String introduce, List<WorkPeriod> workPeriods) {
