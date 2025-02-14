@@ -13,17 +13,22 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.region.entity.Region;
 import org.doubleone.domain.worker.entity.Worker;
+import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.doubleone.global.BaseTimeEntity;
 
 @Entity
 @Table(name = "worker_region")
 @Getter
 @Log4j2
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class WorkerRegion extends BaseTimeEntity {
 
@@ -32,15 +37,19 @@ public class WorkerRegion extends BaseTimeEntity {
   @Column(name = "worker_region_id", updatable = false)
   private Long workerRegionId;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "worker_id", updatable = false)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @JoinColumn(name = "worker_contion_id", updatable = false)
   @NotNull
   @JsonIgnore
-  private Worker worker;
+  private WorkerCondition workerCondition;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "region_id", updatable = false)
   @NotNull
   @JsonIgnore
   private Region region;
+
+  public void updateRegion(Region region) {
+    this.region = region;
+  }
 }
