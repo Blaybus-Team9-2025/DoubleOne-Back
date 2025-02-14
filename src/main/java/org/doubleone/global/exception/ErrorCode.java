@@ -2,7 +2,6 @@ package org.doubleone.global.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
@@ -18,6 +17,7 @@ public enum ErrorCode {
 
   // Member
   MEMBER_NOT_FOUND(404, "멤버를 찾을 수 없습니다."),
+  MEMBER_ALREADY_EXIST(409, "이미 존재하는 이메일입니다."),
 
 
   // Worker
@@ -34,3 +34,4 @@ public enum ErrorCode {
   private final int status;
   private final String message;
 }
+

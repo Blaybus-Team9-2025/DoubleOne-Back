@@ -15,12 +15,15 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.doubleone.domain.manager.entity.Gender;
+import org.doubleone.domain.worker.entity.Gender;
 import org.doubleone.domain.member.entity.Member;
 import org.doubleone.global.BaseTimeEntity;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "worker")
@@ -52,6 +55,10 @@ public class Worker extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private Gender gender;
 
+  @Column(name = "birth_date", unique = true)
+  @NotNull
+  private LocalDate birthDate;
+
   @Column(name = "phone_num", unique = true)
   @NotNull
   private String phoneNum;
@@ -72,4 +79,15 @@ public class Worker extends BaseTimeEntity {
   @NotNull
   private String license;
 
+  @Builder
+  public Worker(String name, String ProfileImg, Member member, LocalDate birthDate, Gender gender, String phoneNum, String address, String license) {
+    this.name = name;
+    this.profileImg = profileImg;
+    this.member = member;
+    this.birthDate = birthDate;
+    this.gender = gender;
+    this.phoneNum = phoneNum;
+    this.address = address;
+    this.license = license;
+  }
 }
