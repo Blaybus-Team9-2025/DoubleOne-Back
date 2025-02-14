@@ -17,9 +17,17 @@ public class ManagerController {
 
     private final ManagerService managerService;
 
+    // 개인정보 수정
     @PatchMapping("/profile")
     public ResponseEntity<Void> updateProfile(@RequestBody ManagerUpdateRequestDto requestDto) {
         managerService.updateProfile(requestDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    // 센터정보 수정
+    @PatchMapping("/center-info")
+    public ResponseEntity<Void> updateCenterInfo(@RequestBody ManagerUpdateRequestDto requestDto) {
+        managerService.updateCenterInfo(requestDto);
         return ResponseEntity.noContent().build();
     }
 }
