@@ -2,6 +2,7 @@ package org.doubleone.global.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
@@ -17,25 +18,20 @@ public enum ErrorCode {
 
   // Member
   MEMBER_NOT_FOUND(404, "멤버를 찾을 수 없습니다."),
-  MEMBER_ALREADY_EXIST(409, "이미 존재하는 이메일입니다."),
+
 
   // Worker
   WORKER_NOT_FOUND(404, "요양사를 찾을 수 없습니다."),
   WORKER_CONDITION_NOT_FOUND(404, "요양사의 희망근무조건을 찾을 수 없습니다."),
-
-  // Matching
-  MATCHING_NOT_FOUND(404, "매칭을 찾을 수 없습니다."),
 
   // Chat
   CHATROOM_NOT_FOUND(404, "채팅방을 찾을 수 없습니다."),
 
   // Senior
   SENIOR_NOT_FOUND(404, "노인을 찾을 수 없습니다."),
-  SENIOR_CONDITION_NOT_FOUND(404, "노인 근무 조건을 찾을 수 없습니다."),
-
-  ;
+  INVALID_SENIOR_REQUEST(400, "잘못된 노인 정보 요청입니다."),
+  SENIOR_CONDITION_NOT_FOUND(404, "노인 근무 조건을 찾을 수 없습니다.");
 
   private final int status;
   private final String message;
 }
-

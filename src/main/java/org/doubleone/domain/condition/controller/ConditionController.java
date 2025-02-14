@@ -7,6 +7,8 @@ import org.doubleone.domain.condition.service.ConditionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/managers/conditions")
 @RequiredArgsConstructor
@@ -41,4 +43,10 @@ public class ConditionController {
         return ResponseEntity.ok(responseDto);
     }
 
+    // 목록 조회 추가
+    @GetMapping
+    public ResponseEntity<List<ConditionResponseDto>> getConditionList() {
+        List<ConditionResponseDto> conditions = conditionService.getConditionList();
+        return ResponseEntity.ok(conditions);
+    }
 }
