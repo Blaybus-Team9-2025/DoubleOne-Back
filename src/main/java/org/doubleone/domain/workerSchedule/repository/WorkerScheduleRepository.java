@@ -11,4 +11,6 @@ public interface WorkerScheduleRepository extends JpaRepository<WorkerSchedule, 
 
   Optional<WorkerSchedule> findByWorkerConditionAndSchedule(WorkerCondition workerCondition, Schedule schedule);
   List<WorkerSchedule> findByWorkerConditionIn(List<WorkerCondition> workerConditions);
+
+  List<WorkerSchedule> findByWorkerCondition(WorkerCondition workerCondition);
 }

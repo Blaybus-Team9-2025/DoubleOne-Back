@@ -43,12 +43,6 @@ public class WorkerSchedule extends BaseTimeEntity {
   private WorkerCondition workerCondition;
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "worker_id", updatable = false)
-  @NotNull
-  @JsonIgnore
-  private Worker worker;
-
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "schedule_id", updatable = false)
   @NotNull
   @JsonIgnore

@@ -12,4 +12,5 @@ public interface WorkerRegionRepository extends JpaRepository<WorkerRegion, Long
   Optional<WorkerRegion> findByWorkerConditionAndRegion(WorkerCondition workerCondition, Region region);
   List<WorkerRegion> findByWorkerConditionIn(List<WorkerCondition> workerConditions);
 
+  List<WorkerRegion> findByWorkerCondition(WorkerCondition workerCondition);
 }

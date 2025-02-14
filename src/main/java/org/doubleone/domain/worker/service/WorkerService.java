@@ -4,13 +4,12 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.worker.dto.WorkerDetailResponse;
-import org.doubleone.domain.worker.dto.WorkerUpdateRequest;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.worker.repository.WorkerRepository;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.doubleone.domain.workerCondition.repository.WorkerConditionRepository;
 import org.doubleone.domain.workerLicense.entity.WorkerLicense;
-import org.doubleone.domain.workerLicense.entity.WorkerLicenseRepository;
+import org.doubleone.domain.workerLicense.repository.WorkerLicenseRepository;
 import org.doubleone.domain.workerRegion.entity.WorkerRegion;
 import org.doubleone.domain.workerRegion.repository.WorkerRegionRepository;
 import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;
@@ -33,30 +32,27 @@ public class WorkerService {
     private final WorkerScheduleRepository workerScheduleRepository;
 
 
-    // 요양사 정보 수정
-    @Transactional
-    public void updateWorker(Long workerId, WorkerUpdateRequest request) {
-        Worker worker = workerRepository.findById(workerId)
-            .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
-        worker.updateWorkerInfo(request.getPhoneNum(), request.getAddress(),
-            request.isHasTrained(), request.isHasVehicle(), request.getLicense());
-    }
+//    // 요양사 정보 수정
+//    @Transactional
+//    public void updateWorker(Long workerId, WorkerUpdateRequest request) {
+//        Worker worker = workerRepository.findById(workerId)
+//            .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
+//        worker.updateWorkerInfo(request.getPhoneNum(), request.getAddress(),
+//            request.isHasTrained(), request.isHasVehicle(), request.getLicense());
+//    }
 
     // 요양사 상세정보 조회
     @Transactional(readOnly = true)
-    public WorkerDetailResponse getWorkerDetail(Long workerId) {
+    public WorkerDetailResponse getWorkerDetail(Long workerConditionId) {
+        WorkerCondition workerCondition = workerConditionRepository.findById(workerConditionId)
+            .orElseThrow(() -> new CustomException(ErrorCode.WORKER_CONDITION_NOT_FOUND));
+        Worker worker = workerCondition.getWorker();
 
-        Worker worker = workerRepository.findById(workerId)
-            .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
+        List<WorkerLicense> license = workerLicenseRepository.findByWorkerCondition(workerCondition);
+        List<WorkerRegion> regions = workerRegionRepository.findByWorkerCondition(workerCondition);
+        List<WorkerSchedule> schedules = workerScheduleRepository.findByWorkerCondition(workerCondition);
 
-        List<WorkerCondition> workerConditions = workerConditionRepository.findByWorker(worker);
-
-        List<WorkerCondition> conditions = workerConditionRepository.findByWorker(worker);
-        List<WorkerLicense> license = workerLicenseRepository.findByWorker(worker);
-        List<WorkerRegion> regions = workerRegionRepository.findByWorkerConditionIn(workerConditions);
-        List<WorkerSchedule> schedules = workerScheduleRepository.findByWorkerConditionIn(workerConditions);
-
-        return WorkerDetailResponse.from(worker, conditions, license, regions, schedules);
+        return WorkerDetailResponse.from(worker, workerCondition, license, regions, schedules);
     }
 
 }

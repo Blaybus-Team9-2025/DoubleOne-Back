@@ -1,6 +1,6 @@
 package org.doubleone.global.config;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.doubleone.domain.member.service.CustomOAuth2UserService;
 import org.doubleone.global.handler.OAuth2AuthenticationSuccessHandler;
 import org.doubleone.global.jwt.JwtAuthenticationFilter;
@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -31,13 +30,13 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true)
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
+    // WebSecurityCustomizer 설정 (정적 리소스 및 Swagger 관련 요청 허용)
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
@@ -47,9 +46,10 @@ public class SecurityConfig {
     }
 
     private static final String[] AUTH_WHITELIST = {
-        // whitelist
+        "/signup/**", "/login", "/token"
     };
 
+    // CORS 설정
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -57,9 +57,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList(
             "http://localhost:80800",
             "http://localhost:3000"));
-
-        configuration.setAllowedMethods(
-            Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"));
         configuration.addAllowedHeader("*");
         configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Location"));
         configuration.setAllowCredentials(true);
@@ -69,16 +67,20 @@ public class SecurityConfig {
         return source;
     }
 
+    // PasswordEncoder 설정 (BCrypt)
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // AuthenticationManager 설정
     @Bean
     public AuthenticationManager authenticationManager(
         AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
+    // SecurityFilterChain 설정 (전체 보안 설정)
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http

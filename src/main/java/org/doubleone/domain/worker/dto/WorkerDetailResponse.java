@@ -20,17 +20,15 @@ public class WorkerDetailResponse {
     private boolean hasTrained;
     private boolean hasVehicle;
     private String address;
-    private String license;
     private String introduction;
     private Long memberId;
-    private List<String> workerConditions;
     private List<String> workerLicenses;
     private List<String> workerRegions;
     private List<String> workerSchedules;
 
     public static WorkerDetailResponse from(
         Worker worker,
-        List<WorkerCondition> conditions,
+        WorkerCondition workerCondition,
         List<WorkerLicense> licenses,
         List<WorkerRegion> regions,
         List<WorkerSchedule> schedules
@@ -39,6 +37,12 @@ public class WorkerDetailResponse {
             .workerId(worker.getWorkerId()) // Id
             .name(worker.getName())  // 이름
             .gender(String.valueOf(worker.getGender())) // 성별
+            .phoneNum(worker.getPhoneNum())
+            .hasTrained(workerCondition.isHasTrained())
+            .hasVehicle(workerCondition.isHasVehicle())
+            .address(worker.getAddress())
+            .introduction(workerCondition.getIntroduce())
+            .memberId(worker.getMember().getMemberId())
             .workerRegions(regions.stream() // 지역
                 .map(region -> region.getRegion().getCity())
                 .collect(Collectors.toList()))
@@ -46,12 +50,9 @@ public class WorkerDetailResponse {
                 .map(schedule -> schedule.getSchedule().getStartTime() + schedule.getSchedule()
                     .getEndTime())
                 .collect(Collectors.toList()))
-            .workerConditions(conditions.stream() // 급여
-                .map(condition -> condition.getWageType() + "" + condition.getWage() + "원")
+            .workerLicenses(licenses.stream() // 근무일정
+                .map(license -> license.getLicense().getLicenseType() + license.getLicense().getLicenseNum())
                 .collect(Collectors.toList()))
-            .license(licenses.toString())
-            .introduction(conditions.toString())
-            .memberId(worker.getMember().getMemberId())
             .build();
     }
 }
