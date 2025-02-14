@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Senior")
 @RestController
 @RequestMapping("/seniors")
 @RequiredArgsConstructor
-@Tag(name = "Worker")
 public class SeniorController {
 
     private final SeniorService seniorService;

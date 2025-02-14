@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@RestController
 @Tag(name = "Auth")
+@RestController
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -47,7 +47,7 @@ public class AuthController {
   }
 
   @Operation(summary = "카카오 회원가입 (관리자)")
-  @PostMapping("/signup/managers")
+  @PostMapping("/signup/managers/kakao")
   public ResponseEntity<?> signupManagerForKakao(@RequestBody SignupManagerForKakaoDto requestDto) {
     authService.signUpManagerForKakao(requestDto);
     return ResponseEntity.status(HttpStatus.CREATED).build();

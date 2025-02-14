@@ -1,5 +1,6 @@
 package org.doubleone.global.config;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.doubleone.domain.member.service.CustomOAuth2UserService;
 import org.doubleone.global.handler.OAuth2AuthenticationSuccessHandler;
@@ -30,7 +31,7 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class SecurityConfig {
   private final TokenProvider tokenProvider;
   private final CustomOAuth2UserService customOAuth2UserService;

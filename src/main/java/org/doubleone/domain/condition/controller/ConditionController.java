@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Condition")
 @RestController
 @RequestMapping("/managers/conditions")
 @RequiredArgsConstructor
-@Tag(name = "Condition")
 public class ConditionController {
 
     private final ConditionService conditionService;
