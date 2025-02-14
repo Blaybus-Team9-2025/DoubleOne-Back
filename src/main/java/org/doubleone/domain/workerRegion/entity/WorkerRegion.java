@@ -36,6 +36,12 @@ public class WorkerRegion extends BaseTimeEntity {
   @Column(name = "worker_region_id", updatable = false)
   private Long workerRegionId;
 
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "worker_id", updatable = false)
+  @NotNull
+  @JsonIgnore
+  private Worker worker;
+
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "worker_contion_id", updatable = false)
   @NotNull
