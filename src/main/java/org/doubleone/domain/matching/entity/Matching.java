@@ -15,6 +15,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -26,6 +28,8 @@ import org.doubleone.global.BaseTimeEntity;
 @Table(name = "matching")
 @Getter
 @Log4j2
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Matching extends BaseTimeEntity {
 
@@ -35,7 +39,7 @@ public class Matching extends BaseTimeEntity {
   private Long matchingId;
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "condition_id", updatable = false)
+  @JoinColumn(name = "senior_condition_id", updatable = false)
   @NotNull
   @JsonIgnore
   private Condition condition;
@@ -46,7 +50,7 @@ public class Matching extends BaseTimeEntity {
   @JsonIgnore
   private WorkerCondition workerCondition;
 
-  @Column(name = "mathing_status")
+  @Column(name = "matching_status")
   @NotNull
   @Enumerated(EnumType.STRING)
   private MatchingStatus matchingStatus;
@@ -57,4 +61,8 @@ public class Matching extends BaseTimeEntity {
   private RunningStatus runningStatus;
 
 
+  public void updateStatus(MatchingStatus matchingStatus, RunningStatus runningStatus) {
+    this.matchingStatus = matchingStatus;
+    this.runningStatus = runningStatus;
+  }
 }
