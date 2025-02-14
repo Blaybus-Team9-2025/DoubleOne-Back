@@ -12,6 +12,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -21,6 +23,8 @@ import org.doubleone.global.BaseTimeEntity;
 @Table(name = "license")
 @Getter
 @Log4j2
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class License extends BaseTimeEntity {
 
@@ -33,5 +37,9 @@ public class License extends BaseTimeEntity {
   @NotNull
   @Enumerated(EnumType.STRING)
   private LicenseType licenseType;
+
+  @Column(name = "license_num")
+  @NotNull
+  private String licenseNum;
 
 }

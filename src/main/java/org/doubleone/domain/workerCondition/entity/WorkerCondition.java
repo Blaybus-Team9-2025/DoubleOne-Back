@@ -74,16 +74,19 @@ public class WorkerCondition extends BaseTimeEntity {
   @Type(JsonType.class)
   private List<WorkPeriod> workPeriods;
 
+  @OneToMany(mappedBy = "workerLicense", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<WorkerRegion> workerLicenses;
+
   @OneToMany(mappedBy = "workerCondition", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<WorkerRegion> workerRegions;
 
-  @OneToMany(mappedBy = "workerCondition", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "workerSchedule", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<WorkerSchedule> workerSchedules;
 
   public void update(WageType wageType, int wage, String introduce, List<WorkPeriod> workPeriods) {
-    this.wageType = wageType;
-    this.wage = wage;
-    this.introduce = introduce;
-    this.workPeriods = workPeriods;
+    if (wageType != null) this.wageType = wageType;
+    if (wage != 0) this.wage = wage;
+    if (introduce != null) this.introduce = introduce;
+    if (workPeriods != null) this.workPeriods = workPeriods;
   }
 }
