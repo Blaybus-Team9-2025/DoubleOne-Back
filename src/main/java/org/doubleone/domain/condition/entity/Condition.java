@@ -6,9 +6,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.workerSchedule.entity.SeniorSchedule;
@@ -19,7 +18,9 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "senior_condition")
 @Getter
+@Builder
 @Log4j2
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Condition extends BaseTimeEntity {
 
@@ -62,11 +63,6 @@ public class Condition extends BaseTimeEntity {
     condition.welfares = welfares;
     condition.serviceType = serviceType;
     condition.services = services;
-    if (seniorSchedules != null) {
-      for (SeniorSchedule schedule : seniorSchedules) {
-        schedule.setCondition(condition); // 이 부분 추가
-      }
-    }
     condition.seniorSchedules = seniorSchedules;
     return condition;
   }
