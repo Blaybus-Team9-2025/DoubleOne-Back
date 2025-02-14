@@ -4,6 +4,7 @@ package org.doubleone.domain.member.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.member.entity.Member;
+import org.doubleone.domain.member.entity.MemberType;
 import org.doubleone.domain.member.repository.MemberRepository;
 import org.doubleone.global.exception.CustomException;
 import org.doubleone.global.exception.ErrorCode;
@@ -60,6 +61,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     Member member = Member.builder()
         .email(oAuth2UserInfo.getEmail())
         .password("")
+        .memberType(MemberType.UNKNOWN)
         .build();
     return memberRepository.save(member);
   }
