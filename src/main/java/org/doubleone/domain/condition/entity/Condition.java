@@ -2,18 +2,7 @@ package org.doubleone.domain.condition.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.senior.entity.Senior;
+import org.doubleone.domain.workerSchedule.entity.SeniorSchedule;
+import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;
 import org.doubleone.global.BaseTimeEntity;
 import org.hibernate.annotations.Type;
 
@@ -47,6 +38,9 @@ public class Condition extends BaseTimeEntity {
   @NotNull
   private int wage;
 
+  @OneToMany(mappedBy = "condition", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<SeniorSchedule> seniorSchedules;
+
   @Column(name = "welfares", columnDefinition = "json")
   @Type(JsonType.class)
   private Map<String, List<String>> welfares;
@@ -61,13 +55,19 @@ public class Condition extends BaseTimeEntity {
   private Map<String, List<String>> services;
 
   // 근무 조건 등록용
-  public static Condition createCondition(Senior senior, int wage, Map<String, List<String>> welfares, ServiceType serviceType, Map<String, List<String>> services) {
+  public static Condition createCondition(Senior senior, int wage, List<SeniorSchedule> seniorSchedules, Map<String, List<String>> welfares, ServiceType serviceType, Map<String, List<String>> services) {
     Condition condition = new Condition();
     condition.senior = senior;
     condition.wage = wage;
     condition.welfares = welfares;
     condition.serviceType = serviceType;
     condition.services = services;
+    if (seniorSchedules != null) {
+      for (SeniorSchedule schedule : seniorSchedules) {
+        schedule.setCondition(condition); // 이 부분 추가
+      }
+    }
+    condition.seniorSchedules = seniorSchedules;
     return condition;
   }
 

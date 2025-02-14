@@ -28,6 +28,7 @@ public class ConditionService {
         Condition condition = Condition.createCondition(
                 senior,
                 requestDto.getWage(),
+                requestDto.getSeniorSchedules(),
                 requestDto.getWelfares(),
                 requestDto.getServiceType(),
                 requestDto.getServices()
