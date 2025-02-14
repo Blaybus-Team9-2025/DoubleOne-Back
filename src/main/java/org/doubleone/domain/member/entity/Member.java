@@ -10,12 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.global.BaseTimeEntity;
-import org.springframework.security.core.GrantedAuthority;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "member")
@@ -36,6 +30,9 @@ public class Member extends BaseTimeEntity {
   @Column(name = "password")
   private String password;
 
+  @Column(name = "profile_img", columnDefinition = "TEXT")
+  private String profileImg;
+
   @Column(name = "member_type")
   @NotNull
   @Enumerated(EnumType.STRING)
@@ -51,9 +48,9 @@ public class Member extends BaseTimeEntity {
     this.email = email;
     this.password = password;
     this.memberstatus = MemberStatus.ACTIVE;
-    this.memberType = MemberType.memberType;
+    this.memberType = memberType;
   }
-  
+
   @Builder
   public Member(String email, String password) {
     this.email = email;
@@ -62,4 +59,13 @@ public class Member extends BaseTimeEntity {
     this.memberType = MemberType.UNKNOWN;
   }
 
+  // 프로필 이미지 수정
+  public void updateProfileImg(String profileImg) {
+    this.profileImg = profileImg;
+  }
+
+  // 비밀번호 수정
+  public void updatePassword(String password) {
+    this.password = password;
+  }
 }
