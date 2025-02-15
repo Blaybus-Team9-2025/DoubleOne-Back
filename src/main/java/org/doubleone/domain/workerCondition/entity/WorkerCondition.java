@@ -1,5 +1,7 @@
 package org.doubleone.domain.workerCondition.entity;
 
+
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.CascadeType;
@@ -17,7 +19,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +26,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.worker.entity.Worker;
+import org.doubleone.domain.workerLicense.entity.WorkerLicense;
 import org.doubleone.domain.workerRegion.entity.WorkerRegion;
 import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;
 import org.doubleone.global.BaseTimeEntity;
@@ -75,15 +77,18 @@ public class WorkerCondition extends BaseTimeEntity {
   private List<WorkPeriod> workPeriods;
 
   @OneToMany(mappedBy = "workerCondition", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<WorkerLicense> workerLicenses;
+
+  @OneToMany(mappedBy = "workerCondition", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<WorkerRegion> workerRegions;
 
   @OneToMany(mappedBy = "workerCondition", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<WorkerSchedule> workerSchedules;
 
   public void update(WageType wageType, int wage, String introduce, List<WorkPeriod> workPeriods) {
-    this.wageType = wageType;
-    this.wage = wage;
-    this.introduce = introduce;
-    this.workPeriods = workPeriods;
+    if (wageType != null) this.wageType = wageType;
+    if (wage != 0) this.wage = wage;
+    if (introduce != null) this.introduce = introduce;
+    if (workPeriods != null) this.workPeriods = workPeriods;
   }
 }

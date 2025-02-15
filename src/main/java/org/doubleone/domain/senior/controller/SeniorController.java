@@ -7,6 +7,7 @@ import org.doubleone.domain.senior.dto.SeniorRequestDto;
 import org.doubleone.domain.senior.dto.SeniorResponseDto;
 import org.doubleone.domain.senior.dto.SeniorUpdateDto;
 import org.doubleone.domain.senior.service.SeniorService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +24,8 @@ public class SeniorController {
     @Operation(summary = "노인 정보 등록", description = "관리자가 노인 정보를 등록")
     @PostMapping
     public ResponseEntity<SeniorRequestDto> registerSenior(@RequestBody SeniorRequestDto seniorRequestDto) {
-        SeniorRequestDto registeredSenior = seniorService.registerSenior(seniorRequestDto);
-        return ResponseEntity.ok(registeredSenior);
+        seniorService.registerSenior(seniorRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Operation(summary = "노인 정보 편집", description = "관리자가 노인 정보를 편집")

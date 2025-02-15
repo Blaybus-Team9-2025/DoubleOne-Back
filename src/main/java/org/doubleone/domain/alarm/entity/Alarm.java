@@ -52,5 +52,4 @@ public class Alarm extends BaseTimeEntity {
   private boolean isRead;
 
 
-
 }
