@@ -1,5 +1,6 @@
 package org.doubleone.domain.workerRegion.repository;
 
+import java.util.List;
 import java.util.Optional;
 import org.doubleone.domain.region.entity.Region;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
@@ -9,4 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface WorkerRegionRepository extends JpaRepository<WorkerRegion, Long> {
 
   Optional<WorkerRegion> findByWorkerConditionAndRegion(WorkerCondition workerCondition, Region region);
+  List<WorkerRegion> findByWorkerConditionIn(List<WorkerCondition> workerConditions);
+
+  List<WorkerRegion> findByWorkerCondition(WorkerCondition workerCondition);
 }

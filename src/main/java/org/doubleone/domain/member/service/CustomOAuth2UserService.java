@@ -66,4 +66,3 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     return memberRepository.save(member);
   }
 }
-
