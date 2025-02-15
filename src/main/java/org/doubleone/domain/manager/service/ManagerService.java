@@ -23,15 +23,15 @@ public class ManagerService {
   private final MemberRepository memberRepository;
   private final PasswordEncoder passwordEncoder;
 
-  // 개인정보 수정
+
   public void updateProfile(ManagerUpdateRequestDto requestDto) {
-    Long memberId = 1L; // TODO: 실제 로그인 구현 후 변경
+    Long memberId = requestDto.getMemberId();
 
     Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
     Manager manager = managerRepository.findByMember(member)
-            .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
 
     // 프로필 이미지 수정
     if (requestDto.getProfileImg() != null) {
@@ -57,15 +57,17 @@ public class ManagerService {
     }
   }
 
-  // 센터정보 수정
+  /**
+   * 센터정보 수정
+   */
   public void updateCenterInfo(ManagerUpdateRequestDto requestDto) {
-    Long memberId = 1L; // TODO: 실제 로그인 구현 후 변경
+    Long memberId = requestDto.getMemberId(); // DTO에서 memberId 받아서 사용
 
     Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
     Manager manager = managerRepository.findByMember(member)
-            .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
 
     // 영업기간 수정
     if (requestDto.getCenterPeriod() != null) {
