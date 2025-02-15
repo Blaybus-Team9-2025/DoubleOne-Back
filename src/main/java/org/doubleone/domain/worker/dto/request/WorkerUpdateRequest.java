@@ -1,4 +1,4 @@
-package org.doubleone.domain.worker.dto;
+package org.doubleone.domain.worker.dto.request;
 
 import lombok.Getter;
 

@@ -1,9 +1,13 @@
 package org.doubleone.domain.worker.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.doubleone.domain.worker.dto.WorkerDetailResponse;
+import org.doubleone.domain.worker.dto.response.WorkerDetailResponse;
+import org.doubleone.domain.worker.dto.response.WorkerLicenseDto;
+import org.doubleone.domain.worker.dto.response.WorkerRegionDto;
+import org.doubleone.domain.worker.dto.response.WorkerScheduleDto;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.worker.repository.WorkerRepository;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
@@ -47,12 +51,17 @@ public class WorkerService {
         WorkerCondition workerCondition = workerConditionRepository.findById(workerConditionId)
             .orElseThrow(() -> new CustomException(ErrorCode.WORKER_CONDITION_NOT_FOUND));
         Worker worker = workerCondition.getWorker();
-
-        List<WorkerLicense> license = workerLicenseRepository.findByWorkerCondition(workerCondition);
-        List<WorkerRegion> regions = workerRegionRepository.findByWorkerCondition(workerCondition);
-        List<WorkerSchedule> schedules = workerScheduleRepository.findByWorkerCondition(workerCondition);
-
-        return WorkerDetailResponse.from(worker, workerCondition, license, regions, schedules);
+        List<WorkerLicenseDto> licenses = workerLicenseRepository.findByWorkerCondition(workerCondition).stream()
+            .map(WorkerLicenseDto::from)
+            .collect(Collectors.toList());
+        List<WorkerRegionDto> regions = workerRegionRepository.findByWorkerCondition(workerCondition).stream()
+            .map(WorkerRegionDto::from)
+            .collect(Collectors.toList());
+        List<WorkerScheduleDto> schedules = workerScheduleRepository.findByWorkerCondition(workerCondition).stream()
+            .map(WorkerScheduleDto::from)
+            .collect(Collectors.toList());
+        return WorkerDetailResponse.from(worker, workerCondition, licenses, regions, schedules);
     }
+
 
 }

@@ -1,4 +1,4 @@
-package org.doubleone.domain.worker.dto;
+package org.doubleone.domain.worker.dto.response;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,16 +22,16 @@ public class WorkerDetailResponse {
     private String address;
     private String introduction;
     private Long memberId;
-    private List<String> workerLicenses;
-    private List<String> workerRegions;
-    private List<String> workerSchedules;
+    private List<WorkerLicenseDto> workerLicenses;
+    private List<WorkerRegionDto> workerRegions;
+    private List<WorkerScheduleDto> workerSchedules;
 
     public static WorkerDetailResponse from(
         Worker worker,
         WorkerCondition workerCondition,
-        List<WorkerLicense> licenses,
-        List<WorkerRegion> regions,
-        List<WorkerSchedule> schedules
+        List<WorkerLicenseDto> licenses,
+        List<WorkerRegionDto> regions,
+        List<WorkerScheduleDto> schedules
     ) {
         return WorkerDetailResponse.builder()
             .workerId(worker.getWorkerId()) // Id
@@ -43,16 +43,9 @@ public class WorkerDetailResponse {
             .address(worker.getAddress())
             .introduction(workerCondition.getIntroduce())
             .memberId(worker.getMember().getMemberId())
-            .workerRegions(regions.stream() // 지역
-                .map(region -> region.getRegion().getCity())
-                .collect(Collectors.toList()))
-            .workerSchedules(schedules.stream() // 근무일정
-                .map(schedule -> schedule.getSchedule().getStartTime() + schedule.getSchedule()
-                    .getEndTime())
-                .collect(Collectors.toList()))
-            .workerLicenses(licenses.stream() // 근무일정
-                .map(license -> license.getLicense().getLicenseType() + license.getLicense().getLicenseNum())
-                .collect(Collectors.toList()))
+            .workerLicenses(licenses)
+            .workerRegions(regions)
+            .workerSchedules(schedules)
             .build();
     }
 }
