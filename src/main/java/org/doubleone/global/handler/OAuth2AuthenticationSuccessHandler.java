@@ -45,7 +45,7 @@ import java.io.IOException;
 
       // Worker, Manager 조회
       Worker worker = workerRepository.findByMember(member);
-      Manager manager = managerRepository.findByMember(member);
+      Manager manager = managerRepository.findByMember(member).orElse(null);
 
       Long workerId = (worker != null) ? worker.getWorkerId() : null;
       Long managerId = (manager != null) ? manager.getManagerId() : null;

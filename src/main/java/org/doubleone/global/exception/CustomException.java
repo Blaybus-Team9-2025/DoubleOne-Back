@@ -2,7 +2,6 @@ package org.doubleone.global.exception;
 
 import lombok.Getter;
 
-
 @Getter
 
 public class CustomException extends RuntimeException {
@@ -13,4 +12,5 @@ public class CustomException extends RuntimeException {
     super(errorCode.getMessage());
     this.errorCode = errorCode;
   }
+
 }

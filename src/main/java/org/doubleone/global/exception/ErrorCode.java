@@ -19,6 +19,8 @@ public enum ErrorCode {
   EMPTY_CLAIMS(400, "JWT 클레임이 비어있습니다."),
   LOGIN_FAIL(401, "로그인에 실패하였습니다."),
 
+  INVALID_REQUEST(400, "잘못된 요청입니다."),
+
   // Member
   MEMBER_NOT_FOUND(404, "멤버를 찾을 수 없습니다."),
   MEMBER_ALREADY_EXISTS(409, "해당 이메일을 가진 멤버가 존재합니다."),
