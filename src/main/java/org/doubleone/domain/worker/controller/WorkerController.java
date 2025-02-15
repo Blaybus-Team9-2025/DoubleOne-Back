@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.worker.dto.response.WorkerDetailResponse;
 import org.doubleone.domain.worker.dto.request.WorkerConditionRequestDto;
+import org.doubleone.domain.worker.dto.response.WorkerPreferenceDto;
 import org.doubleone.domain.worker.service.WorkerService;
 import org.doubleone.domain.workerCondition.service.WorkerConditionService;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,14 @@ public class WorkerController {
     public ResponseEntity<?> createWorkerCondition(@PathVariable("workerId") Long workerId, @RequestBody @Valid WorkerConditionRequestDto requestDto) {
       workerConditionService.createWorkerCondition(workerId, requestDto);
       return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // 희망 근무 조건 조회
+    @Operation(summary = "희망 근무 조건 조회", description = "요양사의 희망 근무 조건을 조회")
+    @GetMapping("/{workerId}/workerConditions/{workerConditionId}")
+    public ResponseEntity<WorkerPreferenceDto> readWorkerCondition(@PathVariable("workerId") Long workerId, @PathVariable Long workerConditionId){
+        WorkerPreferenceDto response = workerConditionService.readWorkerCondition(workerConditionId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Operation(summary = "희망 근무 조건 편집", description = "요양사의 희망 근무 조건을 편집")
