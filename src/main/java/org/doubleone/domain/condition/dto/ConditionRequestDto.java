@@ -2,7 +2,7 @@ package org.doubleone.domain.condition.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.doubleone.domain.condition.entity.ServiceType;
+import org.doubleone.domain.condition.entity.WorkType;
 
 import java.util.List;
 import java.util.Map;
@@ -13,6 +13,6 @@ public class ConditionRequestDto {
     private Long seniorId;
     private int wage;
     private Map<String, List<String>> welfares;
-    private ServiceType serviceType;
+    private WorkType workType;
     private Map<String, List<String>> services;
 }

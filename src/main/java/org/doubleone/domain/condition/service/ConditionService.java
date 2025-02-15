@@ -32,7 +32,7 @@ public class ConditionService {
                 senior,
                 requestDto.getWage(),
                 requestDto.getWelfares(),
-                requestDto.getServiceType(),
+                requestDto.getWorkType(),
                 requestDto.getServices()
         );
 
@@ -48,7 +48,7 @@ public class ConditionService {
         condition.updateCondition(
                 requestDto.getWage(),
                 requestDto.getWelfares(),
-                requestDto.getServiceType(),
+                requestDto.getWorkType(),
                 requestDto.getServices()
         );
     }

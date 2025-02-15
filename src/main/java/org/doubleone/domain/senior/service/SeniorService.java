@@ -24,10 +24,9 @@ public class SeniorService {
   private final SeniorRepository seniorRepository;
 
   // 등록
-  public SeniorRequestDto registerSenior(SeniorRequestDto seniorRequestDto) {
+  public void registerSenior(SeniorRequestDto seniorRequestDto) {
     Senior senior = seniorRequestDto.toEntity();
     senior = seniorRepository.save(senior);
-    return SeniorRequestDto.fromEntity(senior);
   }
 
   // 수정

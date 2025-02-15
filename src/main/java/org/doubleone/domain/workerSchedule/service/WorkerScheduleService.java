@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.schedule.entity.Schedule;
 import org.doubleone.domain.schedule.repository.ScheduleRepository;
-import org.doubleone.domain.worker.dto.request.WorkerConditionRequestDto;
 import org.doubleone.domain.worker.dto.response.WorkerScheduleDto;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;

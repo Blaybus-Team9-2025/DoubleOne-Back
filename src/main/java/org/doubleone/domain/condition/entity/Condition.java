@@ -2,7 +2,6 @@ package org.doubleone.domain.condition.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -22,6 +21,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.senior.entity.Senior;
+import org.doubleone.domain.workerCondition.entity.WorkPeriod;
 import org.doubleone.global.BaseTimeEntity;
 import org.hibernate.annotations.Type;
 
@@ -51,31 +51,35 @@ public class Condition extends BaseTimeEntity {
   @Type(JsonType.class)
   private Map<String, List<String>> welfares;
 
-  @Column(name = "service_type")
+  @Column(name = "work_type")
   @NotNull
   @Enumerated(EnumType.STRING)
-  private ServiceType serviceType;
+  private WorkType workType;
 
   @Column(name = "services", columnDefinition = "json")
   @Type(JsonType.class)
   private Map<String, List<String>> services;
 
+//  @Column(name = "services", columnDefinition = "json")
+//  @Type(JsonType.class)
+//  private List<WorkPeriod> workPeriods;
+
   // 근무 조건 등록용
-  public static Condition createCondition(Senior senior, int wage, Map<String, List<String>> welfares, ServiceType serviceType, Map<String, List<String>> services) {
+  public static Condition createCondition(Senior senior, int wage, Map<String, List<String>> welfares, WorkType workType, Map<String, List<String>> services) {
     Condition condition = new Condition();
     condition.senior = senior;
     condition.wage = wage;
     condition.welfares = welfares;
-    condition.serviceType = serviceType;
+    condition.workType = workType;
     condition.services = services;
     return condition;
   }
 
   // 근무 조건 편집용
-  public void updateCondition(int wage, Map<String, List<String>> welfares, ServiceType serviceType, Map<String, List<String>> services) {
+  public void updateCondition(int wage, Map<String, List<String>> welfares, WorkType workType, Map<String, List<String>> services) {
     this.wage = wage;
     this.welfares = welfares;
-    this.serviceType = serviceType;
+    this.workType = workType;
     this.services = services;
   }
 

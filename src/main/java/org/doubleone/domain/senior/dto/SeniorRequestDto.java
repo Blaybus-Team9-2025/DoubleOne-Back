@@ -13,8 +13,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class SeniorRequestDto {
-
-    private Long id;
     private String name;
     private String gender;
     private String birthDate;
@@ -43,7 +41,6 @@ public class SeniorRequestDto {
 
     public static SeniorRequestDto fromEntity(Senior senior) {
         SeniorRequestDto dto = new SeniorRequestDto();
-        dto.id = senior.getSeniorId();
         dto.name = senior.getName();
         dto.gender = senior.getGender().name();
         dto.birthDate = senior.getBirthDate().toString();
