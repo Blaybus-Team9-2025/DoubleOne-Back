@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.doubleone.domain.worker.dto.response.WorkerDetailResponse;
 import org.doubleone.domain.worker.dto.request.WorkerConditionRequestDto;
 import org.doubleone.domain.workerCondition.service.WorkerConditionService;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+
 @Slf4j
 @RestController
 @Tag(name = "Worker")
@@ -22,27 +24,44 @@ import java.util.List;
 @RequestMapping("/workers")
 public class WorkerController {
 
-  private final WorkerConditionService workerConditionService;
 
-  @Operation(summary = "희망 근무 조건 등록", description = "요양사의 희망 근무 조건을 등록")
-  @PostMapping("/{workerId}/workerConditions")
-  public ResponseEntity<?> createWorkerCondition(@PathVariable("workerId") Long workerId, @RequestBody @Valid WorkerConditionRequestDto requestDto) {
-    workerConditionService.createWorkerCondition(workerId, requestDto);
-    return ResponseEntity.status(HttpStatus.CREATED).build();
-  }
+    private final WorkerService workerService;
+    private final WorkerConditionService workerConditionService;
 
-  @Operation(summary = "희망 근무 조건 편집", description = "요양사의 희망 근무 조건을 편집")
-  @PatchMapping("/{workerId}/workerConditions/{workerConditionId}")
-  public ResponseEntity<?> updateWorkerCondition(@PathVariable("workerId") Long workerId, @PathVariable("workerConditionId") Long workerConditionId, @RequestBody @Valid WorkerConditionRequestDto requestDto) {
-    workerConditionService.updateWorkerCondition(workerConditionId, requestDto);
-    return ResponseEntity.status(HttpStatus.OK).build();
-  }
+    @Operation(summary = "희망 근무 조건 등록", description = "요양사의 희망 근무 조건을 등록")
+    @PostMapping("/{workerId}/workerConditions")
+    public ResponseEntity<?> createWorkerCondition(@PathVariable("workerId") Long workerId, @RequestBody @Valid WorkerConditionRequestDto requestDto) {
+      workerConditionService.createWorkerCondition(workerId, requestDto);
+      return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
-  @Operation(summary = "희망 근무 조건 삭제", description = "요양사의 희망 근무 조건을 삭제")
-  @DeleteMapping("/{workerId}/workerConditions/{workerConditionId}")
-  public ResponseEntity<?> deleteWorkerCondition(@PathVariable("workerId") Long workerId, @PathVariable("workerConditionId") Long workerConditionId) {
-    workerConditionService.deleteWorkerCondition(workerConditionId);
-    return ResponseEntity.status(HttpStatus.OK).build();
-  }
+    @Operation(summary = "희망 근무 조건 편집", description = "요양사의 희망 근무 조건을 편집")
+    @PatchMapping("/{workerId}/workerConditions/{workerConditionId}")
+    public ResponseEntity<?> updateWorkerCondition(@PathVariable("workerId") Long workerId, @PathVariable("workerConditionId") Long workerConditionId, @RequestBody @Valid WorkerConditionRequestDto requestDto) {
+      workerConditionService.updateWorkerCondition(workerConditionId, requestDto);
+      return ResponseEntity.status(HttpStatus.OK).build();
+    }
 
+    @Operation(summary = "희망 근무 조건 삭제", description = "요양사의 희망 근무 조건을 삭제")
+    @DeleteMapping("/{workerId}/workerConditions/{workerConditionId}")
+    public ResponseEntity<?> deleteWorkerCondition(@PathVariable("workerId") Long workerId, @PathVariable("workerConditionId") Long workerConditionId) {
+      workerConditionService.deleteWorkerCondition(workerConditionId);
+      return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    // 요양사 상세 정보 조회
+    @Operation(summary = "요양사 상세 정보 조회", description = "요양사 상세 정보를 조회합니다.")
+    @GetMapping("/{workerConditionId}")
+    public ResponseEntity<?> getWorkDetail(@PathVariable Long workerConditionId) {
+      WorkerDetailResponse response = workerService.getWorkerDetail(workerConditionId);
+      return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+//    @Operation(summary = "요양사 정보 수정", description = "요양사 정보를 수정합니다")
+//    @PatchMapping("/{workerId}")
+//    public ResponseEntity<String> updateWorker(@PathVariable Long workerId,
+//        @RequestBody WorkerUpdateRequest request) {
+//        workerService.updateWorker(workerId, request);
+//        return ResponseEntity.status(HttpStatus.OK).build();
+//    }
 }

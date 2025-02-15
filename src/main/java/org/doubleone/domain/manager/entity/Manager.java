@@ -1,19 +1,10 @@
 package org.doubleone.domain.manager.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -67,6 +58,49 @@ public class Manager extends BaseTimeEntity {
   @Column(name = "center_period")
   private String centerPeriod;
 
+  @Column(name = "center_message", length = 500)
+  private String centerMessage;
+
+  @Builder
+  public Manager(String name, String profileImg, Member member, String phoneNum, boolean hasTruck, String address, String centerName, String centerGrade, String centerPeriod, String centerMessage) {
+    this.name = name;
+    this.profileImg = profileImg;
+    this.member = member;
+    this.phoneNum = phoneNum;
+    this.hasTruck = hasTruck;
+    this.address = address;
+    this.centerName = centerName;
+    this.centerGrade = centerGrade;
+    this.centerPeriod = centerPeriod;
+    this.centerMessage = centerMessage;
+  }
 
 
+  public void updatePhoneNum(String phoneNum) {
+    this.phoneNum = phoneNum;
+  }
+
+  public void updateAddress(String address) {
+    this.address = address;
+  }
+
+  public void updateProfileImg(String profileImg) {
+    this.profileImg = profileImg;
+  }
+
+  public void updateCenterGrade(String centerGrade) {
+    this.centerGrade = centerGrade;
+  }
+
+  public void updateCenterPeriod(String centerPeriod) {
+    this.centerPeriod = centerPeriod;
+  }
+
+  public void updateCenterMessage(String centerMessage) {
+    this.centerMessage = centerMessage;
+  }
+
+  public void updateHasTruck(Boolean hasTruck) {
+    this.hasTruck = hasTruck;
+  }
 }

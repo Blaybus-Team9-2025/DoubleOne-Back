@@ -1,6 +1,8 @@
 package org.doubleone.domain.workerCondition.repository;
 
 import io.lettuce.core.dynamic.annotation.Param;
+import java.util.List;
+import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WorkerConditionRepository extends JpaRepository<WorkerCondition, Long> {
-//
+
     Optional<WorkerCondition> findById(Long id);
 
     @Query("SELECT DISTINCT wc.worker.workerId FROM WorkerCondition wc " +
@@ -38,4 +40,5 @@ public interface WorkerConditionRepository extends JpaRepository<WorkerCondition
             @Param("district") String district);
 
 
+    List<WorkerCondition> findByWorker(Worker worker);
 }

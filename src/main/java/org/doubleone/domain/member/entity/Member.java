@@ -1,14 +1,8 @@
 package org.doubleone.domain.member.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,6 +30,9 @@ public class Member extends BaseTimeEntity {
   @Column(name = "password")
   private String password;
 
+  @Column(name = "profile_img", columnDefinition = "TEXT")
+  private String profileImg;
+
   @Column(name = "member_type")
   @NotNull
   @Enumerated(EnumType.STRING)
@@ -47,6 +44,14 @@ public class Member extends BaseTimeEntity {
   private MemberStatus memberstatus;
 
   @Builder
+  public Member(String email, String password, MemberType memberType) {
+    this.email = email;
+    this.password = password;
+    this.memberstatus = MemberStatus.ACTIVE;
+    this.memberType = MemberType.UNKNOWN;
+  }
+
+  @Builder
   public Member(String email, String password) {
     this.email = email;
     this.password = password;
@@ -54,4 +59,13 @@ public class Member extends BaseTimeEntity {
     this.memberType = MemberType.UNKNOWN;
   }
 
+  // 프로필 이미지 수정
+  public void updateProfileImg(String profileImg) {
+    this.profileImg = profileImg;
+  }
+
+  // 비밀번호 수정
+  public void updatePassword(String password) {
+    this.password = password;
+  }
 }

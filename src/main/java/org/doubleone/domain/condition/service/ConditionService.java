@@ -13,6 +13,9 @@ import org.doubleone.global.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -27,6 +30,7 @@ public class ConditionService {
         return conditionRepository.findById(id)
                 .orElseThrow(()->new CustomException(ErrorCode.SENIOR_NOT_FOUND));
     }
+  
     // 등록
     public void createCondition(Long seniorId, ConditionRequestDto requestDto){
         Senior senior = seniorRepository.findById(seniorId)
@@ -64,5 +68,15 @@ public class ConditionService {
         Condition condition = conditionRepository.findById(conditionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_SENIOR_REQUEST));
         return ConditionResponseDto.from(condition);
+    }
+
+    // 목록 조회 (새로 추가)
+    @Transactional(readOnly = true)
+    public List<ConditionResponseDto> getConditionList() {
+        List<Condition> conditions = conditionRepository.findAll();
+
+        return conditions.stream()
+                .map(ConditionResponseDto::from)
+                .collect(Collectors.toList());
     }
 }

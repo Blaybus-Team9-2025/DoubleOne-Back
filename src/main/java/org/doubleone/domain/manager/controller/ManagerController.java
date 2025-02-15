@@ -3,8 +3,10 @@ package org.doubleone.domain.manager.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.doubleone.domain.manager.dto.ManagerUpdateRequestDto;
+import org.doubleone.domain.manager.service.ManagerService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -13,4 +15,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/managers")
 public class ManagerController {
 
+    private final ManagerService managerService;
+
+    // 개인정보 수정
+    @PatchMapping("/profile")
+    public ResponseEntity<Void> updateProfile(@RequestBody ManagerUpdateRequestDto requestDto) {
+        managerService.updateProfile(requestDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    // 센터정보 수정
+    @PatchMapping("/center-info")
+    public ResponseEntity<Void> updateCenterInfo(@RequestBody ManagerUpdateRequestDto requestDto) {
+        managerService.updateCenterInfo(requestDto);
+        return ResponseEntity.noContent().build();
+    }
 }

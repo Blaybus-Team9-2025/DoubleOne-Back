@@ -9,10 +9,10 @@ import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.doubleone.domain.workerSchedule.entity.SeniorSchedule;
+import org.doubleone.domain.condition.entity.WorkType;
 
 import java.util.List;
 import java.util.Map;
-
 
 public record ConditionRequestDto (
     int wage,
