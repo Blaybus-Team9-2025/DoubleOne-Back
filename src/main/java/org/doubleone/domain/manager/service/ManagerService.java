@@ -51,7 +51,7 @@ public class ManagerService {
     // 비밀번호 변경
     if (requestDto.getPassword() != null && requestDto.getPasswordConfirm() != null) {
       if (!requestDto.getPassword().equals(requestDto.getPasswordConfirm())) {
-        throw new CustomException(ErrorCode.INVALID_REQUEST, "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+        throw new CustomException(ErrorCode.INVALID_REQUEST);
       }
       member.updatePassword(passwordEncoder.encode(requestDto.getPassword()));
     }
