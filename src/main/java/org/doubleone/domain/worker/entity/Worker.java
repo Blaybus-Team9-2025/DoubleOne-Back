@@ -85,12 +85,22 @@ public class Worker extends BaseTimeEntity {
   @Builder
   public Worker(String name, String ProfileImg, Member member, LocalDate birthDate, org.doubleone.domain.worker.entity.Gender gender, String phoneNum, String address, String license) {
       this.name = name;
-      this.profileImg = profileImg;
+      this.profileImg = ProfileImg;
       this.member = member;
       this.birthDate = birthDate;
       this.gender = gender;
       this.phoneNum = phoneNum;
       this.address = address;
+      this.license = license;
+  }
+
+  // 기본 정보 수정
+  public void updateWorker(String ProfileImg, String phoneNum, String address, boolean hasVehicle, boolean hasTrained, String license) {
+      this.profileImg = ProfileImg;
+      this.phoneNum = phoneNum;
+      this.address = address;
+      this.hasVehicle = hasVehicle;
+      this.hasTrained = hasTrained;
       this.license = license;
   }
 }
