@@ -14,8 +14,10 @@ import org.doubleone.domain.member.dto.response.TokenResponseDto;
 import org.doubleone.domain.member.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -64,5 +66,11 @@ public class AuthController {
   @PostMapping("/login")
   public ResponseEntity<?> signIn(@RequestBody LoginRequestDto loginRequestDto) {
     return ResponseEntity.status(HttpStatus.OK).body(authService.login(loginRequestDto));
+  }
+
+  @Operation(summary = "센터 정보 확인", description = "기업 회원가입 특정 키워드로 검색해 센터 정보 확인")
+  @GetMapping("/center")
+  public ResponseEntity<?> getCentersByKeyword(@RequestParam String keyword) {
+    return ResponseEntity.ok(authService.getCentersByKeyword(keyword));
   }
 }
