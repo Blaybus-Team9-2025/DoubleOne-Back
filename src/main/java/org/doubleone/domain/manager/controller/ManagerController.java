@@ -5,8 +5,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.manager.dto.ManagerUpdateRequestDto;
 import org.doubleone.domain.manager.dto.SeniorMatchingResponseDto;
+import org.doubleone.domain.manager.dto.ManagerProfileUpdateRequestDto;
 import org.doubleone.domain.manager.service.ManagerService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +25,12 @@ public class ManagerController {
 
     // 개인정보 수정
     @PatchMapping("/profile")
-    public ResponseEntity<Void> updateProfile(@RequestBody ManagerUpdateRequestDto requestDto) {
-        managerService.updateProfile(requestDto);
+    public ResponseEntity<Void> updateProfile(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody ManagerProfileUpdateRequestDto requestDto
+    ) {
+        String managerEmail = userDetails.getUsername();
+        managerService.updateProfile(managerEmail, requestDto);
         return ResponseEntity.noContent().build();
     }
 
