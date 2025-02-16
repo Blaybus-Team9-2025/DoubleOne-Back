@@ -26,12 +26,6 @@ public class WorkerConditionService {
   private final WorkerRegionService workerRegionService;
   private final WorkerLicenseService workerLicenseService;
 
-  @Transactional(readOnly = true)
-  public WorkerCondition getWorkerConditionById(Long id) {
-    return workerConditionRepository.findById(id)
-            .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
-  }
-
   public void createWorkerCondition(Long workerId, WorkerConditionRequestDto requestDto) {
     Worker worker = workerRepository.findById(workerId)
         .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));

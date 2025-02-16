@@ -2,17 +2,25 @@ package org.doubleone.domain.condition.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import jakarta.persistence.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
-
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.senior.entity.Senior;
-import org.doubleone.domain.workerSchedule.entity.SeniorSchedule;
-import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;
 import org.doubleone.domain.workerCondition.entity.WorkPeriod;
 import org.doubleone.global.BaseTimeEntity;
 import org.hibernate.annotations.Type;
@@ -20,9 +28,7 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "senior_condition")
 @Getter
-@Builder
 @Log4j2
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Condition extends BaseTimeEntity {
 
@@ -40,9 +46,6 @@ public class Condition extends BaseTimeEntity {
   @Column(name = "wage")
   @NotNull
   private int wage;
-
-  @OneToMany(mappedBy = "condition", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<SeniorSchedule> seniorSchedules;
 
   @Column(name = "welfares", columnDefinition = "json")
   @Type(JsonType.class)
@@ -62,14 +65,13 @@ public class Condition extends BaseTimeEntity {
 //  private List<WorkPeriod> workPeriods;
 
   // 근무 조건 등록용
-  public static Condition createCondition(Senior senior, int wage, List<SeniorSchedule> seniorSchedules, Map<String, List<String>> welfares, ServiceType serviceType, Map<String, List<String>> services) {
+  public static Condition createCondition(Senior senior, int wage, Map<String, List<String>> welfares, WorkType workType, Map<String, List<String>> services) {
     Condition condition = new Condition();
     condition.senior = senior;
     condition.wage = wage;
     condition.welfares = welfares;
     condition.workType = workType;
     condition.services = services;
-    condition.seniorSchedules = seniorSchedules;
     return condition;
   }
 
