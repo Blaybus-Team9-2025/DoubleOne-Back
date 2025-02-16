@@ -6,10 +6,17 @@ import lombok.RequiredArgsConstructor;
 import org.doubleone.domain.senior.dto.SeniorRequestDto;
 import org.doubleone.domain.senior.dto.SeniorResponseDto;
 import org.doubleone.domain.senior.dto.SeniorUpdateDto;
+import org.doubleone.domain.senior.entity.Senior;
+import org.doubleone.domain.senior.repository.SeniorRepository;
 import org.doubleone.domain.senior.service.SeniorService;
+import org.doubleone.domain.worker.service.WorkerService;
+import org.doubleone.domain.workerCondition.entity.WorkerCondition;
+import org.doubleone.domain.workerCondition.service.WorkerConditionService;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -20,6 +27,10 @@ import java.util.List;
 public class SeniorController {
 
     private final SeniorService seniorService;
+    private final WorkerService workerService;
+    private final SeniorRepository seniorRepository;
+    private final WorkerConditionService workerConditionService;
+
 
     @Operation(summary = "노인 정보 등록", description = "관리자가 노인 정보를 등록")
     @PostMapping
@@ -69,5 +80,24 @@ public class SeniorController {
     ) {
         List<SeniorResponseDto> seniors = seniorService.getSeniorListWithFilter(name, age, gender, region);
         return ResponseEntity.ok(seniors);
+    }
+
+    //매칭된 요양사 아이디 가져오기
+    @GetMapping("/match/{seniorId}")
+    public ResponseEntity<List<Long>> findWorkersBySenior(@PathVariable Long seniorId) {
+        // Senior 엔티티를 가져옴 (SeniorRepository는 기존에 있다고 가정)
+        Senior senior = seniorRepository.findById(seniorId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Senior not found"));
+
+        // Worker ID 리스트 조회
+        List<Long> workerIds = workerService.getWorkerIdsBySeniorAddress(senior);
+
+        return ResponseEntity.ok(workerIds);
+    }
+
+    //매칭된 요양사의 구인정보
+    @GetMapping("/match/worker/{workerId}")
+    public WorkerCondition getWorkerCondition(@PathVariable Long workerId) {
+        return workerConditionService.getWorkerConditionById(workerId);
     }
 }
