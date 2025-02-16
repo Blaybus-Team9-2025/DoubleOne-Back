@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jdk-focal
+FROM --platform=linux/amd64 eclipse-temurin:17-jdk-focal
 
 ARG JAR_FILE=build/libs/*.jar
 
