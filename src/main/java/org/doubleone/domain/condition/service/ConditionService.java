@@ -7,6 +7,7 @@ import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.condition.repository.ConditionRepository;
 import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.senior.repository.SeniorRepository;
+import org.doubleone.domain.workerSchedule.service.SeniorScheduleService;
 import org.doubleone.global.exception.CustomException;
 import org.doubleone.global.exception.ErrorCode;
 import org.springframework.stereotype.Service;
@@ -22,36 +23,36 @@ public class ConditionService {
 
     private final ConditionRepository conditionRepository;
     private final SeniorRepository seniorRepository;
+    private final SeniorScheduleService seniorScheduleService;
 
+    @Transactional(readOnly = true)
+    public Condition getSeniorConditionById(Long id){
+        return conditionRepository.findById(id)
+                .orElseThrow(()->new CustomException(ErrorCode.SENIOR_NOT_FOUND));
+    }
+  
     // 등록
-    public Long createCondition(ConditionRequestDto requestDto) {
-        Senior senior = seniorRepository.findById(requestDto.getSeniorId())
-                .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_NOT_FOUND));
-
-        Condition condition = Condition.createCondition(
-                senior,
-                requestDto.getWage(),
-                requestDto.getWelfares(),
-                requestDto.getWorkType(),
-                requestDto.getServices()
-        );
-
-        conditionRepository.save(condition);
-        return condition.getSeniorConditionId();
+    public void createCondition(Long seniorId, ConditionRequestDto requestDto){
+        Senior senior = seniorRepository.findById(seniorId)
+                .orElseThrow(()->new CustomException(ErrorCode.SENIOR_NOT_FOUND));
+        Condition condition = conditionRepository.save(requestDto.toEntity(senior));
+        if(requestDto.seniorSchedules()!=null && !requestDto.seniorSchedules().isEmpty()){
+            requestDto.seniorSchedules().forEach(scheduleDto ->
+                    seniorScheduleService.createSeniorSchedule(condition, scheduleDto));
+        }
     }
 
-    // 수정
-    public void updateCondition(Long conditionId, ConditionRequestDto requestDto) {
-        Condition condition = conditionRepository.findById(conditionId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_SENIOR_REQUEST));
+     //수정
+     public void updateCondition(Long seniorConditionId, ConditionRequestDto requestDto){
+         Condition condition = conditionRepository.findById(seniorConditionId)
+                 .orElseThrow(()->new CustomException(ErrorCode.SENIOR_NOT_FOUND));
+         condition.updateCondition(requestDto.wage(), requestDto.welfares(), requestDto.serviceType(), requestDto.services());
+         if(requestDto.seniorSchedules()!=null && !requestDto.seniorSchedules().isEmpty()){
+             requestDto.seniorSchedules().forEach(scheduleDto ->
+                     seniorScheduleService.update(condition, scheduleDto));
+         }
+     }
 
-        condition.updateCondition(
-                requestDto.getWage(),
-                requestDto.getWelfares(),
-                requestDto.getWorkType(),
-                requestDto.getServices()
-        );
-    }
 
     // 삭제
     public void deleteCondition(Long conditionId) {
