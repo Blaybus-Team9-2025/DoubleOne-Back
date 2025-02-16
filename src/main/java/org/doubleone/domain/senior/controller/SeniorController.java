@@ -6,10 +6,17 @@ import lombok.RequiredArgsConstructor;
 import org.doubleone.domain.senior.dto.SeniorRequestDto;
 import org.doubleone.domain.senior.dto.SeniorResponseDto;
 import org.doubleone.domain.senior.dto.SeniorUpdateDto;
+import org.doubleone.domain.senior.entity.Senior;
+import org.doubleone.domain.senior.repository.SeniorRepository;
 import org.doubleone.domain.senior.service.SeniorService;
+import org.doubleone.domain.worker.dto.response.WorkerMatchResponseDto;
+import org.doubleone.domain.worker.service.WorkerMatchService;
+import org.doubleone.global.exception.CustomException;
+import org.doubleone.global.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -20,6 +27,8 @@ import java.util.List;
 public class SeniorController {
 
     private final SeniorService seniorService;
+    private final SeniorRepository seniorRepository;
+    private final WorkerMatchService workerMatchService;
 
     @Operation(summary = "노인 정보 등록", description = "관리자가 노인 정보를 등록")
     @PostMapping
@@ -70,4 +79,14 @@ public class SeniorController {
         List<SeniorResponseDto> seniors = seniorService.getSeniorListWithFilter(name, age, gender, region);
         return ResponseEntity.ok(seniors);
     }
+
+    @Operation(summary = "매칭된 요양사 확인")
+    @GetMapping("/match/{seniorId}")
+    public ResponseEntity<WorkerMatchResponseDto> findMatchedWorkers(@PathVariable Long seniorId)
+    {
+        WorkerMatchResponseDto responseList = workerMatchService.findWorkersBySenior(seniorId);
+        return ResponseEntity.ok(responseList);
+
+    }
+
 }

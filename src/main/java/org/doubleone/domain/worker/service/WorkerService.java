@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.worker.dto.response.WorkerDetailResponse;
 import org.doubleone.domain.worker.dto.response.WorkerLicenseDto;
 import org.doubleone.domain.worker.dto.response.WorkerRegionDto;
@@ -35,6 +36,14 @@ public class WorkerService {
     private final WorkerRegionRepository workerRegionRepository;
     private final WorkerScheduleRepository workerScheduleRepository;
 
+    //매칭된 요양사 찾기
+    public List<WorkerCondition> getMatchedWorkerBySenior(Senior senior) {
+        String[] addressParts = senior.getAddress().split(" ");
+        String district = addressParts[addressParts.length - 2]; // "강남구"
+        String neighborhood = addressParts[addressParts.length - 1]; // "역삼동"
+
+        return workerConditionRepository.findWorkerByMatchingSchedule(neighborhood, district);
+    }
 
 //    // 요양사 정보 수정
 //    @Transactional
