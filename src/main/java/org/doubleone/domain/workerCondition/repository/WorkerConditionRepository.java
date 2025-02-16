@@ -19,19 +19,17 @@ public interface WorkerConditionRepository extends JpaRepository<WorkerCondition
             "JOIN wc.workerSchedules ws " +
             "JOIN ws.schedule wsch " +
             "LEFT JOIN SeniorSchedule ss ON wsch.day = ss.schedule.day " +
-            "LEFT JOIN ss.condition sc " +
-            "LEFT JOIN sc.seniorSchedules ssch " +
-            "LEFT JOIN ssch.schedule sschd " +
+            "LEFT JOIN ss.schedule sschd " +
             "WHERE wc.hasTrained = true " +
             "ORDER BY " +
             "   CASE " +
             "       WHEN r.district = :district AND r.neighborhood = :neighborhood THEN 1 " +
             "       WHEN r.district = :district AND r.neighborhood <> :neighborhood THEN 2 " +
             "       WHEN r.district = :district AND " +
-            "            (COALESCE(wsch.startTime, '00:00:00') > COALESCE(sschd.endTime, '00:00:00') OR " +
-            "             COALESCE(wsch.endTime, '00:00:00') < COALESCE(sschd.startTime, '00:00:00')) THEN 3 " +
+            "            (FUNCTION('STR_TO_DATE', wsch.startTime, '%H:%i:%s') > FUNCTION('STR_TO_DATE', sschd.endTime, '%H:%i:%s') OR " +
+            "             FUNCTION('STR_TO_DATE', wsch.endTime, '%H:%i:%s') < FUNCTION('STR_TO_DATE', sschd.startTime, '%H:%i:%s')) THEN 3 " +
             "       ELSE 4 " +
-            "   END, wc.worker.workerId ASC")
+            "   END, wc.workerConditionId ASC")
     List<WorkerCondition> findWorkerByMatchingSchedule(
             @Param("neighborhood") String neighborhood,
             @Param("district") String district);

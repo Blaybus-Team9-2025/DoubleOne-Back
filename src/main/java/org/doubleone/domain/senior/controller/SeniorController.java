@@ -82,9 +82,9 @@ public class SeniorController {
 
     @Operation(summary = "매칭된 요양사 확인")
     @GetMapping("/match/{seniorId}")
-    public ResponseEntity<List<WorkerMatchResponseDto>> findMatchedWorkers(@PathVariable Long seniorId)
+    public ResponseEntity<WorkerMatchResponseDto> findMatchedWorkers(@PathVariable Long seniorId)
     {
-        List<WorkerMatchResponseDto> responseList = workerMatchService.findWorkersBySenior(seniorId);
+        WorkerMatchResponseDto responseList = workerMatchService.findWorkersBySenior(seniorId);
         return ResponseEntity.ok(responseList);
 
     }

@@ -2,10 +2,14 @@ package org.doubleone.domain.worker.service;
 
 import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.senior.repository.SeniorRepository;
+import org.doubleone.domain.worker.dto.WorkPeriodDto;
+import org.doubleone.domain.worker.dto.WorkerDetailDto;
 import org.doubleone.domain.worker.dto.response.WorkerMatchResponseDto;
 import org.doubleone.domain.worker.dto.response.WorkerRegionDto;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
+import org.doubleone.global.exception.CustomException;
+import org.doubleone.global.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,34 +30,42 @@ public class WorkerMatchService {
         this.seniorRepository = seniorRepository;
     }
 
-    public List<WorkerMatchResponseDto> findWorkersBySenior(Long seniorId) {
+    public WorkerMatchResponseDto findWorkersBySenior(Long seniorId) {
         Senior senior = seniorRepository.findById(seniorId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Senior not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_NOT_FOUND));
 
         List<WorkerCondition> workerConditions = workerService.getMatchedWorkerBySenior(senior);
-        return workerConditions.stream().map(workerCondition -> {
+        List<WorkerDetailDto> workers = workerConditions.stream().map(workerCondition -> {
             Worker worker = workerCondition.getWorker();
-            String workerName = (worker != null) ? worker.getName() : "Unknown";
-
             List<WorkerRegionDto> regionDtos = (workerCondition.getWorkerRegions() != null) ? workerCondition.getWorkerRegions().stream()
                     .map(region -> WorkerRegionDto.builder()
                             .city(region.getRegion().getCity())
-                            .district(region.getRegion().getDistrict())
+                            .district(region.getRegion().getCity())
                             .neighborhood(region.getRegion().getNeighborhood())
                             .build()
-                    ).collect(Collectors.toList()) : Collections.emptyList();
+                    ).collect(Collectors.toList()) : List.of();
 
-            String organization = (workerCondition.getWorkPeriods() != null && !workerCondition.getWorkPeriods().isEmpty()) ?
-                    workerCondition.getWorkPeriods().get(0).getOrganization() : null;
+            List<WorkPeriodDto> workPeriods = (workerCondition.getWorkPeriods() != null) ? workerCondition.getWorkPeriods().stream()
+                    .map(workPeriod -> new WorkPeriodDto(
+                            workPeriod.getTitle(),
+                            workPeriod.getOrganization(),
+                            workPeriod.isCurrent(),
+                            workPeriod.getStartDate(),
+                            workPeriod.getEndDate()
+                    )).collect(Collectors.toList()) : List.of();
 
-            return WorkerMatchResponseDto.builder()
-                    .workerId(worker != null ? worker.getWorkerId() : null)
-                    .workerName(workerName)
+            return WorkerDetailDto.builder()
+                    .workerId(worker.getWorkerId())
+                    .workerName(worker.getName())
                     .workerRegions(regionDtos)
-                    .organization(organization)
-                    .seniorAddress(senior.getAddress())
-                    .seniorName(senior.getName())
+                    .workPeriods(workPeriods)
                     .build();
         }).collect(Collectors.toList());
+
+        return WorkerMatchResponseDto.builder()
+                .seniorName(senior.getName())
+                .seniorAddress(senior.getAddress())
+                .workers(workers)
+                .build();
     }
 }
