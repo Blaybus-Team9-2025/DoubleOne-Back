@@ -61,6 +61,18 @@ public class Manager extends BaseTimeEntity {
   @Column(name = "center_message", length = 500)
   private String centerMessage;
 
+  @Column(name = "is_active")
+  private Boolean isActive;
+
+
+  // isactive가 null로 들어가는 문제 방지
+  @PrePersist
+  public void prePersist() {
+    if (isActive == null) {
+      isActive = true;
+    }
+  }
+
   @Builder
   public Manager(String name, String profileImg, Member member, String phoneNum, boolean hasTruck, String address, String centerName, String centerGrade, String centerPeriod, String centerMessage) {
     this.name = name;
@@ -73,8 +85,8 @@ public class Manager extends BaseTimeEntity {
     this.centerGrade = centerGrade;
     this.centerPeriod = centerPeriod;
     this.centerMessage = centerMessage;
+    this.isActive = true;
   }
-
 
   public void updatePhoneNum(String phoneNum) {
     this.phoneNum = phoneNum;
@@ -102,5 +114,10 @@ public class Manager extends BaseTimeEntity {
 
   public void updateHasTruck(Boolean hasTruck) {
     this.hasTruck = hasTruck;
+  }
+
+  // 회원탈퇴 처리
+  public void withdraw() {
+    this.isActive = false;
   }
 }

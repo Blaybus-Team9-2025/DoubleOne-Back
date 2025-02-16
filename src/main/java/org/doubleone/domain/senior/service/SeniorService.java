@@ -23,13 +23,11 @@ public class SeniorService {
 
   private final SeniorRepository seniorRepository;
 
-  // 등록
   public void registerSenior(SeniorRequestDto seniorRequestDto) {
     Senior senior = seniorRequestDto.toEntity();
-    senior = seniorRepository.save(senior);
+    seniorRepository.save(senior);
   }
 
-  // 수정
   public SeniorRequestDto updateSenior(Long seniorId, SeniorUpdateDto seniorUpdateDto) {
     Senior senior = seniorRepository.findById(seniorId)
             .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_NOT_FOUND));
@@ -37,6 +35,7 @@ public class SeniorService {
     senior.update(
             CareLevel.valueOf(seniorUpdateDto.getCareLevel().toUpperCase()),
             seniorUpdateDto.getAddress(),
+            seniorUpdateDto.getDetailedAddress(),
             seniorUpdateDto.getProfileImg(),
             seniorUpdateDto.getEtcDisease()
     );
@@ -44,7 +43,6 @@ public class SeniorService {
     return SeniorRequestDto.fromEntity(senior);
   }
 
-  // 삭제
   public void deleteSenior(Long seniorId) {
     if (!seniorRepository.existsById(seniorId)) {
       throw new CustomException(ErrorCode.SENIOR_NOT_FOUND);
@@ -52,17 +50,13 @@ public class SeniorService {
     seniorRepository.deleteById(seniorId);
   }
 
-  // 목록 조회
   @Transactional(readOnly = true)
   public List<SeniorResponseDto> getSeniorList() {
-    List<Senior> seniors = seniorRepository.findAll();
-
-    return seniors.stream()
+    return seniorRepository.findAll().stream()
             .map(SeniorResponseDto::new)
             .collect(Collectors.toList());
   }
 
-  // 상세 조회
   @Transactional(readOnly = true)
   public SeniorResponseDto getSeniorDetail(Long seniorId) {
     Senior senior = seniorRepository.findById(seniorId)
@@ -70,22 +64,14 @@ public class SeniorService {
     return new SeniorResponseDto(senior);
   }
 
-  // 필터 조회
   @Transactional(readOnly = true)
   public List<SeniorResponseDto> getSeniorListWithFilter(String name, Integer age, String gender, String region) {
-    List<Senior> seniors = seniorRepository.findAll().stream()
+    return seniorRepository.findAll().stream()
             .filter(senior -> name == null || senior.getName().contains(name))
-            .filter(senior -> age == null || calculateAge(senior.getBirthDate()) == age)
+            .filter(senior -> age == null || LocalDate.now().getYear() - senior.getBirthDate().getYear() == age)
             .filter(senior -> gender == null || senior.getGender().name().equalsIgnoreCase(gender))
             .filter(senior -> region == null || senior.getAddress().contains(region))
-            .collect(Collectors.toList());
-
-    return seniors.stream()
             .map(SeniorResponseDto::new)
             .collect(Collectors.toList());
-  }
-
-  private int calculateAge(LocalDate birthDate) {
-    return LocalDate.now().getYear() - birthDate.getYear();
   }
 }
