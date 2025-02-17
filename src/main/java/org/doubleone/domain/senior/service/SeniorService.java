@@ -9,12 +9,14 @@ import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.senior.repository.SeniorRepository;
 import org.doubleone.global.exception.CustomException;
 import org.doubleone.global.exception.ErrorCode;
+import org.doubleone.global.utils.S3Util;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -22,27 +24,41 @@ import java.util.stream.Collectors;
 public class SeniorService {
 
   private final SeniorRepository seniorRepository;
+  private final S3Util s3Util;
 
-  public void registerSenior(SeniorRequestDto seniorRequestDto) {
-    Senior senior = seniorRequestDto.toEntity();
+  // 등록
+  public void registerSenior(MultipartFile imgFile, SeniorRequestDto seniorRequestDto) {
+    Senior senior;
+    if (imgFile != null){
+      senior = seniorRequestDto.toEntity(s3Util.uploadImage(imgFile, "profile/senior"));
+    }
+    else{
+      senior = seniorRequestDto.toEntity(null);
+    }
     seniorRepository.save(senior);
   }
 
-  public SeniorRequestDto updateSenior(Long seniorId, SeniorUpdateDto seniorUpdateDto) {
+  // 수정
+  public SeniorRequestDto updateSenior(MultipartFile imgFile, Long seniorId, SeniorUpdateDto seniorUpdateDto) {
     Senior senior = seniorRepository.findById(seniorId)
             .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_NOT_FOUND));
+
+    if (imgFile != null){
+      if (senior.getProfileImg() != null) {
+        s3Util.deleteImage(senior.getProfileImg());}
+      senior.updateProfileImg(s3Util.uploadImage(seniorUpdateDto.getProfileImg(), "profile/senior"));
+    }
 
     senior.update(
             CareLevel.valueOf(seniorUpdateDto.getCareLevel().toUpperCase()),
             seniorUpdateDto.getAddress(),
-            seniorUpdateDto.getDetailedAddress(),
-            seniorUpdateDto.getProfileImg(),
             seniorUpdateDto.getEtcDisease()
     );
 
     return SeniorRequestDto.fromEntity(senior);
   }
 
+  // 삭제
   public void deleteSenior(Long seniorId) {
     if (!seniorRepository.existsById(seniorId)) {
       throw new CustomException(ErrorCode.SENIOR_NOT_FOUND);
@@ -50,6 +66,7 @@ public class SeniorService {
     seniorRepository.deleteById(seniorId);
   }
 
+  // 목록 조회
   @Transactional(readOnly = true)
   public List<SeniorResponseDto> getSeniorList() {
     return seniorRepository.findAll().stream()
@@ -57,6 +74,7 @@ public class SeniorService {
             .collect(Collectors.toList());
   }
 
+  // 상세 조회
   @Transactional(readOnly = true)
   public SeniorResponseDto getSeniorDetail(Long seniorId) {
     Senior senior = seniorRepository.findById(seniorId)
@@ -64,6 +82,7 @@ public class SeniorService {
     return new SeniorResponseDto(senior);
   }
 
+  // 필터 조회
   @Transactional(readOnly = true)
   public List<SeniorResponseDto> getSeniorListWithFilter(String name, Integer age, String gender, String region) {
     return seniorRepository.findAll().stream()

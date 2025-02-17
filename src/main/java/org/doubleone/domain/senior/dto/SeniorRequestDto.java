@@ -19,27 +19,25 @@ public class SeniorRequestDto {
     private String careLevel;
     private int weight;
     private String address;
-    private String detailedAddress;
-    private String profileImg;
+//    private String profileImg;
     private String cohabitationStatus;
-    private List<String> dementiaSymptoms;
+    private String dementiaSymptoms;
     private String etcDisease;
+    private String detailedAddress;
     private String zipCode;
 
-    public Senior toEntity() {
+    public Senior toEntity(String profileImg) {
         return Senior.builder()
-                .name(name)
-                .gender(Gender.valueOf(gender.toUpperCase()))
-                .birthDate(LocalDate.parse(birthDate))
-                .careLevel(CareLevel.valueOf(careLevel.toUpperCase()))
-                .weight(weight)
-                .address(address)
-                .detailedAddress(detailedAddress)
-                .profileImg(profileImg)
-                .cohabitationStatus(CohabitationStatus.valueOf(cohabitationStatus.toUpperCase()))
-                .dementiaSymptoms(dementiaSymptoms)
-                .etcDisease(etcDisease)
-                .zipCode(zipCode)
+                .name(this.name)
+                .gender(Gender.valueOf(this.gender.toUpperCase()))
+                .birthDate(LocalDate.parse(this.birthDate))
+                .careLevel(CareLevel.valueOf(this.careLevel.toUpperCase()))
+                .weight(this.weight)
+                .address(this.address)
+                .profileImg(null)
+                .cohabitationStatus(CohabitationStatus.valueOf(this.cohabitationStatus.toUpperCase()))
+                .dementiaSymptoms(List.of(this.dementiaSymptoms.split(",")))
+                .etcDisease(this.etcDisease)
                 .build();
     }
 
@@ -52,9 +50,9 @@ public class SeniorRequestDto {
         dto.weight = senior.getWeight();
         dto.address = senior.getAddress();
         dto.detailedAddress = senior.getDetailedAddress();
-        dto.profileImg = senior.getProfileImg();
+//        dto.profileImg = senior.getProfileImg();
         dto.cohabitationStatus = senior.getCohabitationStatus().name();
-        dto.dementiaSymptoms = senior.getDementiaSymptoms();
+        dto.dementiaSymptoms = senior.getDementiaSymptoms().toString();
         dto.etcDisease = senior.getEtcDisease();
         dto.zipCode = senior.getZipCode();
         return dto;

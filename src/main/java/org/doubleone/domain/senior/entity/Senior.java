@@ -1,6 +1,5 @@
 package org.doubleone.domain.senior.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -78,11 +77,15 @@ public class Senior extends BaseTimeEntity {
   private String zipCode = "";
 
 
-  public void update(CareLevel careLevel, String address, String detailedAddress, String profileImg, String etcDisease) {
+  public void update(CareLevel careLevel, String address, String detailedAddress) {
     if (careLevel != null) this.careLevel = careLevel;
     if (address != null) this.address = address;
     if (detailedAddress != null) this.detailedAddress = detailedAddress;
     if (profileImg != null) this.profileImg = profileImg;
     if (etcDisease != null) this.etcDisease = etcDisease;
+  }
+
+  public void updateProfileImg(String profileImg) {
+    this.profileImg = profileImg;
   }
 }
