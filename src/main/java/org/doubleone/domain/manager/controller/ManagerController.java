@@ -1,20 +1,18 @@
 package org.doubleone.domain.manager.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.doubleone.domain.manager.dto.CenterUpdateRequestDto;
-import org.doubleone.domain.manager.dto.ManagerProfileUpdateRequestDto;
 import org.doubleone.domain.manager.dto.ManagerUpdateRequestDto;
 import org.doubleone.domain.manager.dto.SeniorMatchingResponseDto;
+import org.doubleone.domain.manager.dto.ManagerProfileUpdateRequestDto;
 import org.doubleone.domain.manager.service.ManagerService;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Slf4j
 @RestController
