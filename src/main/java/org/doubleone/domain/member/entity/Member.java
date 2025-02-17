@@ -22,14 +22,8 @@ public class Member extends BaseTimeEntity {
   @Column(name = "email", unique = true)
   private String email;
 
-  @Column(name = "phone_num", unique = true)
-  private String phoneNum;
-
   @Column(name = "password")
   private String password;
-
-  @Column(name = "profile_img", columnDefinition = "TEXT")
-  private String profileImg;
 
   @Column(name = "member_type")
   @NotNull
@@ -60,17 +54,11 @@ public class Member extends BaseTimeEntity {
     this.memberType = MemberType.UNKNOWN;
   }
 
-  public void updateProfileImg(String profileImg) {
-    this.profileImg = profileImg;
-  }
 
   public void updatePassword(String password) {
     this.password = password;
   }
 
-  public void updatePhoneNum(String phoneNum) {
-    this.phoneNum = phoneNum;
-  }
 
   public void updateAddress(String address) {
     this.address = address;

@@ -2,6 +2,7 @@ package org.doubleone.domain.senior.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.doubleone.domain.senior.dto.SeniorRequestDto;
 import org.doubleone.domain.senior.dto.SeniorResponseDto;
@@ -34,20 +35,16 @@ public class SeniorController {
 
     @Operation(summary = "노인 정보 등록", description = "관리자가 노인 정보를 등록")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SeniorRequestDto> registerSenior(@RequestPart(required = false) MultipartFile imgFile, @RequestBody SeniorRequestDto seniorRequestDto) {
-        seniorService.registerSenior(imgFile, seniorRequestDto);
+    public ResponseEntity<SeniorRequestDto> registerSenior(@Valid @ModelAttribute SeniorRequestDto seniorRequestDto) {
+        seniorService.registerSenior(seniorRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Operation(summary = "노인 정보 편집", description = "관리자가 노인 정보를 편집")
     @PatchMapping(value = "/{seniorId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SeniorRequestDto> updateSenior(
-            @RequestPart(required = false) MultipartFile imgFile,
-            @PathVariable Long seniorId,
-            @RequestBody SeniorUpdateDto seniorUpdateDto
-    ) {
-        SeniorRequestDto updatedSenior = seniorService.updateSenior(imgFile, seniorId, seniorUpdateDto);
-        return ResponseEntity.ok(updatedSenior);
+    public ResponseEntity<SeniorRequestDto> updateSenior(@Valid @ModelAttribute SeniorUpdateDto seniorUpdateDto) {
+        seniorService.updateSenior(seniorUpdateDto);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "노인 정보 삭제")

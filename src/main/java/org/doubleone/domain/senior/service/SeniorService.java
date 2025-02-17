@@ -1,6 +1,8 @@
 package org.doubleone.domain.senior.service;
 
 import lombok.RequiredArgsConstructor;
+import org.doubleone.domain.manager.entity.Manager;
+import org.doubleone.domain.manager.repository.ManagerRepository;
 import org.doubleone.domain.senior.dto.SeniorRequestDto;
 import org.doubleone.domain.senior.dto.SeniorResponseDto;
 import org.doubleone.domain.senior.dto.SeniorUpdateDto;
@@ -25,37 +27,36 @@ public class SeniorService {
 
   private final SeniorRepository seniorRepository;
   private final S3Util s3Util;
+  private final ManagerRepository managerRepository;
 
   // 등록
-  public void registerSenior(MultipartFile imgFile, SeniorRequestDto seniorRequestDto) {
-    Senior senior;
-    if (imgFile != null){
-      senior = seniorRequestDto.toEntity(s3Util.uploadImage(imgFile, "profile/senior"));
-    }
-    else{
-      senior = seniorRequestDto.toEntity(null);
+  public void registerSenior(SeniorRequestDto seniorRequestDto) {
+    Manager manager = managerRepository.findById(seniorRequestDto.managerId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
+    Senior senior = seniorRequestDto.toEntity(manager, null);
+    if (seniorRequestDto.imgFile() != null && !seniorRequestDto.imgFile().isEmpty()) {
+      if (senior.getProfileImg() != null && !senior.getProfileImg().isEmpty()) {
+        s3Util.deleteImage(senior.getProfileImg());
+      }
+      senior.updateProfileImg(s3Util.uploadImage(seniorRequestDto.imgFile(), "profile/senior"));
     }
     seniorRepository.save(senior);
   }
 
-  public SeniorRequestDto updateSenior(Long seniorId, SeniorUpdateDto seniorUpdateDto) {
-    Senior senior = seniorRepository.findById(seniorId)
+  public void updateSenior(SeniorUpdateDto seniorUpdateDto) {
+    Senior senior = seniorRepository.findById(seniorUpdateDto.seniorId())
             .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_NOT_FOUND));
-
-    if (imgFile != null){
+    if (seniorUpdateDto.imgFile() != null){
       if (senior.getProfileImg() != null) {
         s3Util.deleteImage(senior.getProfileImg());}
-      senior.updateProfileImg(s3Util.uploadImage(seniorUpdateDto.getProfileImg(), "profile/senior"));
+      senior.updateProfileImg(s3Util.uploadImage(seniorUpdateDto.imgFile(), "profile/senior"));
     }
 
     senior.update(
-            CareLevel.valueOf(seniorUpdateDto.getCareLevel().toUpperCase()),
-            seniorUpdateDto.getAddress(),
-            seniorUpdateDto.getProfileImg(),
-            seniorUpdateDto.getEtcDisease()
+            CareLevel.valueOf(seniorUpdateDto.careLevel().toUpperCase()),
+            seniorUpdateDto.address(),
+            seniorUpdateDto.etcDisease()
     );
-
-    return SeniorRequestDto.fromEntity(senior);
   }
 
   public void deleteSenior(Long seniorId) {

@@ -3,17 +3,16 @@ package org.doubleone.domain.worker.dto.request;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
-@Getter
-@Setter
-@NoArgsConstructor
-public class WorkerUpdateRequest {
-    String profileImg;
-    String phoneNum;
-    String address;
-    boolean hasVehicle;
-    boolean hasTrained;
+public record WorkerUpdateRequest(
+    Long workerId,
+    MultipartFile imgFile,
+    String phoneNum,
+    String address,
+    boolean hasVehicle,
+    boolean hasTrained,
     // 비밀번호 변경
-    private String password;
-    private String passwordConfirm;
+    String password,
+    String passwordConfirm) {
 }

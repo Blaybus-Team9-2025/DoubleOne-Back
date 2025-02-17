@@ -1,8 +1,11 @@
 package org.doubleone.domain.manager.service;
 
+import jakarta.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.doubleone.domain.manager.dto.ManagerProfileUpdateRequestDto;
+import org.doubleone.domain.manager.dto.CenterUpdateRequestDto;
 import org.doubleone.domain.manager.dto.ManagerUpdateRequestDto;
 import org.doubleone.domain.manager.dto.SeniorMatchingResponseDto;
 import org.doubleone.domain.manager.entity.Manager;
@@ -10,7 +13,6 @@ import org.doubleone.domain.manager.repository.ManagerRepository;
 import org.doubleone.domain.matching.entity.Matching;
 import org.doubleone.domain.matching.entity.MatchingStatus;
 import org.doubleone.domain.matching.repository.MatchingRepository;
-import org.doubleone.domain.member.dto.request.MemberProfileUpdateRequestDto;
 import org.doubleone.domain.member.entity.Member;
 import org.doubleone.domain.member.repository.MemberRepository;
 import org.doubleone.domain.senior.entity.Senior;
@@ -20,7 +22,7 @@ import org.doubleone.global.utils.S3Util;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
@@ -35,78 +37,51 @@ public class ManagerService {
   private final PasswordEncoder passwordEncoder;
   private final S3Util s3Util;
 
-//  // 개인정보 수정
-//  public void updateProfile(String managerEmail, MemberProfileUpdateRequestDto requestDto) {
-//    Member member = memberRepository.findByEmail(managerEmail)
-//        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-//
-//    Manager manager = managerRepository.findByMember(member)
-//        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-//
-//    if (requestDto.getProfileImg() != null) {
-//      manager.updateProfileImg(requestDto.getProfileImg());
-//    }
-//    if (requestDto.getPhoneNum() != null) {
-//      manager.updatePhoneNum(requestDto.getPhoneNum());
-//    }
-//    if (requestDto.getAddress() != null) {
-//      manager.updateAddress(requestDto.getAddress());
-//    }
-//    if (requestDto.getPassword() != null && requestDto.getPasswordConfirm() != null) {
-//      if (!requestDto.getPassword().equals(requestDto.getPasswordConfirm())) {
-//        throw new CustomException(ErrorCode.INVALID_REQUEST);
-//      }
-//      member.updatePassword(passwordEncoder.encode(requestDto.getPassword()));
-//    }
-//  }
-
-  public void updateProfile(MultipartFile imgFile, ManagerUpdateRequestDto requestDto) {
-    Long memberId = requestDto.getMemberId();
-
-    Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+  public void updateProfile(@Valid @ModelAttribute ManagerUpdateRequestDto requestDto) {
+    Member member = memberRepository.findById(requestDto.memberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
     Manager manager = managerRepository.findByMember(member)
-            .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
-
+        .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
     // 프로필 이미지 수정
-    if (imgFile != null){
-      if (manager.getProfileImg() != null) {
-        s3Util.deleteImage(manager.getProfileImg());}
-      manager.updateProfileImg(s3Util.uploadImage(imgFile, "profile/manager"));
+    if (requestDto.imgFile() != null && !requestDto.imgFile().isEmpty()) {
+      if (manager.getProfileImg() != null && !manager.getProfileImg().isEmpty()) {
+          s3Util.deleteImage(manager.getProfileImg());
+      }
+      manager.updateProfileImg(s3Util.uploadImage(requestDto.imgFile(), "profile/manager"));
     }
 
     // 연락처 수정
-    if (requestDto.getPhoneNum() != null) {
-      manager.updatePhoneNum(requestDto.getPhoneNum());
+    if (requestDto.phoneNum() != null) {
+      manager.updatePhoneNum(requestDto.phoneNum());
     }
 
     // 주소 수정
-    if (requestDto.getAddress() != null) {
-      manager.updateAddress(requestDto.getAddress());
+    if (requestDto.address() != null) {
+      manager.updateAddress(requestDto.address());
     }
 
     // 비밀번호 변경
-    if (requestDto.getPassword() != null && requestDto.getPasswordConfirm() != null) {
-      if (!requestDto.getPassword().equals(requestDto.getPasswordConfirm())) {
+    if (requestDto.password() != null && requestDto.passwordConfirm() != null) {
+      if (!requestDto.password().equals(requestDto.passwordConfirm())) {
         throw new CustomException(ErrorCode.INVALID_REQUEST);
       }
-      member.updatePassword(passwordEncoder.encode(requestDto.getPassword()));
+      member.updatePassword(passwordEncoder.encode(requestDto.password()));
     }
   }
 
   /**
    * 센터정보 수정
    */
-  public void updateCenterInfo(MultipartFile imgFile,CenterUpdateRequestDto requestDto) {
+  public void updateCenterInfo(CenterUpdateRequestDto requestDto) {
     Manager manager = managerRepository.findById(requestDto.managerId())
             .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
 
     // 센터 이미지 수정
-    if (imgFile != null){
-      if (manager.getCenterImg() != null) {
+    if (requestDto.imgFile() != null && !requestDto.imgFile().isEmpty()) {
+      if (manager.getCenterImg() != null && !manager.getCenterImg().isEmpty()) {
         s3Util.deleteImage(manager.getCenterImg());}
-      manager.updateCenterImg(s3Util.uploadImage(imgFile, "profile/center"));
+      manager.updateProfileImg(s3Util.uploadImage(requestDto.imgFile(), "profile/center"));
     }
 
     // 영업기간 수정
@@ -127,9 +102,6 @@ public class ManagerService {
     // 목욕 차량 소유 여부 수정
     if (requestDto.hasTruck() != null) {
       manager.updateHasTruck(requestDto.hasTruck());
-    }
-    if (requestDto.getAddress() != null) {
-      manager.updateAddress(requestDto.getAddress());
     }
   }
 

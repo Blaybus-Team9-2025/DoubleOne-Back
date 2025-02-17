@@ -1,11 +1,14 @@
 package org.doubleone.domain.senior.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.manager.entity.Gender;
+import org.doubleone.domain.manager.entity.Manager;
+import org.doubleone.domain.member.entity.Member;
 import org.doubleone.global.BaseTimeEntity;
 import org.hibernate.annotations.Type;
 
@@ -26,6 +29,12 @@ public class Senior extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "senior_id", updatable = false)
   private Long seniorId;
+
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "manager_id", updatable = false)
+  @NotNull
+  @JsonIgnore
+  private Manager manager;
 
   @Column(name = "name")
   @NotNull
@@ -68,10 +77,9 @@ public class Senior extends BaseTimeEntity {
   @Column(name = "etc_disease")
   private String etcDisease;
 
-  public void update(CareLevel careLevel, String address, String profileImg, String etcDisease) {
+  public void update(CareLevel careLevel, String address, String etcDisease) {
     if (careLevel != null) this.careLevel = careLevel;
     if (address != null) this.address = address;
-    if (profileImg != null) this.profileImg = profileImg;
     if (etcDisease != null) this.etcDisease = etcDisease;
   }
 
