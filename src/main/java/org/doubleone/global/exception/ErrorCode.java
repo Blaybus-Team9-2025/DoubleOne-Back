@@ -43,7 +43,10 @@ public enum ErrorCode {
     SENIOR_CONDITION_NOT_FOUND(404, "노인 근무 조건을 찾을 수 없습니다."),
 
     // Matching
-    MATCHING_NOT_FOUND(404, "매칭을 찾을 수 없습니다.");
+    MATCHING_NOT_FOUND(400, "매칭을 찾을 수 없습니다."),
+
+  // Email
+  INCORRECT_VERIFICATION_CODE(400, "인증번호가 일치하지 않습니다.");
 
   private final int status;
   private final String message;
