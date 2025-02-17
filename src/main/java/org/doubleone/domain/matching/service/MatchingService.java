@@ -1,5 +1,6 @@
 package org.doubleone.domain.matching.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +13,9 @@ import org.doubleone.domain.endMatching.service.EndMatchingService;
 import org.doubleone.domain.matching.dto.request.MatchingRequestDto;
 import org.doubleone.domain.matching.dto.request.MatchingUpdateRequestDto;
 import org.doubleone.domain.matching.dto.request.WorkerMatchingScheduleRequestDto;
-import org.doubleone.domain.matching.dto.response.WorkerMatchingScheduleUnitDto;
 import org.doubleone.domain.matching.dto.response.WorkerMatchingUnitDto;
 import org.doubleone.domain.matching.entity.Matching;
+import org.doubleone.domain.matching.entity.MatchingStatus;
 import org.doubleone.domain.matching.repository.MatchingRepository;
 import org.doubleone.domain.schedule.dto.ScheduleDto;
 import org.doubleone.domain.worker.repository.WorkerRepository;
@@ -35,7 +36,7 @@ public class MatchingService {
   private final WorkerConditionRepository workerConditionRepository;
   private final MatchingRepository matchingRepository;
   private final WorkerRepository workerRepository;
-  private final EndMatchingRepository endmatchingRepository;
+  private final EndMatchingRepository endMatchingRepository;
   private final EndMatchingService endMatchingService;
 
   public void createMatchingRequest(MatchingRequestDto requestDto) {
@@ -51,19 +52,32 @@ public class MatchingService {
     Matching matching = matchingRepository.findById(matchingId)
         .orElseThrow(() -> new CustomException(ErrorCode.MATCHING_NOT_FOUND));
     matching.updateStatus(requestDto.matchingStatus(), requestDto.runningStatus());
+    if(requestDto.matchingStatus() == MatchingStatus.COMPLETED) {
+        EndMatching endMatching = EndMatching.builder()
+            .matching(matching)
+            .startDate(LocalDate.now())
+            .endDate(null)
+            .schedule(null)
+            .build();
+        endMatchingRepository.save(endMatching);
+    } else if(requestDto.matchingStatus() == MatchingStatus.EXPIRED){
+        EndMatching endMatching = endMatchingRepository.findByMatching(matching)
+            .orElseThrow(() -> new CustomException(ErrorCode.END_MATCHING_NOT_FOUND));
+        endMatching.updateEndDate(LocalDate.now());
+    }
   }
 
   public List<WorkerMatchingUnitDto> getMatchingList(Long workerId) {
     workerRepository.findById(workerId)
         .orElseThrow(() -> new CustomException(ErrorCode.MATCHING_NOT_FOUND));
-    return endmatchingRepository.findByWorkerId(workerId).stream()
+    return endMatchingRepository.findByWorkerId(workerId).stream()
         .map(WorkerMatchingUnitDto::from)
         .collect(Collectors.toList());
   }
 
   @Transactional(readOnly = true)
   public List<ScheduleDto> getMatchingSchedule(Long workerId) {
-    return endmatchingRepository.findByWorkerId(workerId).stream()
+    return endMatchingRepository.findByWorkerId(workerId).stream()
         .filter(endMatching -> endMatching.getSchedule() != null)
         .map(ScheduleDto::from)
         .collect(Collectors.toList());
