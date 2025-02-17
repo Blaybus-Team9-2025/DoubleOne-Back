@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface EndmatchingRepository extends JpaRepository<EndMatching, Long> {
+public interface EndMatchingRepository extends JpaRepository<EndMatching, Long> {
 
   @Query("SELECT e FROM EndMatching e " +
       "JOIN e.matching m " +

@@ -1,14 +1,11 @@
 package org.doubleone.domain.worker.dto.response;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
+import org.doubleone.domain.schedule.dto.ScheduleDto;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
-import org.doubleone.domain.workerLicense.entity.WorkerLicense;
-import org.doubleone.domain.workerRegion.entity.WorkerRegion;
-import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;
 
 @Getter
 @Builder
@@ -24,14 +21,14 @@ public class WorkerDetailResponse {
     private Long memberId;
     private List<WorkerLicenseDto> workerLicenses;
     private List<WorkerRegionDto> workerRegions;
-    private List<WorkerScheduleDto> workerSchedules;
+    private List<ScheduleDto> workerSchedules;
 
     public static WorkerDetailResponse from(
         Worker worker,
         WorkerCondition workerCondition,
         List<WorkerLicenseDto> licenses,
         List<WorkerRegionDto> regions,
-        List<WorkerScheduleDto> schedules
+        List<ScheduleDto> schedules
     ) {
         return WorkerDetailResponse.builder()
             .workerId(worker.getWorkerId()) // Id

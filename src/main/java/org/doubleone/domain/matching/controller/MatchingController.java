@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.matching.dto.request.MatchingRequestDto;
 import org.doubleone.domain.matching.dto.request.MatchingUpdateRequestDto;
+import org.doubleone.domain.matching.dto.request.WorkerMatchingScheduleRequestDto;
 import org.doubleone.domain.matching.service.MatchingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +46,20 @@ public class MatchingController {
   @GetMapping("/{workerId}")
   public ResponseEntity<?> getMatchingList(@PathVariable("workerId") Long workerId) {
     return ResponseEntity.status(HttpStatus.OK).body(matchingService.getMatchingList(workerId));
+  }
+
+  @Operation(summary = "요양사 매칭 일정 등록", description = "요양사의 매칭 일정 추가")
+  @PostMapping("/{workerId}")
+  public ResponseEntity<?> createMatchingSchedule(@PathVariable("workerId") Long workerId, @RequestBody @Valid WorkerMatchingScheduleRequestDto requestDto) {
+    matchingService.createMatchingSchedule(workerId, requestDto);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
+
+
+  @Operation(summary = "요양사 매칭 일정 조회", description = "요양사의 매칭 일정 및 시간표 조회")
+  @GetMapping("/{workerId}")
+  public ResponseEntity<?> getMatchingSchedule(@PathVariable("workerId") Long workerId) {
+    return ResponseEntity.status(HttpStatus.OK).body(matchingService.getMatchingSchedule(workerId));
   }
 
 }
