@@ -4,7 +4,8 @@ import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ManagerRepository extends JpaRepository<Manager, Long> {
+import java.util.Optional;
 
-  Manager findByMember(Member otherMember);
+public interface ManagerRepository extends JpaRepository<Manager, Long> {
+    Optional<Manager> findByMember(Member member);
 }

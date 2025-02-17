@@ -2,34 +2,26 @@ package org.doubleone.domain.senior.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.util.Map;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.member.entity.Gender;
 import org.doubleone.domain.manager.entity.Manager;
+import org.doubleone.domain.member.entity.Member;
 import org.doubleone.global.BaseTimeEntity;
 import org.hibernate.annotations.Type;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "senior")
 @Getter
 @Log4j2
+@AllArgsConstructor
+@Builder
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Senior extends BaseTimeEntity {
 
@@ -59,7 +51,8 @@ public class Senior extends BaseTimeEntity {
 
   @Column(name = "care_level")
   @NotNull
-  private int care_level;
+  @Enumerated(EnumType.STRING)
+  private CareLevel careLevel;
 
   @Column(name = "weight")
   @NotNull
@@ -75,10 +68,22 @@ public class Senior extends BaseTimeEntity {
   @Column(name = "cohabitation_status")
   @NotNull
   @Enumerated(EnumType.STRING)
-  private CohabitationStatus cohabitationstatus;
+  private CohabitationStatus cohabitationStatus;
 
   @Column(name = "dementia_symptoms", columnDefinition = "json")
   @Type(JsonType.class)
-  private Map<String, Object> dementiaSymptoms;
+  private List<String> dementiaSymptoms;
 
+  @Column(name = "etc_disease")
+  private String etcDisease;
+
+  public void update(CareLevel careLevel, String address, String etcDisease) {
+    if (careLevel != null) this.careLevel = careLevel;
+    if (address != null) this.address = address;
+    if (etcDisease != null) this.etcDisease = etcDisease;
+  }
+
+  public void updateProfileImg(String profileImg) {
+    this.profileImg = profileImg;
+  }
 }

@@ -1,19 +1,8 @@
 package org.doubleone.domain.member.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.global.BaseTimeEntity;
 
@@ -46,6 +35,17 @@ public class Member extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private MemberStatus memberstatus;
 
+  @Column(name = "address")
+  private String address;
+
+  @Builder
+  public Member(String email, String password, MemberType memberType) {
+    this.email = email;
+    this.password = password;
+    this.memberstatus = MemberStatus.ACTIVE;
+    this.memberType = MemberType.UNKNOWN;
+  }
+
   @Builder
   public Member(String email, String password) {
     this.email = email;
@@ -53,5 +53,16 @@ public class Member extends BaseTimeEntity {
     this.memberstatus = MemberStatus.ACTIVE;
     this.memberType = MemberType.UNKNOWN;
   }
+
+
+  public void updatePassword(String password) {
+    this.password = password;
+  }
+
+
+  public void updateAddress(String address) {
+    this.address = address;
+  }
+
 
 }

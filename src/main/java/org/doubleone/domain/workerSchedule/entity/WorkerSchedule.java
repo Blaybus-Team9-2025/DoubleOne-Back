@@ -13,17 +13,21 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.schedule.entity.Schedule;
-import org.doubleone.domain.worker.entity.Worker;
+import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.doubleone.global.BaseTimeEntity;
 
 @Entity
 @Table(name = "worker_schedule")
 @Getter
 @Log4j2
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class WorkerSchedule extends BaseTimeEntity {
 
@@ -32,15 +36,19 @@ public class WorkerSchedule extends BaseTimeEntity {
   @Column(name = "worker_schedule_id", updatable = false)
   private Long workerScheduleId;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "worker_id", updatable = false)
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "worker_condition_id", updatable = false)
   @NotNull
   @JsonIgnore
-  private Worker worker;
+  private WorkerCondition workerCondition;
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "schedule_id", updatable = false)
   @NotNull
   @JsonIgnore
   private Schedule schedule;
+
+  public void updateSchedule(Schedule schedule) {
+    this.schedule = schedule;
+  }
 }
