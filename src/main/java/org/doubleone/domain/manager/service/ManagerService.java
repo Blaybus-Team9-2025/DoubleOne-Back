@@ -2,7 +2,7 @@ package org.doubleone.domain.manager.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.doubleone.domain.manager.dto.ManagerProfileUpdateRequestDto;
+import org.doubleone.domain.member.dto.request.MemberProfileUpdateRequestDto;
 import org.doubleone.domain.manager.dto.ManagerUpdateRequestDto;
 import org.doubleone.domain.manager.dto.SeniorMatchingResponseDto;
 import org.doubleone.domain.manager.entity.Manager;
@@ -34,7 +34,7 @@ public class ManagerService {
   private final PasswordEncoder passwordEncoder;
 
   // 개인정보 수정
-  public void updateProfile(String managerEmail, ManagerProfileUpdateRequestDto requestDto) {
+  public void updateProfile(String managerEmail, MemberProfileUpdateRequestDto requestDto) {
     Member member = memberRepository.findByEmail(managerEmail)
             .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -58,6 +58,7 @@ public class ManagerService {
     }
   }
 
+
   // 센터정보 수정
   public void updateCenterInfo(ManagerUpdateRequestDto requestDto) {
     Member member = memberRepository.findById(requestDto.getMemberId())
@@ -77,6 +78,9 @@ public class ManagerService {
     }
     if (requestDto.getHasTruck() != null) {
       manager.updateHasTruck(requestDto.getHasTruck());
+    }
+    if (requestDto.getAddress() != null) {
+      manager.updateAddress(requestDto.getAddress());
     }
   }
 

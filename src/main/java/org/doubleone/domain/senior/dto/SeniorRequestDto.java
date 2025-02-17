@@ -19,12 +19,10 @@ public class SeniorRequestDto {
     private String careLevel;
     private int weight;
     private String address;
-    private String detailedAddress;
     private String profileImg;
     private String cohabitationStatus;
     private List<String> dementiaSymptoms;
     private String etcDisease;
-    private String zipCode;
 
     public Senior toEntity() {
         return Senior.builder()
@@ -34,12 +32,10 @@ public class SeniorRequestDto {
                 .careLevel(CareLevel.valueOf(careLevel.toUpperCase()))
                 .weight(weight)
                 .address(address)
-                .detailedAddress(detailedAddress)
                 .profileImg(profileImg)
                 .cohabitationStatus(CohabitationStatus.valueOf(cohabitationStatus.toUpperCase()))
                 .dementiaSymptoms(dementiaSymptoms)
                 .etcDisease(etcDisease)
-                .zipCode(zipCode)
                 .build();
     }
 
@@ -51,12 +47,10 @@ public class SeniorRequestDto {
         dto.careLevel = senior.getCareLevel().name();
         dto.weight = senior.getWeight();
         dto.address = senior.getAddress();
-        dto.detailedAddress = senior.getDetailedAddress();
         dto.profileImg = senior.getProfileImg();
         dto.cohabitationStatus = senior.getCohabitationStatus().name();
         dto.dementiaSymptoms = senior.getDementiaSymptoms();
         dto.etcDisease = senior.getEtcDisease();
-        dto.zipCode = senior.getZipCode();
         return dto;
     }
 }
