@@ -32,6 +32,7 @@ public class EndMatchingService {
           .startTime(scheduleDto.startTime())
           .endTime(scheduleDto.endTime())
           .build();
+      endMatching.updateSchedule(newSchedule);
       return scheduleRepository.save(newSchedule);
     });
     endMatching.updateSchedule(schedule);

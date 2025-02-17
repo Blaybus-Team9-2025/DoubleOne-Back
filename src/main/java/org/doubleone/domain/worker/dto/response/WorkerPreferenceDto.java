@@ -1,6 +1,7 @@
 package org.doubleone.domain.worker.dto.response;
 
 import lombok.Builder;
+import org.doubleone.domain.schedule.dto.ScheduleDto;
 import org.doubleone.domain.schedule.entity.Day;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 
@@ -16,7 +17,7 @@ public record WorkerPreferenceDto ( // 희망 근무 조건 dto
 
 ) {
     public static WorkerPreferenceDto from(
-        WorkerRegionDto workerRegionDto, WorkerScheduleDto workerScheduleDto, WorkerCondition workerCondition
+        WorkerRegionDto workerRegionDto, ScheduleDto workerScheduleDto, WorkerCondition workerCondition
     ) {
         return WorkerPreferenceDto.builder()
             .city(workerRegionDto.city())
