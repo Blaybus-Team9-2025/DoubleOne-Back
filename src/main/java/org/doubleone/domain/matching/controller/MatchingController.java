@@ -62,4 +62,10 @@ public class MatchingController {
     return ResponseEntity.status(HttpStatus.OK).body(matchingService.getMatchingSchedule(workerId));
   }
 
+  @Operation(summary = "매칭 현황 조회 (관리자 대시보드)", description = "매칭 현황 조회 (메인홈, 관리자 대시보드)")
+  @GetMapping("/{memberId}/schedules")
+  public ResponseEntity<?> getMatchingStat(@PathVariable("memberId") Long memberId) {
+    return ResponseEntity.status(HttpStatus.OK).body(matchingService.getMatchingStat(memberId));
+  }
+
 }

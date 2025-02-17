@@ -10,15 +10,21 @@ import org.doubleone.domain.condition.repository.ConditionRepository;
 import org.doubleone.domain.endMatching.entity.EndMatching;
 import org.doubleone.domain.endMatching.repository.EndMatchingRepository;
 import org.doubleone.domain.endMatching.service.EndMatchingService;
+import org.doubleone.domain.manager.entity.Manager;
+import org.doubleone.domain.manager.repository.ManagerRepository;
 import org.doubleone.domain.matching.dto.request.MatchingRequestDto;
 import org.doubleone.domain.matching.dto.request.MatchingUpdateRequestDto;
 import org.doubleone.domain.matching.dto.request.WorkerMatchingScheduleRequestDto;
+import org.doubleone.domain.matching.dto.response.ManagerMatchingStatResponseDto;
 import org.doubleone.domain.matching.dto.response.WorkerMatchingUnitDto;
 import org.doubleone.domain.matching.entity.Matching;
 import org.doubleone.domain.matching.entity.MatchingStatus;
 import org.doubleone.domain.matching.entity.RunningStatus;
 import org.doubleone.domain.matching.repository.MatchingRepository;
+import org.doubleone.domain.member.entity.Member;
+import org.doubleone.domain.member.repository.MemberRepository;
 import org.doubleone.domain.schedule.dto.ScheduleDto;
+import org.doubleone.domain.senior.repository.SeniorRepository;
 import org.doubleone.domain.worker.repository.WorkerRepository;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.doubleone.domain.workerCondition.repository.WorkerConditionRepository;
@@ -39,6 +45,8 @@ public class MatchingService {
   private final WorkerRepository workerRepository;
   private final EndMatchingRepository endMatchingRepository;
   private final EndMatchingService endMatchingService;
+  private final ManagerRepository managerRepository;
+  private final MemberRepository memberRepository;
 
   public void createMatchingRequest(MatchingRequestDto requestDto) {
     Condition seniorCondition = conditionRepository.findById(requestDto.conditionId())
@@ -71,7 +79,7 @@ public class MatchingService {
   @Transactional(readOnly = true)
   public List<WorkerMatchingUnitDto> getMatchingList(Long workerId) {
     workerRepository.findById(workerId)
-        .orElseThrow(() -> new CustomException(ErrorCode.MATCHING_NOT_FOUND));
+        .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
     return endMatchingRepository.findByWorkerId(workerId).stream()
         .map(WorkerMatchingUnitDto::from)
         .collect(Collectors.toList());
@@ -87,11 +95,27 @@ public class MatchingService {
 
   public void createMatchingSchedule(Long workerId, WorkerMatchingScheduleRequestDto requestDto) {
     workerRepository.findById(workerId)
-        .orElseThrow(() -> new CustomException(ErrorCode.MATCHING_NOT_FOUND));
+        .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
 
     if (requestDto.scheduleDtoList() != null && !requestDto.scheduleDtoList().isEmpty()) {
       requestDto.scheduleDtoList().forEach(scheduleDto ->
           endMatchingService.updateSchedule(requestDto.endMatchingId(), scheduleDto));
     }
+  }
+
+  @Transactional(readOnly = true)
+  public ManagerMatchingStatResponseDto getMatchingStat(Long memberId) {
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+    Manager manager = managerRepository.findByMember(member)
+        .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
+    int matchCount = matchingRepository.countByManager(manager);
+    int progressMatchCount = matchingRepository.countByManagerAndMatchingStatus(manager, MatchingStatus.IN_PROGRESS);
+    int endMatchCount = endMatchingRepository.countByManager(manager);
+    int acceptedMatchCount = matchingRepository.countByManagerAndRunningStatus(manager, RunningStatus.ACCEPTED);
+    int rejectedMatchCount = matchingRepository.countByManagerAndRunningStatus(manager, RunningStatus.REJECTED);
+    int pendingMatchCount = matchingRepository.countByManagerAndMatchingStatus(manager, MatchingStatus.BEFORE_REQUEST);
+    return ManagerMatchingStatResponseDto.from(manager, (double) progressMatchCount/matchCount, (double) endMatchCount
+        /matchCount, acceptedMatchCount, rejectedMatchCount, pendingMatchCount);
   }
 }
