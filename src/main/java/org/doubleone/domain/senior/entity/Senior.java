@@ -54,10 +54,6 @@ public class Senior extends BaseTimeEntity {
   @NotNull
   private String address;
 
-  @Column(name = "detailed_address")
-  @NotNull
-  private String detailedAddress;
-
   @Column(name = "profile_img", columnDefinition = "TEXT")
   private String profileImg;
 
@@ -73,15 +69,9 @@ public class Senior extends BaseTimeEntity {
   @Column(name = "etc_disease")
   private String etcDisease;
 
-  @Column(name = "zip_code", nullable = false)
-  @NotNull
-  private String zipCode = "";
-
-
-  public void update(CareLevel careLevel, String address, String detailedAddress, String profileImg, String etcDisease) {
+  public void update(CareLevel careLevel, String address, String profileImg, String etcDisease) {
     if (careLevel != null) this.careLevel = careLevel;
     if (address != null) this.address = address;
-    if (detailedAddress != null) this.detailedAddress = detailedAddress;
     if (profileImg != null) this.profileImg = profileImg;
     if (etcDisease != null) this.etcDisease = etcDisease;
   }

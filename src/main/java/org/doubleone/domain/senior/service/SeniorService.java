@@ -35,7 +35,6 @@ public class SeniorService {
     senior.update(
             CareLevel.valueOf(seniorUpdateDto.getCareLevel().toUpperCase()),
             seniorUpdateDto.getAddress(),
-            seniorUpdateDto.getDetailedAddress(),
             seniorUpdateDto.getProfileImg(),
             seniorUpdateDto.getEtcDisease()
     );
