@@ -10,6 +10,7 @@ import org.doubleone.domain.matching.dto.request.MatchingUpdateRequestDto;
 import org.doubleone.domain.matching.service.MatchingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +39,12 @@ public class MatchingController {
   public ResponseEntity<?> updateMatching(@PathVariable("matchingId") Long matchingId, @RequestBody @Valid MatchingUpdateRequestDto requestDto) {
     matchingService.updateMatching(matchingId, requestDto);
     return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
+  @Operation(summary = "매칭 기록 목록 조회", description = "요양사의 매칭 기록 목록 조회")
+  @GetMapping("/{workerId}")
+  public ResponseEntity<?> getMatchingList(@PathVariable("workerId") Long workerId) {
+    return ResponseEntity.status(HttpStatus.OK).body(matchingService.getMatchingList(workerId));
   }
 
 }
