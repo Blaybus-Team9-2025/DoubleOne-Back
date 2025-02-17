@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.worker.dto.request.WorkerUpdateRequest;
+import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.worker.dto.response.WorkerDetailResponse;
 import org.doubleone.domain.worker.dto.response.WorkerLicenseDto;
 import org.doubleone.domain.worker.dto.response.WorkerRegionDto;
@@ -36,6 +37,23 @@ public class WorkerService {
     private final WorkerRegionRepository workerRegionRepository;
     private final WorkerScheduleRepository workerScheduleRepository;
 
+    //매칭된 요양사 찾기
+    public List<WorkerCondition> getMatchedWorkerBySenior(Senior senior) {
+        String[] addressParts = senior.getAddress().split(" ");
+        String district = addressParts[addressParts.length - 2]; // "강남구"
+        String neighborhood = addressParts[addressParts.length - 1]; // "역삼동"
+
+        return workerConditionRepository.findWorkerByMatchingSchedule(neighborhood, district);
+    }
+
+//    // 요양사 정보 수정
+//    @Transactional
+//    public void updateWorker(Long workerId, WorkerUpdateRequest request) {
+//        Worker worker = workerRepository.findById(workerId)
+//            .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
+//        worker.updateWorkerInfo(request.getPhoneNum(), request.getAddress(),
+//            request.isHasTrained(), request.isHasVehicle(), request.getLicense());
+//    }
 
     // 요양사 정보 수정
     public void updateWorker(Long workerId, WorkerUpdateRequest workerUpdateRequest) {
@@ -51,7 +69,6 @@ public class WorkerService {
             workerUpdateRequest.getLicense()
         );
     }
-
 
     // 요양사 상세정보 조회
     @Transactional(readOnly = true)

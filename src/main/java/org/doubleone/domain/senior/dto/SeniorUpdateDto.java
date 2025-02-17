@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 public class SeniorUpdateDto {
     private String careLevel;
     private String address;
+    private String detailedAddress;
     private String profileImg;
     private String etcDisease;
 }
