@@ -3,10 +3,10 @@ package org.doubleone.domain.workerCondition.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.doubleone.domain.schedule.dto.ScheduleDto;
 import org.doubleone.domain.worker.dto.request.WorkerConditionRequestDto;
 import org.doubleone.domain.worker.dto.response.WorkerPreferenceDto;
 import org.doubleone.domain.worker.dto.response.WorkerRegionDto;
-import org.doubleone.domain.worker.dto.response.WorkerScheduleDto;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.worker.repository.WorkerRepository;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
@@ -68,8 +68,8 @@ public class WorkerConditionService {
       throw new CustomException(ErrorCode.WORKER_CONDITION_NOT_FOUND);
     }
 
-    List<WorkerScheduleDto> workerScheduleDtos = workerScheduleRepository.findByWorkerCondition(workerCondition).stream()
-        .map(WorkerScheduleDto::from)
+    List<ScheduleDto> workerScheduleDtos = workerScheduleRepository.findByWorkerCondition(workerCondition).stream()
+        .map(ScheduleDto::from)
         .toList();
 
     if (workerScheduleDtos.isEmpty()) {
@@ -77,12 +77,10 @@ public class WorkerConditionService {
     }
 
     WorkerRegionDto workerRegionDto = workerRegionDtos.get(0);
-    WorkerScheduleDto workerScheduleDto = workerScheduleDtos.get(0);
+    ScheduleDto workerScheduleDto = workerScheduleDtos.get(0);
 
     return WorkerPreferenceDto.from(workerRegionDto, workerScheduleDto, workerCondition);
   }
-
-
 
 
   public void updateWorkerCondition(Long workerConditionId, WorkerConditionRequestDto requestDto) {

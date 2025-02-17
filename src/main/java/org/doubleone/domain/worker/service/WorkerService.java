@@ -10,7 +10,7 @@ import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.worker.dto.response.WorkerDetailResponse;
 import org.doubleone.domain.worker.dto.response.WorkerLicenseDto;
 import org.doubleone.domain.worker.dto.response.WorkerRegionDto;
-import org.doubleone.domain.worker.dto.response.WorkerScheduleDto;
+import org.doubleone.domain.schedule.dto.ScheduleDto;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.worker.repository.WorkerRepository;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
@@ -20,6 +20,7 @@ import org.doubleone.domain.workerRegion.repository.WorkerRegionRepository;
 import org.doubleone.domain.workerSchedule.repository.WorkerScheduleRepository;
 import org.doubleone.global.exception.CustomException;
 import org.doubleone.global.exception.ErrorCode;
+import org.doubleone.global.utils.S3Util;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,7 @@ public class WorkerService {
     private final WorkerRegionRepository workerRegionRepository;
     private final WorkerScheduleRepository workerScheduleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final S3Util s3Util;
 
     //매칭된 요양사 찾기
     public List<WorkerCondition> getMatchedWorkerBySenior(Senior senior) {
@@ -46,33 +48,30 @@ public class WorkerService {
         return workerConditionRepository.findWorkerByMatchingSchedule(neighborhood, district);
     }
 
-//    // 요양사 정보 수정
-//    @Transactional
-//    public void updateWorker(Long workerId, WorkerUpdateRequest request) {
-//        Worker worker = workerRepository.findById(workerId)
-//            .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
-//        worker.updateWorkerInfo(request.getPhoneNum(), request.getAddress(),
-//            request.isHasTrained(), request.isHasVehicle(), request.getLicense());
-//    }
-
     // 요양사 정보 수정
-    public void updateWorker(Long workerId, WorkerUpdateRequest workerUpdateRequest) {
-        Worker worker = workerRepository.findById(workerId)
+    public void updateWorker(WorkerUpdateRequest workerUpdateRequest) {
+        Worker worker = workerRepository.findById(workerUpdateRequest.workerId())
             .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
 
+        if (workerUpdateRequest.imgFile() != null && !workerUpdateRequest.imgFile().isEmpty()) {
+            if (worker.getProfileImg() != null && !worker.getProfileImg().isEmpty()) {
+                s3Util.deleteImage(worker.getProfileImg());
+            }
+            worker.updateProfileImg(s3Util.uploadImage(workerUpdateRequest.imgFile(), "profile/worker"));
+        }
+
         worker.updateWorker(
-            workerUpdateRequest.getProfileImg(),
-            workerUpdateRequest.getPhoneNum(),
-            workerUpdateRequest.getAddress(),
-            workerUpdateRequest.isHasVehicle(),
-            workerUpdateRequest.isHasTrained()
+            workerUpdateRequest.phoneNum(),
+            workerUpdateRequest.address(),
+            workerUpdateRequest.hasVehicle(),
+            workerUpdateRequest.hasTrained()
         );
-        if (workerUpdateRequest.getPassword() != null && workerUpdateRequest.getPasswordConfirm() != null) {
-            if (!workerUpdateRequest.getPassword().equals(workerUpdateRequest.getPasswordConfirm())) {
+        if (workerUpdateRequest.password() != null && workerUpdateRequest.passwordConfirm() != null) {
+            if (!workerUpdateRequest.password().equals(workerUpdateRequest.passwordConfirm())) {
                 throw new CustomException(ErrorCode.PASSWORD_MISMATCH);
             }
             Member member = worker.getMember(); // member
-            member.updatePassword(passwordEncoder.encode(workerUpdateRequest.getPassword()));
+            member.updatePassword(passwordEncoder.encode(workerUpdateRequest.password()));
         }
     }
 
@@ -88,8 +87,8 @@ public class WorkerService {
         List<WorkerRegionDto> regions = workerRegionRepository.findByWorkerCondition(workerCondition).stream()
             .map(WorkerRegionDto::from)
             .collect(Collectors.toList());
-        List<WorkerScheduleDto> schedules = workerScheduleRepository.findByWorkerCondition(workerCondition).stream()
-            .map(WorkerScheduleDto::from)
+        List<ScheduleDto> schedules = workerScheduleRepository.findByWorkerCondition(workerCondition).stream()
+            .map(ScheduleDto::from)
             .collect(Collectors.toList());
         return WorkerDetailResponse.from(worker, workerCondition, licenses, regions, schedules);
     }
