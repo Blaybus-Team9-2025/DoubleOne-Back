@@ -14,11 +14,13 @@ import org.doubleone.domain.worker.service.WorkerMatchService;
 import org.doubleone.global.exception.CustomException;
 import org.doubleone.global.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "Senior")
 @RestController
@@ -31,19 +33,20 @@ public class SeniorController {
     private final WorkerMatchService workerMatchService;
 
     @Operation(summary = "노인 정보 등록", description = "관리자가 노인 정보를 등록")
-    @PostMapping
-    public ResponseEntity<SeniorRequestDto> registerSenior(@RequestBody SeniorRequestDto seniorRequestDto) {
-        seniorService.registerSenior(seniorRequestDto);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<SeniorRequestDto> registerSenior(@RequestPart(required = false) MultipartFile imgFile, @RequestBody SeniorRequestDto seniorRequestDto) {
+        seniorService.registerSenior(imgFile, seniorRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Operation(summary = "노인 정보 편집", description = "관리자가 노인 정보를 편집")
-    @PatchMapping("/{seniorId}")
+    @PatchMapping(value = "/{seniorId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SeniorRequestDto> updateSenior(
+            @RequestPart(required = false) MultipartFile imgFile,
             @PathVariable Long seniorId,
             @RequestBody SeniorUpdateDto seniorUpdateDto
     ) {
-        SeniorRequestDto updatedSenior = seniorService.updateSenior(seniorId, seniorUpdateDto);
+        SeniorRequestDto updatedSenior = seniorService.updateSenior(imgFile, seniorId, seniorUpdateDto);
         return ResponseEntity.ok(updatedSenior);
     }
 

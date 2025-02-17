@@ -24,7 +24,7 @@ public class SeniorRequestDto {
     private List<String> dementiaSymptoms;
     private String etcDisease;
 
-    public Senior toEntity() {
+    public Senior toEntity(String profileImg) {
         return Senior.builder()
                 .name(name)
                 .gender(Gender.valueOf(gender.toUpperCase()))

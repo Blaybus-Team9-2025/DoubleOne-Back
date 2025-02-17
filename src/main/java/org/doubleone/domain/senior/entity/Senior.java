@@ -1,6 +1,5 @@
 package org.doubleone.domain.senior.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -74,5 +73,9 @@ public class Senior extends BaseTimeEntity {
     if (address != null) this.address = address;
     if (profileImg != null) this.profileImg = profileImg;
     if (etcDisease != null) this.etcDisease = etcDisease;
+  }
+
+  public void updateProfileImg(String profileImg) {
+    this.profileImg = profileImg;
   }
 }
