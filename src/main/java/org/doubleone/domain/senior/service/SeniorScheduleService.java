@@ -8,9 +8,6 @@ import org.doubleone.domain.schedule.repository.ScheduleRepository;
 import org.doubleone.domain.senior.dto.SeniorScheduleDto;
 import org.doubleone.domain.senior.entity.SeniorSchedule;
 import org.doubleone.domain.senior.repository.SeniorScheduleRepository;
-import org.doubleone.domain.worker.dto.response.WorkerScheduleDto;
-import org.doubleone.domain.workerCondition.entity.WorkerCondition;
-import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

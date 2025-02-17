@@ -1,6 +1,5 @@
 package org.doubleone.domain.matching.service;
 
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -8,13 +7,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.condition.repository.ConditionRepository;
 import org.doubleone.domain.endMatching.entity.EndMatching;
-import org.doubleone.domain.endMatching.repository.EndmatchingRepository;
+import org.doubleone.domain.endMatching.repository.EndMatchingRepository;
+import org.doubleone.domain.endMatching.service.EndMatchingService;
 import org.doubleone.domain.matching.dto.request.MatchingRequestDto;
 import org.doubleone.domain.matching.dto.request.MatchingUpdateRequestDto;
+import org.doubleone.domain.matching.dto.request.WorkerMatchingScheduleRequestDto;
+import org.doubleone.domain.matching.dto.response.WorkerMatchingScheduleUnitDto;
 import org.doubleone.domain.matching.dto.response.WorkerMatchingUnitDto;
 import org.doubleone.domain.matching.entity.Matching;
 import org.doubleone.domain.matching.repository.MatchingRepository;
-import org.doubleone.domain.worker.dto.response.WorkerLicenseDto;
+import org.doubleone.domain.schedule.dto.ScheduleDto;
 import org.doubleone.domain.worker.repository.WorkerRepository;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.doubleone.domain.workerCondition.repository.WorkerConditionRepository;
@@ -33,7 +35,8 @@ public class MatchingService {
   private final WorkerConditionRepository workerConditionRepository;
   private final MatchingRepository matchingRepository;
   private final WorkerRepository workerRepository;
-  private final EndmatchingRepository endmatchingRepository;
+  private final EndMatchingRepository endmatchingRepository;
+  private final EndMatchingService endMatchingService;
 
   public void createMatchingRequest(MatchingRequestDto requestDto) {
     Condition seniorCondition = conditionRepository.findById(requestDto.conditionId())
@@ -56,5 +59,23 @@ public class MatchingService {
     return endmatchingRepository.findByWorkerId(workerId).stream()
         .map(WorkerMatchingUnitDto::from)
         .collect(Collectors.toList());
+  }
+
+  @Transactional(readOnly = true)
+  public List<ScheduleDto> getMatchingSchedule(Long workerId) {
+    return endmatchingRepository.findByWorkerId(workerId).stream()
+        .filter(endMatching -> endMatching.getSchedule() != null)
+        .map(ScheduleDto::from)
+        .collect(Collectors.toList());
+  }
+
+  public void createMatchingSchedule(Long workerId, WorkerMatchingScheduleRequestDto requestDto) {
+    workerRepository.findById(workerId)
+        .orElseThrow(() -> new CustomException(ErrorCode.MATCHING_NOT_FOUND));
+
+    if (requestDto.scheduleDtoList() != null && !requestDto.scheduleDtoList().isEmpty()) {
+      requestDto.scheduleDtoList().forEach(scheduleDto ->
+          endMatchingService.updateSchedule(requestDto.endMatchingId(), scheduleDto));
+    }
   }
 }

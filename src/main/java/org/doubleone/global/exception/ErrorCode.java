@@ -44,11 +44,12 @@ public enum ErrorCode {
 
     // Matching
     MATCHING_NOT_FOUND(404, "매칭을 찾을 수 없습니다."),
+  END_MATCHING_NOT_FOUND(404, "수락된 매칭을 찾을 수 없습니다."),
 
   // s3
   FILE_UPLOAD_FAIL(500, "파일 업로드에 실패했습니다."), 
   INVALID_FILE_FORMAT(500, "파일 형식이 잘못되었습니다."),
-  UNSUPPORTED_FILE_FORMAT(400, "지원하지 않는 파일 형식입니다.")
+  UNSUPPORTED_FILE_FORMAT(400, "지원하지 않는 파일 형식입니다."),
 
   ;
 

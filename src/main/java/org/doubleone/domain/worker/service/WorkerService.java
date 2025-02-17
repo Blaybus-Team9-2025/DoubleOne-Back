@@ -10,7 +10,7 @@ import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.worker.dto.response.WorkerDetailResponse;
 import org.doubleone.domain.worker.dto.response.WorkerLicenseDto;
 import org.doubleone.domain.worker.dto.response.WorkerRegionDto;
-import org.doubleone.domain.worker.dto.response.WorkerScheduleDto;
+import org.doubleone.domain.schedule.dto.ScheduleDto;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.worker.repository.WorkerRepository;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
@@ -88,8 +88,8 @@ public class WorkerService {
         List<WorkerRegionDto> regions = workerRegionRepository.findByWorkerCondition(workerCondition).stream()
             .map(WorkerRegionDto::from)
             .collect(Collectors.toList());
-        List<WorkerScheduleDto> schedules = workerScheduleRepository.findByWorkerCondition(workerCondition).stream()
-            .map(WorkerScheduleDto::from)
+        List<ScheduleDto> schedules = workerScheduleRepository.findByWorkerCondition(workerCondition).stream()
+            .map(ScheduleDto::from)
             .collect(Collectors.toList());
         return WorkerDetailResponse.from(worker, workerCondition, licenses, regions, schedules);
     }

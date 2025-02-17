@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.matching.entity.Matching;
+import org.doubleone.domain.schedule.entity.Schedule;
 import org.doubleone.global.BaseTimeEntity;
 
 @Entity
@@ -51,4 +52,12 @@ public class EndMatching extends BaseTimeEntity {
   @Column(name = "end_date")
   private LocalDate endDate;
 
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "schedule_id", updatable = false)
+  @JsonIgnore
+  private Schedule schedule;
+
+  public void updateSchedule(Schedule schedule) {
+    this.schedule = schedule;
+  }
 }
