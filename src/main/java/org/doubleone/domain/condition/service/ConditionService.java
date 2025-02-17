@@ -7,6 +7,8 @@ import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.condition.repository.ConditionRepository;
 import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.senior.repository.SeniorRepository;
+import org.doubleone.global.exception.CustomException;
+import org.doubleone.global.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +26,7 @@ public class ConditionService {
     // 등록
     public void createCondition(Long seniorId, ConditionRequestDto requestDto) {
         Senior senior = seniorRepository.findById(seniorId)
-                .orElseThrow(() -> new RuntimeException("Senior Not Found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_NOT_FOUND));
 
         Condition condition = conditionRepository.save(requestDto.toEntity(senior));
     }
@@ -32,7 +34,7 @@ public class ConditionService {
     // 수정
     public void updateCondition(Long seniorConditionId, ConditionRequestDto requestDto) {
         Condition condition = conditionRepository.findById(seniorConditionId)
-                .orElseThrow(() -> new RuntimeException("Condition Not Found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_CONDITION_NOT_FOUND));
 
         condition.updateCondition(requestDto.title(), requestDto.amount(), requestDto.payType(),
                 requestDto.wage(), requestDto.welfares(), requestDto.workType(), requestDto.services());
@@ -47,7 +49,7 @@ public class ConditionService {
     @Transactional(readOnly = true)
     public ConditionResponseDto getConditionDetail(Long conditionId) {
         Condition condition = conditionRepository.findById(conditionId)
-                .orElseThrow(() -> new RuntimeException("Condition Not Found"));
+            .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_CONDITION_NOT_FOUND));
         return ConditionResponseDto.from(condition);
     }
 

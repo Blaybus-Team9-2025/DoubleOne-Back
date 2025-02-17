@@ -83,8 +83,6 @@ public class WorkerConditionService {
   }
 
 
-
-
   public void updateWorkerCondition(Long workerConditionId, WorkerConditionRequestDto requestDto) {
     WorkerCondition workerCondition = workerConditionRepository.findById(workerConditionId)
         .orElseThrow(() -> new CustomException(ErrorCode.WORKER_CONDITION_NOT_FOUND));
