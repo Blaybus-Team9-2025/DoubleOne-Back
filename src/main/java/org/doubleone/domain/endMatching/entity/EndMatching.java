@@ -60,4 +60,8 @@ public class EndMatching extends BaseTimeEntity {
   public void updateSchedule(Schedule schedule) {
     this.schedule = schedule;
   }
+
+  public void updateEndDate(LocalDate endDate) {
+    this.endDate = endDate;
+  }
 }
