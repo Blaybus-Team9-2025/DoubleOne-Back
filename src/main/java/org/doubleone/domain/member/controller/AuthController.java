@@ -4,13 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.doubleone.domain.member.dto.request.LoginRequestDto;
-import org.doubleone.domain.member.dto.request.MemberProfileUpdateRequestDto;
-import org.doubleone.domain.member.dto.request.SignupManagerDto;
-import org.doubleone.domain.member.dto.request.SignupManagerForKakaoDto;
-import org.doubleone.domain.member.dto.request.SignupWorkerDto;
-import org.doubleone.domain.member.dto.request.SignupWorkerForKakaoDto;
-import org.doubleone.domain.member.dto.request.TokenRequestDto;
+import org.doubleone.domain.member.dto.request.*;
 import org.doubleone.domain.member.dto.response.TokenResponseDto;
 import org.doubleone.domain.member.service.AuthService;
 import org.doubleone.domain.member.service.MemberService;
@@ -18,10 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Tag(name = "Auth")
@@ -81,5 +72,11 @@ public class AuthController {
     String memberEmail = userDetails.getUsername();
     memberService.updateProfile(memberEmail, requestDto);
     return ResponseEntity.noContent().build();
+  }
+
+  @Operation(summary = "센터 정보 확인", description = "기업 회원가입 특정 키워드로 검색해 센터 정보 확인")
+  @GetMapping("/center")
+  public ResponseEntity<?> getCentersByKeyword(@RequestParam String keyword) {
+    return ResponseEntity.ok(authService.getCentersByKeyword(keyword));
   }
 }

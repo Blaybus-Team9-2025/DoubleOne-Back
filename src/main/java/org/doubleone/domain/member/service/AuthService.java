@@ -1,7 +1,10 @@
 package org.doubleone.domain.member.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.doubleone.domain.center.repository.CenterRepository;
 import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.manager.repository.ManagerRepository;
 import org.doubleone.domain.member.dto.request.LoginRequestDto;
@@ -9,6 +12,7 @@ import org.doubleone.domain.member.dto.request.SignupManagerDto;
 import org.doubleone.domain.member.dto.request.SignupManagerForKakaoDto;
 import org.doubleone.domain.member.dto.request.SignupWorkerDto;
 import org.doubleone.domain.member.dto.request.SignupWorkerForKakaoDto;
+import org.doubleone.domain.member.dto.response.CenterResponseDto;
 import org.doubleone.domain.member.dto.response.LoginResponseDto;
 import org.doubleone.domain.member.dto.response.TokenResponseDto;
 import org.doubleone.domain.member.entity.Member;
@@ -39,6 +43,7 @@ public class AuthService {
   private final RedisTemplate<String, String> redisTemplate;
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
+  private final CenterRepository centerRepository;
 
 
   public void signUpManager(SignupManagerDto requestDto) {
@@ -184,5 +189,13 @@ public class AuthService {
   public Member getMemberByEmail(String email){
     return memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("해당 이메일로 사용자를 찾을 수 없습니다."));
   }
+
+  @Transactional(readOnly = true)
+  public List<String> getCentersByKeyword(String keyword) {
+    return centerRepository.findByCenterNameContaining(keyword).stream()
+        .map(center -> center.getCenterCode() + "," + center.getCenterName())
+        .collect(Collectors.toList());
+  }
+
 
 }
