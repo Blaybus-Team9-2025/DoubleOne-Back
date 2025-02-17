@@ -19,6 +19,7 @@ public class WorkerDetailResponse {
     private String address;
     private String introduction;
     private Long memberId;
+    private String password; // test
     private List<WorkerLicenseDto> workerLicenses;
     private List<WorkerRegionDto> workerRegions;
     private List<ScheduleDto> workerSchedules;
@@ -40,6 +41,7 @@ public class WorkerDetailResponse {
             .address(worker.getAddress())
             .introduction(workerCondition.getIntroduce())
             .memberId(worker.getMember().getMemberId())
+            .password(worker.getMember().getPassword()) // test
             .workerLicenses(licenses)
             .workerRegions(regions)
             .workerSchedules(schedules)

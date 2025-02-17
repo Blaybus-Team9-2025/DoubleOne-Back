@@ -13,7 +13,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -21,7 +20,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.doubleone.domain.worker.entity.Gender;
 import org.doubleone.domain.member.entity.Member;
 import org.doubleone.global.BaseTimeEntity;
 import java.time.LocalDate;
@@ -81,11 +79,20 @@ public class Worker extends BaseTimeEntity {
   @Builder
   public Worker(String name, String ProfileImg, Member member, LocalDate birthDate, org.doubleone.domain.worker.entity.Gender gender, String phoneNum, String address) {
       this.name = name;
-      this.profileImg = profileImg;
+      this.profileImg = ProfileImg;
       this.member = member;
       this.birthDate = birthDate;
       this.gender = gender;
       this.phoneNum = phoneNum;
       this.address = address;
+  }
+
+  // 기본 정보 수정
+  public void updateWorker(String ProfileImg, String phoneNum, String address, boolean hasVehicle, boolean hasTrained) {
+      this.profileImg = ProfileImg;
+      this.phoneNum = phoneNum;
+      this.address = address;
+      this.hasVehicle = hasVehicle;
+      this.hasTrained = hasTrained;
   }
 }
