@@ -16,6 +16,7 @@ import org.doubleone.domain.matching.dto.request.WorkerMatchingScheduleRequestDt
 import org.doubleone.domain.matching.dto.response.WorkerMatchingUnitDto;
 import org.doubleone.domain.matching.entity.Matching;
 import org.doubleone.domain.matching.entity.MatchingStatus;
+import org.doubleone.domain.matching.entity.RunningStatus;
 import org.doubleone.domain.matching.repository.MatchingRepository;
 import org.doubleone.domain.schedule.dto.ScheduleDto;
 import org.doubleone.domain.worker.repository.WorkerRepository;
@@ -52,7 +53,7 @@ public class MatchingService {
     Matching matching = matchingRepository.findById(matchingId)
         .orElseThrow(() -> new CustomException(ErrorCode.MATCHING_NOT_FOUND));
     matching.updateStatus(requestDto.matchingStatus(), requestDto.runningStatus());
-    if(requestDto.matchingStatus() == MatchingStatus.COMPLETED) {
+    if(requestDto.matchingStatus() == MatchingStatus.COMPLETED && requestDto.runningStatus() == RunningStatus.ACCEPTED) {
         EndMatching endMatching = EndMatching.builder()
             .matching(matching)
             .startDate(LocalDate.now())
@@ -67,6 +68,7 @@ public class MatchingService {
     }
   }
 
+  @Transactional(readOnly = true)
   public List<WorkerMatchingUnitDto> getMatchingList(Long workerId) {
     workerRepository.findById(workerId)
         .orElseThrow(() -> new CustomException(ErrorCode.MATCHING_NOT_FOUND));

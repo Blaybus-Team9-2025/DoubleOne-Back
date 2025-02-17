@@ -21,7 +21,7 @@ public record WorkerMatchingUnitDto(
         .endDate(endMatching.getEndDate())
         .seniorName(endMatching.getMatching().getCondition().getSenior().getName())
         .workType(endMatching.getMatching().getCondition().getWorkType())
-        .workPeriod(ChronoUnit.DAYS.between(endMatching.getStartDate(), endMatching.getEndDate()))
+        .workPeriod( (endMatching.getEndDate() == null) ? ChronoUnit.DAYS.between(LocalDate.now(), LocalDate.now()) : ChronoUnit.DAYS.between(endMatching.getStartDate(), endMatching.getEndDate()))
         .build();
   }
 

@@ -53,7 +53,7 @@ public class EndMatching extends BaseTimeEntity {
   private LocalDate endDate;
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "schedule_id", updatable = false)
+  @JoinColumn(name = "schedule_id")
   @JsonIgnore
   private Schedule schedule;
 
