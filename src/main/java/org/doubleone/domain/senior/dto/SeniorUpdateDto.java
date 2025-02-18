@@ -1,15 +1,17 @@
 package org.doubleone.domain.senior.dto;
 
-import java.nio.channels.MulticastChannel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
-
-public record SeniorUpdateDto(
-    Long seniorId,
-    String careLevel,
-    String address,
-    MultipartFile imgFile,
-    String etcDisease) {
+@Getter
+@Setter
+@NoArgsConstructor
+public class SeniorUpdateDto {
+    private Long seniorId;
+    private String careLevel;
+    private String address;
+    private String etcDisease;
+    private MultipartFile imgFile;
 }

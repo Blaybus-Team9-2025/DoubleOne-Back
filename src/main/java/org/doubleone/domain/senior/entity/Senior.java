@@ -1,7 +1,7 @@
 package org.doubleone.domain.senior.entity;
 
-import com.vladmihalcea.hibernate.type.json.JsonType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -30,7 +30,7 @@ public class Senior extends BaseTimeEntity {
   @Column(name = "senior_id", updatable = false)
   private Long seniorId;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "manager_id", updatable = false)
   @NotNull
   @JsonIgnore
@@ -53,6 +53,9 @@ public class Senior extends BaseTimeEntity {
   @NotNull
   @Enumerated(EnumType.STRING)
   private CareLevel careLevel;
+
+  @Column(nullable = false)
+  private int height;
 
   @Column(name = "weight")
   @NotNull
