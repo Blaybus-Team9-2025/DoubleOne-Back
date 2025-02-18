@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.manager.entity.Gender;
+import org.doubleone.domain.manager.entity.Manager;
+import org.doubleone.domain.member.entity.Member;
 import org.doubleone.global.BaseTimeEntity;
 import org.hibernate.annotations.Type;
 
@@ -27,6 +29,12 @@ public class Senior extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "senior_id", updatable = false)
   private Long seniorId;
+
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "manager_id", updatable = false)
+  @NotNull
+  @JsonIgnore
+  private Manager manager;
 
   @Column(name = "name")
   @NotNull
@@ -54,10 +62,6 @@ public class Senior extends BaseTimeEntity {
   @NotNull
   private String address;
 
-  @Column(name = "detailed_address")
-  @NotNull
-  private String detailedAddress;
-
   @Column(name = "profile_img", columnDefinition = "TEXT")
   private String profileImg;
 
@@ -73,16 +77,13 @@ public class Senior extends BaseTimeEntity {
   @Column(name = "etc_disease")
   private String etcDisease;
 
-  @Column(name = "zip_code", nullable = false)
-  @NotNull
-  private String zipCode = "";
-
-
-  public void update(CareLevel careLevel, String address, String detailedAddress, String profileImg, String etcDisease) {
+  public void update(CareLevel careLevel, String address, String etcDisease) {
     if (careLevel != null) this.careLevel = careLevel;
     if (address != null) this.address = address;
-    if (detailedAddress != null) this.detailedAddress = detailedAddress;
-    if (profileImg != null) this.profileImg = profileImg;
     if (etcDisease != null) this.etcDisease = etcDisease;
+  }
+
+  public void updateProfileImg(String profileImg) {
+    this.profileImg = profileImg;
   }
 }

@@ -1,12 +1,18 @@
 package org.doubleone.domain.worker.dto.request;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
-@Getter
-public class WorkerUpdateRequest {
-    private String phoneNum;
-    private String address;
-    private boolean hasTrained;
-    private boolean hasVehicle;
-    private String license;
+public record WorkerUpdateRequest(
+    Long workerId,
+    MultipartFile imgFile,
+    String phoneNum,
+    String address,
+    boolean hasVehicle,
+    boolean hasTrained,
+    // 비밀번호 변경
+    String password,
+    String passwordConfirm) {
 }

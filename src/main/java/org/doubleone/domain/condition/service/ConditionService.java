@@ -7,7 +7,6 @@ import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.condition.repository.ConditionRepository;
 import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.senior.repository.SeniorRepository;
-import org.doubleone.domain.senior.service.SeniorScheduleService;
 import org.doubleone.global.exception.CustomException;
 import org.doubleone.global.exception.ErrorCode;
 import org.springframework.stereotype.Service;
@@ -23,56 +22,47 @@ public class ConditionService {
 
     private final ConditionRepository conditionRepository;
     private final SeniorRepository seniorRepository;
-    private final SeniorScheduleService seniorScheduleService;
-
-    @Transactional(readOnly = true)
-    public Condition getSeniorConditionById(Long id){
-        return conditionRepository.findById(id)
-                .orElseThrow(()->new CustomException(ErrorCode.SENIOR_NOT_FOUND));
-    }
 
     // 등록
-    public void createCondition(Long seniorId, ConditionRequestDto requestDto){
+    public void createCondition(Long seniorId, ConditionRequestDto requestDto) {
         Senior senior = seniorRepository.findById(seniorId)
-                .orElseThrow(()->new CustomException(ErrorCode.SENIOR_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_NOT_FOUND));
+
         Condition condition = conditionRepository.save(requestDto.toEntity(senior));
-        if(requestDto.seniorSchedules()!=null && !requestDto.seniorSchedules().isEmpty()){
-            requestDto.seniorSchedules().forEach(scheduleDto ->
-                    seniorScheduleService.createSeniorSchedule(condition, scheduleDto));
-        }
     }
 
-    //수정
-    public void updateCondition(Long seniorConditionId, ConditionRequestDto requestDto){
+    // 수정
+    public void updateCondition(Long seniorConditionId, ConditionRequestDto requestDto) {
         Condition condition = conditionRepository.findById(seniorConditionId)
-                .orElseThrow(()->new CustomException(ErrorCode.SENIOR_NOT_FOUND));
-        condition.updateCondition(requestDto.wage(), requestDto.welfares(), requestDto.preferGender(),requestDto.workType(), requestDto.services());
-        if(requestDto.seniorSchedules()!=null && !requestDto.seniorSchedules().isEmpty()){
-            requestDto.seniorSchedules().forEach(scheduleDto ->
-                    seniorScheduleService.update(condition, scheduleDto));
-        }
+                .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_CONDITION_NOT_FOUND));
+
+        condition.updateCondition(requestDto.title(), requestDto.amount(), requestDto.payType(),
+                requestDto.wage(), requestDto.welfares(), requestDto.preferGender(), requestDto.workType(), requestDto.services());
     }
 
     // 삭제
     public void deleteCondition(Long conditionId) {
-        Condition condition = conditionRepository.findById(conditionId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_SENIOR_REQUEST));
-
-        conditionRepository.delete(condition);
+        conditionRepository.deleteById(conditionId);
     }
 
     // 상세 조회
     @Transactional(readOnly = true)
     public ConditionResponseDto getConditionDetail(Long conditionId) {
         Condition condition = conditionRepository.findById(conditionId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_SENIOR_REQUEST));
+            .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_CONDITION_NOT_FOUND));
         return ConditionResponseDto.from(condition);
     }
 
-    // 목록 조회 (새로 추가)
+    // 목록 조회 (필터 추가)
     @Transactional(readOnly = true)
-    public List<ConditionResponseDto> getConditionList() {
-        List<Condition> conditions = conditionRepository.findAll();
+    public List<ConditionResponseDto> getConditionList(String filter) {
+        List<Condition> conditions;
+
+        if ("unmatched".equals(filter)) {
+            conditions = conditionRepository.findUnmatchedConditions();
+        } else {
+            conditions = conditionRepository.findAllByOrderByCreatedAtDesc();
+        }
 
         return conditions.stream()
                 .map(ConditionResponseDto::from)

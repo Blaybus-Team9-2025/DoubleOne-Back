@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,8 @@ import org.doubleone.global.BaseTimeEntity;
 @Table(name = "manager")
 @Getter
 @Log4j2
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Manager extends BaseTimeEntity {
 
@@ -61,6 +64,9 @@ public class Manager extends BaseTimeEntity {
   @Column(name = "center_message", length = 500)
   private String centerMessage;
 
+  @Column(name = "center_img", columnDefinition = "TEXT")
+  private String centerImg;
+
   @Column(name = "is_active")
   private Boolean isActive;
 
@@ -87,6 +93,7 @@ public class Manager extends BaseTimeEntity {
     this.centerMessage = centerMessage;
     this.isActive = true;
   }
+
 
   public void updatePhoneNum(String phoneNum) {
     this.phoneNum = phoneNum;
@@ -120,4 +127,6 @@ public class Manager extends BaseTimeEntity {
   public void withdraw() {
     this.isActive = false;
   }
+
+  public void updateCenterImg(String centerImg){this.centerImg = centerImg;}
 }

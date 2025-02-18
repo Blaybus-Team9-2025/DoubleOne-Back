@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
-
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.worker.entity.Gender;
@@ -29,11 +28,24 @@ public class Condition extends BaseTimeEntity {
   @Column(name = "senior_condition_id", updatable = false)
   private Long seniorConditionId;
 
-  @ManyToOne(fetch = FetchType.LAZY) //, cascade = CascadeType.ALL 삭제
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "senior_id", updatable = false)
   @NotNull
   @JsonIgnore
   private Senior senior;
+
+  @Column(name = "title") // 공고 제목
+  @NotNull
+  private String title;
+
+  @Column(name = "amount") // 급여 금액
+  @NotNull
+  private int amount;
+
+  @Enumerated(EnumType.STRING) // 급여 단위
+  @Column(name = "pay_type")
+  @NotNull
+  private PayType payType;
 
   @Column(name = "wage")
   @NotNull
@@ -60,30 +72,36 @@ public class Condition extends BaseTimeEntity {
   @Type(JsonType.class)
   private Map<String, List<String>> services;
 
-//  @Column(name = "services", columnDefinition = "json")
-//  @Type(JsonType.class)
-//  private List<WorkPeriod> workPeriods;
-
   // 근무 조건 등록용
-  public static Condition createCondition(Senior senior, int wage, Map<String, List<String>> welfares, WorkType workType,Gender preferGender, Map<String, List<String>> services,List<SeniorSchedule> seniorSchedules) {
+  public static Condition createCondition(Senior senior, String title, int amount, PayType payType, int wage, Gender preferGender,
+                                          Map<String, List<String>> welfares, WorkType workType,
+                                          Map<String, List<String>> services, List<SeniorSchedule> seniorSchedules) {
     Condition condition = new Condition();
     condition.senior = senior;
+    condition.title = title;
+    condition.amount = amount;
+    condition.payType = payType;
+    condition.preferGender = preferGender;
     condition.wage = wage;
     condition.welfares = welfares;
     condition.workType = workType;
-    condition.preferGender = preferGender;
     condition.services = services;
     condition.seniorSchedules = seniorSchedules;
     return condition;
   }
 
   // 근무 조건 편집용
-  public void updateCondition(int wage, Map<String, List<String>> welfares, Gender preferGender, WorkType workType, Map<String, List<String>> services) {
+
+  public void updateCondition(String title, int amount, PayType payType, int wage,
+                              Map<String, List<String>> welfares, Gender preferGender, WorkType workType,
+                              Map<String, List<String>> services) {
+    this.title = title;
+    this.amount = amount;
+    this.payType = payType;
     this.wage = wage;
     this.welfares = welfares;
     this.preferGender = preferGender;
     this.workType = workType;
     this.services = services;
   }
-
 }

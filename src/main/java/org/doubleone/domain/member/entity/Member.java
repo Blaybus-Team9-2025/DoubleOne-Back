@@ -3,11 +3,6 @@ package org.doubleone.domain.member.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.global.BaseTimeEntity;
 
@@ -30,9 +25,6 @@ public class Member extends BaseTimeEntity {
   @Column(name = "password")
   private String password;
 
-  @Column(name = "profile_img", columnDefinition = "TEXT")
-  private String profileImg;
-
   @Column(name = "member_type")
   @NotNull
   @Enumerated(EnumType.STRING)
@@ -42,6 +34,9 @@ public class Member extends BaseTimeEntity {
   @NotNull
   @Enumerated(EnumType.STRING)
   private MemberStatus memberstatus;
+
+  @Column(name = "address")
+  private String address;
 
   @Builder
   public Member(String email, String password, MemberType memberType) {
@@ -59,13 +54,15 @@ public class Member extends BaseTimeEntity {
     this.memberType = MemberType.UNKNOWN;
   }
 
-  // 프로필 이미지 수정
-  public void updateProfileImg(String profileImg) {
-    this.profileImg = profileImg;
-  }
 
-  // 비밀번호 수정
   public void updatePassword(String password) {
     this.password = password;
   }
+
+
+  public void updateAddress(String address) {
+    this.address = address;
+  }
+
+
 }
