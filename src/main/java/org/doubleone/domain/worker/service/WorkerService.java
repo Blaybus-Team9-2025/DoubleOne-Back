@@ -1,6 +1,8 @@
 package org.doubleone.domain.worker.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,8 +50,40 @@ public class WorkerService {
         String district = addressParts[addressParts.length - 2]; // "강남구"
         String neighborhood = addressParts[addressParts.length - 1]; // "역삼동"
         Gender prefer = condition.getPreferGender();//선호하는 성별
-        boolean hasDementiaSymptoms = !senior.getDementiaSymptoms().contains("false");//치매라면 FALSE, 치매가 아니면 TRUE
-        return workerConditionRepository.findWorkerByMatchingSchedule(neighborhood, district, city, prefer, hasDementiaSymptoms, condition);
+        boolean hasDementiaSymptoms = !senior.getDementiaSymptoms().contains("false"); // 치매라면 FALSE, 치매가 아니면 TRUE
+        return workerConditionRepository.findWorkerByMatchingSchedule(neighborhood, district, city, prefer, hasDementiaSymptoms, condition)
+                .stream()
+                .filter(workerCondition -> isServiceMatching(condition.getServices(), workerCondition.getServices()))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isServiceMatching(Map<String, List<String>> seniorServices, Map<String, List<String>> workerServices) {
+        if (seniorServices == null || workerServices == null) {
+            return false;
+        }
+
+        int totalServices = 0; //총 서비스갯수
+        int matchedServices = 0; //일치하는 서비스 개수
+
+        for (Map.Entry<String, List<String>> entry : seniorServices.entrySet()) {
+            String category = entry.getKey();
+            List<String> seniorServiceList = entry.getValue();
+            List<String> workerServiceList = workerServices.getOrDefault(category, new ArrayList<>());
+
+            totalServices += seniorServiceList.size();
+
+            for (String service : seniorServiceList) {
+                if (workerServiceList.contains(service)) {
+                    matchedServices++;
+                }
+            }
+        }
+
+        // 매칭률 계산 (일치하는 서비스 / 총 서비스 개수)
+        double matchPercentage = totalServices > 0 ? ((double) matchedServices / totalServices) * 100 : 0;
+
+        // 30% 이상 매칭되는 경우 true 반환
+        return matchPercentage >= 30.0;
     }
 
     // 요양사 정보 수정
