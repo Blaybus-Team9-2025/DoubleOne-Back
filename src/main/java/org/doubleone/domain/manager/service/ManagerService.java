@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.manager.dto.CenterUpdateRequestDto;
+import org.doubleone.domain.manager.dto.ManagerDetailsResponseDto;
 import org.doubleone.domain.manager.dto.ManagerUpdateRequestDto;
 import org.doubleone.domain.manager.dto.SeniorMatchingResponseDto;
 import org.doubleone.domain.manager.entity.Manager;
@@ -126,5 +127,10 @@ public class ManagerService {
             .collect(Collectors.toList());
   }
 
-
+  @Transactional(readOnly = true)
+  public ManagerDetailsResponseDto getManagerDetails(Long managerId) {
+    Manager manager = managerRepository.findById(managerId)
+        .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
+    return ManagerDetailsResponseDto.from(manager);
+  }
 }
