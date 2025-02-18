@@ -17,6 +17,9 @@ import java.util.Map;
 public class ConditionResponseDto {
 
     private Long seniorConditionId;
+    private String title;
+    private int amount;
+    private String payType;
     private int wage;
     private Map<String, List<String>> welfares;
     private WorkType workType;
@@ -25,6 +28,9 @@ public class ConditionResponseDto {
     public static ConditionResponseDto from(Condition condition) {
         return ConditionResponseDto.builder()
                 .seniorConditionId(condition.getSeniorConditionId())
+                .title(condition.getTitle())
+                .amount(condition.getAmount())
+                .payType(condition.getPayType().name())
                 .wage(condition.getWage())
                 .welfares(condition.getWelfares())
                 .workType(condition.getWorkType())
