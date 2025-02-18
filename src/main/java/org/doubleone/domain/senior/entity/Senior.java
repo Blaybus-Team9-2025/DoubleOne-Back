@@ -8,7 +8,7 @@ import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.member.entity.Gender;
 import org.doubleone.domain.manager.entity.Manager;
-import org.doubleone.domain.member.entity.Member;
+import org.doubleone.domain.matching.entity.MatchingStatus;
 import org.doubleone.global.BaseTimeEntity;
 import org.hibernate.annotations.Type;
 
@@ -30,7 +30,7 @@ public class Senior extends BaseTimeEntity {
   @Column(name = "senior_id", updatable = false)
   private Long seniorId;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "manager_id", updatable = false)
   @NotNull
   @JsonIgnore
@@ -53,6 +53,9 @@ public class Senior extends BaseTimeEntity {
   @NotNull
   @Enumerated(EnumType.STRING)
   private CareLevel careLevel;
+
+  @Column(nullable = false)
+  private int height;
 
   @Column(name = "weight")
   @NotNull
@@ -77,9 +80,19 @@ public class Senior extends BaseTimeEntity {
   @Column(name = "etc_disease")
   private String etcDisease;
 
-  public void update(CareLevel careLevel, String address, String etcDisease) {
+  @Column(name = "matching_status")
+  @Enumerated(EnumType.STRING)
+  private MatchingStatus matchingStatus = MatchingStatus.BEFORE_REQUEST;
+
+  // matchingStatus 변경을 위한 setter 추가
+  public void setMatchingStatus(MatchingStatus matchingStatus) {
+    this.matchingStatus = matchingStatus;
+  }
+
+  public void update(CareLevel careLevel, String address, String profileImg, String etcDisease) {
     if (careLevel != null) this.careLevel = careLevel;
     if (address != null) this.address = address;
+    if (profileImg != null) this.profileImg = profileImg;
     if (etcDisease != null) this.etcDisease = etcDisease;
   }
 

@@ -1,5 +1,6 @@
 package org.doubleone.domain.manager.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,14 @@ public class ManagerController {
     private final ManagerService managerService;
 
     // 개인정보 수정
+    @Operation(summary = "관리자 기본정보 조회", description = "관리자의 기본정보를 조회")
+    @PatchMapping("/{managerId}")
+    public ResponseEntity<?> getManagerDetails(@PathVariable("managerId") Long managerId) {
+        return ResponseEntity.ok(managerService.getManagerDetails(managerId));
+    }
+
+    // 개인정보 수정
+    @Operation(summary = "관리자 기본정보 편집", description = "관리자의 기본정보를 편집")
     @PatchMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateProfile(@Valid @ModelAttribute ManagerUpdateRequestDto requestDto) {
         managerService.updateProfile(requestDto);
@@ -31,13 +40,14 @@ public class ManagerController {
     }
 
     // 센터정보 수정
+    @Operation(summary = "관리자 센터정보 편집", description = "관리자의 센터정보를 편집")
     @PatchMapping(value = "/center-info", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateCenterInfo(@Valid @ModelAttribute CenterUpdateRequestDto requestDto) {
         managerService.updateCenterInfo(requestDto);
         return ResponseEntity.noContent().build();
     }
 
-    // 현재 매칭 중인 어르신 목록 조회
+    @Operation(summary = "현재 매칭 중인 어르신 목록 조회")
     @GetMapping("/matching-senior")
     public ResponseEntity<List<SeniorMatchingResponseDto>> getMatchingSeniors() {
         List<SeniorMatchingResponseDto> response = managerService.getMatchingSeniors();
