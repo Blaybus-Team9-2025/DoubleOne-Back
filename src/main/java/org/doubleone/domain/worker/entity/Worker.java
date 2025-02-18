@@ -80,11 +80,9 @@ public class Worker extends BaseTimeEntity {
   }
 
   // 기본 정보 수정
-  public void updateWorker(String phoneNum, String address, boolean hasVehicle, boolean hasTrained) {
+  public void updateWorker(String phoneNum, String address) {
       this.phoneNum = phoneNum;
       this.address = address;
-      this.hasVehicle = hasVehicle;
-      this.hasTrained = hasTrained;
   }
 
   public void updateProfileImg(String profileImg) {

@@ -44,11 +44,12 @@ public class WorkerService {
     //매칭된 요양사 찾기
     public List<WorkerCondition> getMatchedWorkerBySenior(Senior senior, Condition condition) {
         String[] addressParts = senior.getAddress().split(" ");
+        String city = addressParts[addressParts.length - 3]; //"서울시"
         String district = addressParts[addressParts.length - 2]; // "강남구"
         String neighborhood = addressParts[addressParts.length - 1]; // "역삼동"
         Gender prefer = condition.getPreferGender();//선호하는 성별
         boolean hasDementiaSymptoms = !senior.getDementiaSymptoms().contains("false");//치매라면 FALSE, 치매가 아니면 TRUE
-        return workerConditionRepository.findWorkerByMatchingSchedule(neighborhood, district, prefer, hasDementiaSymptoms);
+        return workerConditionRepository.findWorkerByMatchingSchedule(neighborhood, district, city, prefer, hasDementiaSymptoms, condition);
     }
 
     // 요양사 정보 수정
@@ -65,9 +66,7 @@ public class WorkerService {
 
         worker.updateWorker(
             workerUpdateRequest.phoneNum(),
-            workerUpdateRequest.address(),
-            workerUpdateRequest.hasVehicle(),
-            workerUpdateRequest.hasTrained()
+            workerUpdateRequest.address()
         );
         if (workerUpdateRequest.password() != null && workerUpdateRequest.passwordConfirm() != null) {
             if (!workerUpdateRequest.password().equals(workerUpdateRequest.passwordConfirm())) {

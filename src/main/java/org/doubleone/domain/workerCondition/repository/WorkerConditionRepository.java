@@ -20,18 +20,35 @@ public interface WorkerConditionRepository extends JpaRepository<WorkerCondition
             "LEFT JOIN wc.workerRegions wr " +
             "LEFT JOIN wr.region r " +
             "LEFT JOIN wc.worker w " +
-            "WHERE (r.district = :district OR r.neighborhood = :neighborhood ) " + //시단위 일치안하면 OUT
+            "LEFT JOIN wc.workerSchedules ws " +
+            "LEFT JOIN ws.schedule wsch " +
+            "LEFT JOIN Condition sc ON sc = :seniorCondition " +
+            "LEFT JOIN sc.seniorSchedules ss " +
+            "LEFT JOIN ss.schedule ssch " +
+            "WHERE (r.city = :city OR r.district = :district OR r.neighborhood = :neighborhood ) " +
             "AND wc.hasTrained = :hasDementiaSymptoms " + //치매환자일때 요양사의 치매교육 이수여부 확인
             "AND w.gender = :prefer " + //선호하는 성별 반영
             "ORDER BY " +
             "CASE " +
-            " WHEN r.neighborhood = :neighborhood THEN 1 " +
-            " WHEN r.district = :district THEN 2 " +
-            " ELSE 3 " +
+            " WHEN r.neighborhood = :neighborhood " +
+            "      AND (r.district <> :district AND r.city <> :city) " +
+            "      AND (wsch.day = ssch.day AND (wsch.startTime < ssch.endTime AND wsch.endTime > ssch.startTime)) THEN 1 " +
+            " WHEN r.district = :district " +
+            "      AND r.neighborhood <> :neighborhood " +
+            "      AND (wsch.day = ssch.day AND (wsch.startTime < ssch.endTime AND wsch.endTime > ssch.startTime)) THEN 2 " +
+            " WHEN r.district = :district " +
+            "      AND r.neighborhood <> :neighborhood " +
+            "      AND wc.discuss = true " +
+            "      AND NOT (wsch.day = ssch.day AND (wsch.startTime < ssch.endTime AND wsch.endTime > ssch.startTime)) THEN 3 " +
+            " WHEN r.city = :city AND wc.hasVehicle = true THEN 4 " +
+            " ELSE 5 " +  // 나머지
             "END, wc.workerConditionId ASC")
     List<WorkerCondition> findWorkerByMatchingSchedule(
             @Param("neighborhood") String neighborhood,
             @Param("district") String district,
+            @Param("city") String city,
             @Param("prefer") Gender prefer,
-            @Param("hasDementiaSymptoms") boolean hasDementiaSymptoms);
+            @Param("hasDementiaSymptoms") boolean hasDementiaSymptoms,
+            @Param("seniorCondition") Condition seniorCondition
+            );
 }

@@ -63,6 +63,10 @@ public class WorkerCondition extends BaseTimeEntity {
   @NotNull
   private int wage;
 
+  @Column(name = "discuss")
+  @NotNull
+  private boolean discuss;
+
   @Column(name = "introduce")
   private String introduce;
 
