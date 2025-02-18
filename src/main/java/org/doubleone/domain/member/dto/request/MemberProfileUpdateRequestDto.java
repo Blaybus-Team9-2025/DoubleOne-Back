@@ -1,4 +1,4 @@
-package org.doubleone.domain.manager.dto;
+package org.doubleone.domain.member.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,8 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ManagerProfileUpdateRequestDto {
-    private Long memberId;
+public class MemberProfileUpdateRequestDto {
     private String profileImg;
     private String phoneNum;
     private String address;

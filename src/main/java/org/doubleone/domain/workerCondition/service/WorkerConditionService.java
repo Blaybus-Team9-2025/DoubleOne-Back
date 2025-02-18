@@ -1,14 +1,20 @@
 package org.doubleone.domain.workerCondition.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.doubleone.domain.schedule.dto.ScheduleDto;
 import org.doubleone.domain.worker.dto.request.WorkerConditionRequestDto;
+import org.doubleone.domain.worker.dto.response.WorkerPreferenceDto;
+import org.doubleone.domain.worker.dto.response.WorkerRegionDto;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.worker.repository.WorkerRepository;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.doubleone.domain.workerCondition.repository.WorkerConditionRepository;
 import org.doubleone.domain.workerLicense.service.WorkerLicenseService;
+import org.doubleone.domain.workerRegion.repository.WorkerRegionRepository;
 import org.doubleone.domain.workerRegion.service.WorkerRegionService;
+import org.doubleone.domain.workerSchedule.repository.WorkerScheduleRepository;
 import org.doubleone.domain.workerSchedule.service.WorkerScheduleService;
 import org.doubleone.global.exception.CustomException;
 import org.doubleone.global.exception.ErrorCode;
@@ -20,11 +26,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class WorkerConditionService {
+
   private final WorkerConditionRepository workerConditionRepository;
   private final WorkerRepository workerRepository;
   private final WorkerScheduleService workerScheduleService;
   private final WorkerRegionService workerRegionService;
   private final WorkerLicenseService workerLicenseService;
+
+  private final WorkerRegionRepository workerRegionRepository;
+  private final WorkerScheduleRepository workerScheduleRepository;
+
 
   public void createWorkerCondition(Long workerId, WorkerConditionRequestDto requestDto) {
     Worker worker = workerRepository.findById(workerId)
@@ -43,6 +54,34 @@ public class WorkerConditionService {
           workerLicenseService.createWorkerLicense(workerCondition, licenseDto));
     }
   }
+
+  // 희망 근무 조건 조회
+  public WorkerPreferenceDto readWorkerCondition(Long workerConditionId) {
+    WorkerCondition workerCondition = workerConditionRepository.findById(workerConditionId)
+        .orElseThrow(() -> new CustomException(ErrorCode.WORKER_CONDITION_NOT_FOUND));
+
+    List<WorkerRegionDto> workerRegionDtos = workerRegionRepository.findByWorkerCondition(workerCondition).stream()
+        .map(WorkerRegionDto::from)
+        .toList();
+
+    if (workerRegionDtos.isEmpty()) {
+      throw new CustomException(ErrorCode.WORKER_CONDITION_NOT_FOUND);
+    }
+
+    List<ScheduleDto> workerScheduleDtos = workerScheduleRepository.findByWorkerCondition(workerCondition).stream()
+        .map(ScheduleDto::from)
+        .toList();
+
+    if (workerScheduleDtos.isEmpty()) {
+      throw new CustomException(ErrorCode.WORKER_CONDITION_NOT_FOUND);
+    }
+
+    WorkerRegionDto workerRegionDto = workerRegionDtos.get(0);
+    ScheduleDto workerScheduleDto = workerScheduleDtos.get(0);
+
+    return WorkerPreferenceDto.from(workerRegionDto, workerScheduleDto, workerCondition);
+  }
+
 
   public void updateWorkerCondition(Long workerConditionId, WorkerConditionRequestDto requestDto) {
     WorkerCondition workerCondition = workerConditionRepository.findById(workerConditionId)

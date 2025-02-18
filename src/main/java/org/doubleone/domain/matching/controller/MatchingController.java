@@ -7,9 +7,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.matching.dto.request.MatchingRequestDto;
 import org.doubleone.domain.matching.dto.request.MatchingUpdateRequestDto;
+import org.doubleone.domain.matching.dto.request.WorkerMatchingScheduleRequestDto;
 import org.doubleone.domain.matching.service.MatchingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +40,32 @@ public class MatchingController {
   public ResponseEntity<?> updateMatching(@PathVariable("matchingId") Long matchingId, @RequestBody @Valid MatchingUpdateRequestDto requestDto) {
     matchingService.updateMatching(matchingId, requestDto);
     return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
+  @Operation(summary = "매칭 기록 목록 조회", description = "요양사의 매칭 기록 목록 조회")
+  @GetMapping("/{workerId}")
+  public ResponseEntity<?> getMatchingList(@PathVariable("workerId") Long workerId) {
+    return ResponseEntity.status(HttpStatus.OK).body(matchingService.getMatchingList(workerId));
+  }
+
+  @Operation(summary = "요양사 매칭 일정 등록", description = "요양사의 매칭 일정 추가")
+  @PostMapping("/{workerId}/schedules")
+  public ResponseEntity<?> createMatchingSchedule(@PathVariable("workerId") Long workerId, @RequestBody @Valid WorkerMatchingScheduleRequestDto requestDto) {
+    matchingService.createMatchingSchedule(workerId, requestDto);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
+
+
+  @Operation(summary = "요양사 매칭 일정 조회", description = "요양사의 매칭 일정 및 시간표 조회")
+  @GetMapping("/{workerId}/schedules")
+  public ResponseEntity<?> getMatchingSchedule(@PathVariable("workerId") Long workerId) {
+    return ResponseEntity.status(HttpStatus.OK).body(matchingService.getMatchingSchedule(workerId));
+  }
+
+  @Operation(summary = "매칭 현황 조회 (관리자 대시보드)", description = "매칭 현황 조회 (메인홈, 관리자 대시보드)")
+  @GetMapping("/{memberId}/schedules")
+  public ResponseEntity<?> getMatchingStat(@PathVariable("memberId") Long memberId) {
+    return ResponseEntity.status(HttpStatus.OK).body(matchingService.getMatchingStat(memberId));
   }
 
 }
