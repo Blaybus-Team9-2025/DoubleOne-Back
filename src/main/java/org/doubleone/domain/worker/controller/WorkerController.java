@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,8 +73,8 @@ public class WorkerController {
     // 요양사 정보 수정
     @Operation(summary = "요양사 기본정보 편집", description = "요양사의 기본정보를 편집")
     @PatchMapping("/{workerId}")
-    public ResponseEntity<?> updateWorker(@PathVariable Long workerId, @RequestBody WorkerUpdateRequest workerUpdate) {
-        workerService.updateWorker(workerId, workerUpdate);
+    public ResponseEntity<?> updateWorker(@Valid @ModelAttribute WorkerUpdateRequest workerUpdate) {
+        workerService.updateWorker(workerUpdate);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

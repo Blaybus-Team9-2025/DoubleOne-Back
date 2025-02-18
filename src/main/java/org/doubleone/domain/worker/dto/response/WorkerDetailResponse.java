@@ -3,6 +3,7 @@ package org.doubleone.domain.worker.dto.response;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
+import org.doubleone.domain.schedule.dto.ScheduleDto;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 
@@ -21,14 +22,14 @@ public class WorkerDetailResponse {
     private String password; // test
     private List<WorkerLicenseDto> workerLicenses;
     private List<WorkerRegionDto> workerRegions;
-    private List<WorkerScheduleDto> workerSchedules;
+    private List<ScheduleDto> workerSchedules;
 
     public static WorkerDetailResponse from(
         Worker worker,
         WorkerCondition workerCondition,
         List<WorkerLicenseDto> licenses,
         List<WorkerRegionDto> regions,
-        List<WorkerScheduleDto> schedules
+        List<ScheduleDto> schedules
     ) {
         return WorkerDetailResponse.builder()
             .workerId(worker.getWorkerId()) // Id

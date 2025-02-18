@@ -41,14 +41,6 @@ public class MemberService {
     Member member = memberRepository.findByEmail(memberEmail)
             .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-    if (requestDto.getProfileImg() != null) {
-      member.updateProfileImg(requestDto.getProfileImg());
-    }
-
-    if (requestDto.getPhoneNum() != null) {
-      member.updatePhoneNum(requestDto.getPhoneNum());
-    }
-
     if (requestDto.getPassword() != null && requestDto.getPasswordConfirm() != null) {
       if (!requestDto.getPassword().equals(requestDto.getPasswordConfirm())) {
         throw new CustomException(ErrorCode.INVALID_REQUEST, "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
