@@ -52,7 +52,7 @@ public class MemberService {
       member.updateAddress(requestDto.getAddress());
 
       // member에 해당하는 manager가 있는 경우 manager에도 반영
-      managerRepository.findByMemberOpt(member).ifPresent(manager -> manager.updateAddress(requestDto.getAddress()));
+      managerRepository.findOptionalByMember(member).ifPresent(manager -> manager.updateAddress(requestDto.getAddress()));
     }
   }
 }

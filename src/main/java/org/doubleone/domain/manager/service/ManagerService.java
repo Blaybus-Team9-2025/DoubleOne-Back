@@ -40,7 +40,7 @@ public class ManagerService {
     Member member = memberRepository.findById(requestDto.memberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-    Manager manager = managerRepository.findByMemberOpt(member)
+    Manager manager = managerRepository.findOptionalByMember(member)
         .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
     // 프로필 이미지 수정
     if (requestDto.imgFile() != null && !requestDto.imgFile().isEmpty()) {

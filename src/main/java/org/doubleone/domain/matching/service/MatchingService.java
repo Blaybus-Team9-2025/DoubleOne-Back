@@ -106,7 +106,7 @@ public class MatchingService {
   public ManagerMatchingStatResponseDto getMatchingStat(Long memberId) {
     Member member = memberRepository.findById(memberId)
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-    Manager manager = managerRepository.findByMemberOpt(member)
+    Manager manager = managerRepository.findOptionalByMember(member)
         .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
     int matchCount = matchingRepository.countByManager(manager);
     int progressMatchCount = matchingRepository.countByManagerAndMatchingStatus(manager, MatchingStatus.IN_PROGRESS);

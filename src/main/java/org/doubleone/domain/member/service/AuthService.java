@@ -147,8 +147,8 @@ public class AuthService {
           .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
       // Worker, Manager 조회
-      Worker worker = workerRepository.findByMemberOpt(member);
-      Manager manager = managerRepository.findByMemberOpt(member).orElse(null);
+      Worker worker = workerRepository.findOptionalByMember(member).orElse(null);
+      Manager manager = managerRepository.findOptionalByMember(member).orElse(null);
 
       Long workerId = (worker != null) ? worker.getWorkerId() : null;
       Long managerId = (manager != null) ? manager.getManagerId() : null;
