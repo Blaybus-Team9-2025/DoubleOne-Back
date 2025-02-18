@@ -2,6 +2,7 @@ package org.doubleone.domain.member.service;
 
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.doubleone.domain.member.dto.request.SignupWorkerForKakaoDto;
 import org.doubleone.domain.member.dto.response.LoginResponseDto;
 import org.doubleone.domain.member.dto.response.TokenResponseDto;
 import org.doubleone.domain.member.entity.Member;
+import org.doubleone.domain.member.entity.MemberStatus;
 import org.doubleone.domain.member.entity.MemberType;
 import org.doubleone.domain.member.repository.MemberRepository;
 import org.doubleone.domain.worker.entity.Worker;
@@ -49,8 +51,14 @@ public class AuthService {
 
 
   public void signUpManager(SignupManagerDto requestDto) {
-    // 이메일 중복 체크
-    if (memberRepository.existsByEmail(requestDto.getEmail())) {
+    Optional<Member> memberOptional = memberRepository.findByEmail(requestDto.getEmail());
+    if (memberOptional.isPresent()) {
+      Member member = memberOptional.get();
+      // 탈퇴한 사용자 에러 처리
+      if (member.getMemberstatus() == MemberStatus.INACTIVE) {
+        throw new CustomException(ErrorCode.MEMBER_ALREADY_WITHDRAWN);
+      }
+      // 중복 이메일 에러 처리
       throw new CustomException(ErrorCode.MEMBER_ALREADY_EXISTS);
     }
     // 비밀번호 일치 검사
@@ -83,7 +91,7 @@ public class AuthService {
   public void signUpManagerForKakao(SignupManagerForKakaoDto requestDto) {
     Member member = memberRepository.findById(requestDto.memberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-    if(member.getMemberType() != MemberType.UNKNOWN){
+    if (member.getMemberType() != MemberType.UNKNOWN){
       throw new CustomException(ErrorCode.ACCESS_DENIED);
     }
     Manager manager = Manager.builder()
@@ -101,8 +109,14 @@ public class AuthService {
   }
 
   public void signUpWorker(SignupWorkerDto requestDto) {
-    // 이메일 중복 체크
-    if (memberRepository.existsByEmail(requestDto.getEmail())) {
+    Optional<Member> memberOptional = memberRepository.findByEmail(requestDto.getEmail());
+    if (memberOptional.isPresent()) {
+      Member member = memberOptional.get();
+      // 탈퇴한 사용자 에러 처리
+      if (member.getMemberstatus() == MemberStatus.INACTIVE) {
+        throw new CustomException(ErrorCode.MEMBER_ALREADY_WITHDRAWN);
+      }
+      // 중복 이메일 에러 처리
       throw new CustomException(ErrorCode.MEMBER_ALREADY_EXISTS);
     }
     // 멤버에 기본정보 등록
