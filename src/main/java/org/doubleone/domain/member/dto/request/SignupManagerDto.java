@@ -5,6 +5,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import org.doubleone.domain.member.entity.Gender;
+
+import java.time.LocalDate;
 
 @Data
 public class SignupManagerDto {
@@ -31,8 +34,20 @@ public class SignupManagerDto {
     @NotBlank(message="센터 이름은 필수입니다.")
     private String centerName;
 
-    @NotBlank(message="주소는 필수입니다.")
+    @NotBlank(message="지번은 필수입니다.")
     private String address;
+
+    @NotBlank(message="우편번호는 필수입니다.")
+    private String zipcode;
+
+    @NotBlank(message = "상세주소는 필수입니다.")
+    private String detailAddress;
+
+    @NotBlank(message="생년월일은 필수입니다.")
+    private LocalDate birthDate;
+
+    @NotBlank(message = "성별은 필수입니다.")
+    private Gender gender;
 
     private boolean hasTruck;
     private String centerGrade;

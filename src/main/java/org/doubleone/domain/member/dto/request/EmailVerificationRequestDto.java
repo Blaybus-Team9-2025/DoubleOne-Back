@@ -11,7 +11,4 @@ public class EmailVerificationRequestDto {
     @Email
     private String email;
 
-    @NotBlank
-    private String verificationCode;
-
 }

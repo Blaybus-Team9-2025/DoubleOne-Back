@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
+import org.doubleone.domain.worker.entity.Gender;
 import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.senior.entity.SeniorSchedule;
 import org.doubleone.global.BaseTimeEntity;
@@ -62,12 +63,17 @@ public class Condition extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private WorkType workType;
 
+  @Column(name="prefer_gender")
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  private Gender preferGender;
+
   @Column(name = "services", columnDefinition = "json")
   @Type(JsonType.class)
   private Map<String, List<String>> services;
 
   // 근무 조건 등록용
-  public static Condition createCondition(Senior senior, String title, int amount, PayType payType, int wage,
+  public static Condition createCondition(Senior senior, String title, int amount, PayType payType, int wage, Gender preferGender,
                                           Map<String, List<String>> welfares, WorkType workType,
                                           Map<String, List<String>> services, List<SeniorSchedule> seniorSchedules) {
     Condition condition = new Condition();
@@ -75,6 +81,7 @@ public class Condition extends BaseTimeEntity {
     condition.title = title;
     condition.amount = amount;
     condition.payType = payType;
+    condition.preferGender = preferGender;
     condition.wage = wage;
     condition.welfares = welfares;
     condition.workType = workType;
@@ -84,14 +91,16 @@ public class Condition extends BaseTimeEntity {
   }
 
   // 근무 조건 편집용
+
   public void updateCondition(String title, int amount, PayType payType, int wage,
-                              Map<String, List<String>> welfares, WorkType workType,
+                              Map<String, List<String>> welfares, Gender preferGender, WorkType workType,
                               Map<String, List<String>> services) {
     this.title = title;
     this.amount = amount;
     this.payType = payType;
     this.wage = wage;
     this.welfares = welfares;
+    this.preferGender = preferGender;
     this.workType = workType;
     this.services = services;
   }

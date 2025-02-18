@@ -16,7 +16,11 @@ public record SignupWorkerForKakaoDto(
       LocalDate birthDate,
       @NotBlank(message="전화번호는 필수입니다.")
       String phoneNum,
-      @NotBlank(message="주소는 필수입니다.")
-      String address
+      @NotBlank(message="지번 주소는 필수입니다.")
+      String address,
+      @NotBlank(message="상세 주소는 필수입니다.")
+      String detailAddress,
+      @NotBlank(message="우편 번호는 필수입니다.")
+      String zipcode
 ) {
 }

@@ -23,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -41,7 +40,7 @@ public class ManagerService {
     Member member = memberRepository.findById(requestDto.memberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-    Manager manager = managerRepository.findByMember(member)
+    Manager manager = managerRepository.findOptionalByMember(member)
         .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
     // 프로필 이미지 수정
     if (requestDto.imgFile() != null && !requestDto.imgFile().isEmpty()) {
@@ -56,9 +55,17 @@ public class ManagerService {
       manager.updatePhoneNum(requestDto.phoneNum());
     }
 
-    // 주소 수정
+    // 지번 주소 수정
     if (requestDto.address() != null) {
       manager.updateAddress(requestDto.address());
+    }
+    // 상세 주소 수정
+    if (requestDto.detailAddress() != null) {
+      manager.updateDetailAddress(requestDto.detailAddress());
+    }
+    //우편번호 수정
+    if (requestDto.zipcode() != null) {
+      manager.updateZipcode(requestDto.zipcode());
     }
 
     // 비밀번호 변경

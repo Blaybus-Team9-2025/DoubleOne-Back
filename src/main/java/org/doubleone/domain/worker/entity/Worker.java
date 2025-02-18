@@ -64,20 +64,20 @@ public class Worker extends BaseTimeEntity {
   @NotNull
   private String phoneNum;
 
-    @Column(name = "has_trained")
-    @NotNull
-    private boolean hasTrained;
-
-    @Column(name = "has_vehicle")
-    @NotNull
-    private boolean hasVehicle;
-
     @Column(name = "address")
     @NotNull
     private String address;
 
+    @Column(name = "zipcode")
+    @NotNull
+    private String zipcode;
+
+    @Column(name = "detail_address")
+    @NotNull
+    private String detailAddress;
+
   @Builder
-  public Worker(String name, Member member, LocalDate birthDate, org.doubleone.domain.worker.entity.Gender gender, String phoneNum, String address) {
+  public Worker(String name, Member member, LocalDate birthDate, org.doubleone.domain.worker.entity.Gender gender, String phoneNum, String address, String zipcode, String detailAddress) {
       this.name = name;
       this.profileImg = null;
       this.member = member;
@@ -85,17 +85,24 @@ public class Worker extends BaseTimeEntity {
       this.gender = gender;
       this.phoneNum = phoneNum;
       this.address = address;
+      this.zipcode = zipcode;
+      this.detailAddress = detailAddress;
   }
 
   // 기본 정보 수정
-  public void updateWorker(String phoneNum, String address, boolean hasVehicle, boolean hasTrained) {
+  public void updateWorker(String phoneNum, String address, String detailAddress, String zipcode) {
       this.phoneNum = phoneNum;
       this.address = address;
-      this.hasVehicle = hasVehicle;
-      this.hasTrained = hasTrained;
+      this.detailAddress = detailAddress;
+      this.zipcode = zipcode;
   }
 
   public void updateProfileImg(String profileImg) {
     this.profileImg = profileImg;
+  }
+
+  public void deactivateMember() {
+    this.name = "(알 수 없음)";
+    this.profileImg = null;
   }
 }

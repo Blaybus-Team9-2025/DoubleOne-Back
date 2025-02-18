@@ -2,6 +2,8 @@ package org.doubleone.domain.worker.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
+
 import org.doubleone.domain.worker.dto.response.WorkerLicenseDto;
 import org.doubleone.domain.worker.dto.response.WorkerRegionDto;
 import org.doubleone.domain.schedule.dto.ScheduleDto;
@@ -15,11 +17,17 @@ public record WorkerConditionRequestDto(
     WageType wageType,
     @NotNull
     int wage,
+
+    @NotNull
+    boolean discuss,
+
+    @NotNull
     String introduce,
     @NotNull
     boolean hasTrained,
     @NotNull
     boolean hasVehicle,
+    Map<String, List<String>> services,
     List<WorkPeriod> workPeriods,
     List<WorkerLicenseDto> licenseDtoList,
     List<ScheduleDto> scheduleDtoList,
@@ -31,10 +39,12 @@ public record WorkerConditionRequestDto(
         .worker(worker)
         .wageType(wageType)
         .wage(wage)
+            .discuss(discuss)
         .introduce(introduce)
         .hasTrained(hasTrained)
         .hasVehicle(hasVehicle)
-        .workPeriods(workPeriods)
+            .workPeriods(workPeriods)
+            .services(services)
         .build();
   }
 }
