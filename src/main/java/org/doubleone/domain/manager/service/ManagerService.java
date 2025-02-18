@@ -23,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -41,7 +40,7 @@ public class ManagerService {
     Member member = memberRepository.findById(requestDto.memberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-    Manager manager = managerRepository.findByMember(member)
+    Manager manager = managerRepository.findByMemberOpt(member)
         .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
     // 프로필 이미지 수정
     if (requestDto.imgFile() != null && !requestDto.imgFile().isEmpty()) {
