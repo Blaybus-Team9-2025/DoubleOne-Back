@@ -14,9 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "Senior")
 @RestController
@@ -29,14 +29,37 @@ public class SeniorController {
 
     @Operation(summary = "노인 정보 등록", description = "관리자가 노인 정보를 등록")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SeniorRequestDto> registerSenior(@Valid @ModelAttribute SeniorRequestDto seniorRequestDto) {
+    public ResponseEntity<Void> registerSenior(
+            @RequestPart(value = "managerId") Long managerId,
+            @RequestPart(value = "name") String name,
+            @RequestPart(value = "gender") String gender,
+            @RequestPart(value = "birthDate") String birthDate,
+            @RequestPart(value = "careLevel") String careLevel,
+            @RequestPart(value = "weight") int weight,
+            @RequestPart(value = "address") String address,
+            @RequestPart(value = "cohabitationStatus") String cohabitationStatus,
+            @RequestPart(value = "dementiaSymptoms", required = false) List<String> dementiaSymptoms,
+            @RequestPart(value = "etcDisease", required = false) String etcDisease,
+            @RequestPart(value = "imgFile", required = false) MultipartFile imgFile
+    ) {
+        SeniorRequestDto seniorRequestDto = new SeniorRequestDto(
+                managerId, name, gender, birthDate, careLevel, weight, address, imgFile, cohabitationStatus, dementiaSymptoms, etcDisease
+        );
+
         seniorService.registerSenior(seniorRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Operation(summary = "노인 정보 편집", description = "관리자가 노인 정보를 편집")
     @PatchMapping(value = "/{seniorId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SeniorRequestDto> updateSenior(@Valid @ModelAttribute SeniorUpdateDto seniorUpdateDto) {
+    public ResponseEntity<Void> updateSenior(
+            @PathVariable Long seniorId,
+            @RequestPart(value = "careLevel", required = false) String careLevel,
+            @RequestPart(value = "address", required = false) String address,
+            @RequestPart(value = "etcDisease", required = false) String etcDisease,
+            @RequestPart(value = "imgFile", required = false) MultipartFile imgFile
+    ) {
+        SeniorUpdateDto seniorUpdateDto = new SeniorUpdateDto(seniorId, careLevel, address, etcDisease, imgFile);
         seniorService.updateSenior(seniorUpdateDto);
         return ResponseEntity.ok().build();
     }
@@ -51,7 +74,7 @@ public class SeniorController {
     @Operation(summary = "노인 정보 목록 조회")
     @GetMapping
     public ResponseEntity<List<SeniorResponseDto>> getSeniorList(
-            @RequestParam(required = false) String sort // 추가
+            @RequestParam(required = false) String sort
     ) {
         List<SeniorResponseDto> seniors = seniorService.getSeniorList(sort);
         return ResponseEntity.ok(seniors);
@@ -78,10 +101,8 @@ public class SeniorController {
 
     @Operation(summary = "매칭된 요양사 확인")
     @GetMapping("/match/{seniorId}")
-    public ResponseEntity<WorkerMatchResponseDto> findMatchedWorkers(@PathVariable Long seniorId)
-    {
+    public ResponseEntity<WorkerMatchResponseDto> findMatchedWorkers(@PathVariable Long seniorId) {
         WorkerMatchResponseDto responseList = workerMatchService.findWorkersBySenior(seniorId);
         return ResponseEntity.ok(responseList);
     }
-
 }

@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -32,40 +31,37 @@ public class SeniorService {
 
   // 등록
   public void registerSenior(SeniorRequestDto seniorRequestDto) {
-<<<<<<< HEAD
-    Senior senior = seniorRequestDto.toEntity();
+    Manager manager = managerRepository.findById(seniorRequestDto.getManagerId())
+            .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
 
-    // 추가: 등록 시 matchingStatus 기본값 설정
-    senior.setMatchingStatus(MatchingStatus.BEFORE_REQUEST);
-
-=======
-    Manager manager = managerRepository.findById(seniorRequestDto.managerId())
-        .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
     Senior senior = seniorRequestDto.toEntity(manager, null);
-    if (seniorRequestDto.imgFile() != null && !seniorRequestDto.imgFile().isEmpty()) {
-      if (senior.getProfileImg() != null && !senior.getProfileImg().isEmpty()) {
-        s3Util.deleteImage(senior.getProfileImg());
-      }
-      senior.updateProfileImg(s3Util.uploadImage(seniorRequestDto.imgFile(), "profile/senior"));
+
+    if (seniorRequestDto.getImgFile() != null && !seniorRequestDto.getImgFile().isEmpty()) {
+      senior.updateProfileImg(s3Util.uploadImage(seniorRequestDto.getImgFile(), "profile/senior"));
     }
->>>>>>> develop
+
     seniorRepository.save(senior);
   }
+
 
   public void updateSenior(SeniorUpdateDto seniorUpdateDto) {
     Senior senior = seniorRepository.findById(seniorUpdateDto.seniorId())
             .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_NOT_FOUND));
-    if (seniorUpdateDto.imgFile() != null){
+
+    if (seniorUpdateDto.imgFile() != null) {
       if (senior.getProfileImg() != null) {
-        s3Util.deleteImage(senior.getProfileImg());}
+        s3Util.deleteImage(senior.getProfileImg());
+      }
       senior.updateProfileImg(s3Util.uploadImage(seniorUpdateDto.imgFile(), "profile/senior"));
     }
 
     senior.update(
             CareLevel.valueOf(seniorUpdateDto.careLevel().toUpperCase()),
             seniorUpdateDto.address(),
+            null,
             seniorUpdateDto.etcDisease()
     );
+
   }
 
   public void deleteSenior(Long seniorId) {
@@ -114,5 +110,4 @@ public class SeniorService {
             .map(SeniorResponseDto::new)
             .collect(Collectors.toList());
   }
-
 }
