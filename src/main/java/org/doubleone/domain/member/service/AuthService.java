@@ -12,7 +12,6 @@ import org.doubleone.domain.member.dto.request.SignupManagerDto;
 import org.doubleone.domain.member.dto.request.SignupManagerForKakaoDto;
 import org.doubleone.domain.member.dto.request.SignupWorkerDto;
 import org.doubleone.domain.member.dto.request.SignupWorkerForKakaoDto;
-import org.doubleone.domain.member.dto.response.CenterResponseDto;
 import org.doubleone.domain.member.dto.response.LoginResponseDto;
 import org.doubleone.domain.member.dto.response.TokenResponseDto;
 import org.doubleone.domain.member.entity.Member;
@@ -148,8 +147,8 @@ public class AuthService {
           .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
       // Worker, Manager 조회
-      Worker worker = workerRepository.findByMember(member);
-      Manager manager = managerRepository.findByMember(member).orElse(null);
+      Worker worker = workerRepository.findByMemberOpt(member);
+      Manager manager = managerRepository.findByMemberOpt(member).orElse(null);
 
       Long workerId = (worker != null) ? worker.getWorkerId() : null;
       Long managerId = (manager != null) ? manager.getManagerId() : null;
@@ -198,4 +197,9 @@ public class AuthService {
   }
 
 
+//  public void deactivateMember(Long memberId) {
+//    Member member = memberRepository.findById(memberId)
+//        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+//    member.deactivateMember()
+//  }
 }
