@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.doubleone.global.exception.CustomException;
+import org.doubleone.global.exception.ErrorCode;
+import org.doubleone.global.jwt.TokenProvider;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -18,41 +20,34 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class StompHandler implements ChannelInterceptor {
 
-//  private final JwtService jwtService;
+  private final TokenProvider tokenProvider;
 
   @Override
   public Message<?> preSend(Message<?> message, MessageChannel channel) {
     StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
-//    // websocket 연결, 채팅 메시지 전송 시 토큰 검증
-//    if (accessor.getCommand() == StompCommand.CONNECT
-//        || accessor.getCommand() == StompCommand.SEND) {
-//      String accessToken = accessor.getFirstNativeHeader("Authorization");
-//
-//      if (accessToken == null || !accessToken.startsWith("Bearer ")) {
-//        log.error("Invalid Authorization Header");
-//        throw new CustomException(ErrorCode.INVALID_AUTHORIZATION_HEADER);
-//      }
-//
-//      accessToken = accessToken.substring(7); // Bearer 제거 목적
-//      String validation = jwtService.validateToken(accessToken); // 토큰 유효성 검증
-//
-//      if (!"IS_VALID".equals(validation)) {
-//        handleInvalidToken(validation);
-//      }
-//
+    // websocket 연결, 채팅 메시지 전송 시 토큰 검증
+    if (accessor.getCommand() == StompCommand.CONNECT
+        || accessor.getCommand() == StompCommand.SEND) {
+      String accessToken = accessor.getFirstNativeHeader("Authorization");
+
+      if (accessToken == null || !accessToken.startsWith("Bearer ")) {
+        throw new CustomException(ErrorCode.ACCESS_DENIED);
+      }
+
+      accessToken = accessToken.substring(7);
+      tokenProvider.isValidToken(accessToken);
+
 //      Long userId = jwtService.extractUserId(accessToken);
 //
 //      if (accessor.getCommand() == StompCommand.SEND) {
 //        validateMessageUserId(message, userId);
 //      }
-//
-//      log.info("인증된 userId: {}", userId);
-//    }
+    }
     return message;
   }
 
-//  // 채팅 메시지의 userId와 토큰 userId 일치 여부 확인
+//  // 채팅 메시지의 memberId와 토큰 memberId 일치 여부 확인
 //  private void validateMessageUserId(Message<?> message, Long userId) {
 //    try {
 //      String payload = new String((byte[]) message.getPayload());
@@ -70,19 +65,4 @@ public class StompHandler implements ChannelInterceptor {
 //      throw new CustomException(ErrorCode.INVALID_MESSAGE_PAYLOAD);
 //    }
 //  }
-
-
-//  private void handleInvalidToken(String validation) {
-//    switch (validation) {
-//      case "TOKEN_EXPIRED":
-//        log.error("토큰이 만료되었습니다.");
-//        throw new CustomException(ErrorCode.TOKEN_EXPIRED);
-//      case "INVALID_TOKEN":
-//        log.error("유효하지 않은 토큰입니다.");
-//        throw new CustomException(ErrorCode.INVALID_TOKEN);
-//      case "FAIL_AUTHENTICATION":
-//      default:
-//        log.error("토큰 인증에 실패했습니다.");
-//        throw new CustomException(ErrorCode.FAIL_AUTHENTICATION);
-//    }
 }
