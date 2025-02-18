@@ -66,14 +66,6 @@ public class Worker extends BaseTimeEntity {
   @NotNull
   private String phoneNum;
 
-    @Column(name = "has_trained")
-    @NotNull
-    private boolean hasTrained;
-
-    @Column(name = "has_vehicle")
-    @NotNull
-    private boolean hasVehicle;
-
     @Column(name = "address")
     @NotNull
     private String address;

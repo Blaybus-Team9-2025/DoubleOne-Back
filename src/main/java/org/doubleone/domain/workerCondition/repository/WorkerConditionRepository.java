@@ -20,8 +20,9 @@ public interface WorkerConditionRepository extends JpaRepository<WorkerCondition
             "LEFT JOIN wc.workerRegions wr " +
             "LEFT JOIN wr.region r " +
             "LEFT JOIN wc.worker w " +
-            "WHERE (r.district = :district OR r.neighborhood = :neighborhood ) " +
-            "AND w.gender = :prefer " +
+            "WHERE (r.district = :district OR r.neighborhood = :neighborhood ) " + //시단위 일치안하면 OUT
+            "AND wc.hasTrained = :hasDementiaSymptoms " + //치매환자일때 요양사의 치매교육 이수여부 확인
+            "AND w.gender = :prefer " + //선호하는 성별 반영
             "ORDER BY " +
             "CASE " +
             " WHEN r.neighborhood = :neighborhood THEN 1 " +
@@ -31,7 +32,6 @@ public interface WorkerConditionRepository extends JpaRepository<WorkerCondition
     List<WorkerCondition> findWorkerByMatchingSchedule(
             @Param("neighborhood") String neighborhood,
             @Param("district") String district,
-            @Param("prefer") Gender prefer);
-
-
+            @Param("prefer") Gender prefer,
+            @Param("hasDementiaSymptoms") boolean hasDementiaSymptoms);
 }

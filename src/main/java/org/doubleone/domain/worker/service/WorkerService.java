@@ -41,8 +41,8 @@ public class WorkerService {
         String district = addressParts[addressParts.length - 2]; // "강남구"
         String neighborhood = addressParts[addressParts.length - 1]; // "역삼동"
         Gender prefer = condition.getPreferGender();//선호하는 성별
-
-        return workerConditionRepository.findWorkerByMatchingSchedule(neighborhood, district, prefer);
+        boolean hasDementiaSymptoms = !senior.getDementiaSymptoms().contains("false");//치매라면 FALSE, 치매가 아니면 TRUE
+        return workerConditionRepository.findWorkerByMatchingSchedule(neighborhood, district, prefer, hasDementiaSymptoms);
     }
 
 //    // 요양사 정보 수정
