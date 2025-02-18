@@ -47,7 +47,7 @@ public enum ErrorCode {
   END_MATCHING_NOT_FOUND(404, "수락된 매칭을 찾을 수 없습니다."),
 
   // Email
-  INCORRECT_VERIFICATION_CODE(400, "인증번호가 일치하지 않습니다.").
+  INCORRECT_VERIFICATION_CODE(400, "인증번호가 일치하지 않습니다."),
 
   // s3
   FILE_UPLOAD_FAIL(500, "파일 업로드에 실패했습니다."), 
