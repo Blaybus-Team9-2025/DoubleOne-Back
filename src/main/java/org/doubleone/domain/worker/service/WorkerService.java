@@ -111,7 +111,9 @@ public class WorkerService {
 
         worker.updateWorker(
             workerUpdateRequest.phoneNum(),
-            workerUpdateRequest.address()
+            workerUpdateRequest.address(),
+                workerUpdateRequest.detailAddress(),
+                workerUpdateRequest.zipcode()
         );
         if (workerUpdateRequest.password() != null && workerUpdateRequest.passwordConfirm() != null) {
             if (!workerUpdateRequest.password().equals(workerUpdateRequest.passwordConfirm())) {

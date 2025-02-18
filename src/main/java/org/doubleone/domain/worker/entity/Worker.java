@@ -68,8 +68,16 @@ public class Worker extends BaseTimeEntity {
     @NotNull
     private String address;
 
+    @Column(name = "zipcode")
+    @NotNull
+    private String zipcode;
+
+    @Column(name = "detail_address")
+    @NotNull
+    private String detailAddress;
+
   @Builder
-  public Worker(String name, Member member, LocalDate birthDate, org.doubleone.domain.worker.entity.Gender gender, String phoneNum, String address) {
+  public Worker(String name, Member member, LocalDate birthDate, org.doubleone.domain.worker.entity.Gender gender, String phoneNum, String address, String zipcode, String detailAddress) {
       this.name = name;
       this.profileImg = null;
       this.member = member;
@@ -77,12 +85,16 @@ public class Worker extends BaseTimeEntity {
       this.gender = gender;
       this.phoneNum = phoneNum;
       this.address = address;
+      this.zipcode = zipcode;
+      this.detailAddress = detailAddress;
   }
 
   // 기본 정보 수정
-  public void updateWorker(String phoneNum, String address) {
+  public void updateWorker(String phoneNum, String address, String detailAddress, String zipcode) {
       this.phoneNum = phoneNum;
       this.address = address;
+      this.detailAddress = detailAddress;
+      this.zipcode = zipcode;
   }
 
   public void updateProfileImg(String profileImg) {
