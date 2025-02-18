@@ -3,9 +3,12 @@ package org.doubleone.domain.senior.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import org.doubleone.domain.manager.entity.Gender;
+
 import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.matching.entity.MatchingStatus;
+
+import org.doubleone.domain.manager.entity.Manager;
+import org.doubleone.domain.member.entity.Gender;
 import org.doubleone.domain.senior.entity.CareLevel;
 import org.doubleone.domain.senior.entity.CohabitationStatus;
 import org.doubleone.domain.senior.entity.Senior;

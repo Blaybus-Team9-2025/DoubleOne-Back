@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
-import org.doubleone.domain.manager.entity.Gender;
+import org.doubleone.domain.member.entity.Gender;
 import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.matching.entity.MatchingStatus;
 import org.doubleone.global.BaseTimeEntity;
