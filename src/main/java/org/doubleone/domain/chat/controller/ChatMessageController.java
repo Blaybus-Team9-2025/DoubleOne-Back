@@ -26,7 +26,6 @@ public class ChatMessageController {
   @Operation(summary = "채팅 생성", description = "채팅 메시지 생성")
   @MessageMapping("/chat/message") // 메시지 발행 경로: /pub/chat/message
   public void message(ChatMessageDto messageDto) {
-    log.info("Received message: {}", messageDto);
     chatMessageService.saveMessage(messageDto);
     messagingTemplate.convertAndSend("/sub/chat/room/" + messageDto.chatRoomId(), messageDto);
     // 메시지 전송: /sub/chat/room/{chatRoomId}를 구독하는 사람에게

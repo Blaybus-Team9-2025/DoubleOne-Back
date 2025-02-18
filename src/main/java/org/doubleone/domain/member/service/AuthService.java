@@ -153,7 +153,6 @@ public class AuthService {
       Long workerId = (worker != null) ? worker.getWorkerId() : null;
       Long managerId = (manager != null) ? manager.getManagerId() : null;
 
-      log.info("문제 2");
       // AccessToken, RefreshToken 발급
       String accessToken = tokenProvider.createAccessToken(member);
       String refreshToken = tokenProvider.createRefreshToken(member);
