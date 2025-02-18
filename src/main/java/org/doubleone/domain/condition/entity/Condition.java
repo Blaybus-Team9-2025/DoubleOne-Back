@@ -9,9 +9,9 @@ import java.util.Map;
 
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
+import org.doubleone.domain.worker.entity.Gender;
 import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.senior.entity.SeniorSchedule;
-import org.doubleone.domain.workerCondition.entity.WorkPeriod;
 import org.doubleone.global.BaseTimeEntity;
 import org.hibernate.annotations.Type;
 
@@ -51,6 +51,11 @@ public class Condition extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private WorkType workType;
 
+  @Column(name="prefer_gender")
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  private Gender preferGender;
+
   @Column(name = "services", columnDefinition = "json")
   @Type(JsonType.class)
   private Map<String, List<String>> services;
@@ -60,21 +65,23 @@ public class Condition extends BaseTimeEntity {
 //  private List<WorkPeriod> workPeriods;
 
   // 근무 조건 등록용
-  public static Condition createCondition(Senior senior, int wage, Map<String, List<String>> welfares, WorkType workType, Map<String, List<String>> services,List<SeniorSchedule> seniorSchedules) {
+  public static Condition createCondition(Senior senior, int wage, Map<String, List<String>> welfares, WorkType workType,Gender preferGender, Map<String, List<String>> services,List<SeniorSchedule> seniorSchedules) {
     Condition condition = new Condition();
     condition.senior = senior;
     condition.wage = wage;
     condition.welfares = welfares;
     condition.workType = workType;
+    condition.preferGender = preferGender;
     condition.services = services;
     condition.seniorSchedules = seniorSchedules;
     return condition;
   }
 
   // 근무 조건 편집용
-  public void updateCondition(int wage, Map<String, List<String>> welfares, WorkType workType, Map<String, List<String>> services) {
+  public void updateCondition(int wage, Map<String, List<String>> welfares, Gender preferGender, WorkType workType, Map<String, List<String>> services) {
     this.wage = wage;
     this.welfares = welfares;
+    this.preferGender = preferGender;
     this.workType = workType;
     this.services = services;
   }

@@ -19,6 +19,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -71,6 +73,10 @@ public class WorkerCondition extends BaseTimeEntity {
   @Column(name = "has_vehicle")
   @NotNull
   private boolean hasVehicle;
+
+  @Column(name = "services", columnDefinition = "json")
+  @Type(JsonType.class)
+  private Map<String, List<String>> services;
 
   @Column(name = "work_periods", columnDefinition = "json")
   @Type(JsonType.class)

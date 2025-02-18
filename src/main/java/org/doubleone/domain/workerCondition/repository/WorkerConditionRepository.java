@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import io.lettuce.core.dynamic.annotation.Param;
+import org.doubleone.domain.condition.entity.Condition;
+import org.doubleone.domain.senior.entity.Senior;
+import org.doubleone.domain.worker.entity.Gender;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,25 +17,21 @@ public interface WorkerConditionRepository extends JpaRepository<WorkerCondition
     Optional<WorkerCondition> findById(Long id);
 
     @Query("SELECT wc FROM WorkerCondition wc " +
-            "JOIN wc.workerRegions wr " +
-            "JOIN wr.region r " +
-            "JOIN wc.workerSchedules ws " +
-            "JOIN ws.schedule wsch " +
-            "LEFT JOIN SeniorSchedule ss ON wsch.day = ss.schedule.day " +
-            "LEFT JOIN ss.schedule sschd " +
-            "WHERE wc.hasTrained = true " +
+            "LEFT JOIN wc.workerRegions wr " +
+            "LEFT JOIN wr.region r " +
+            "LEFT JOIN wc.worker w " +
+            "WHERE (r.district = :district OR r.neighborhood = :neighborhood ) " +
+            "AND w.gender = :prefer " +
             "ORDER BY " +
-            "   CASE " +
-            "       WHEN r.district = :district AND r.neighborhood = :neighborhood THEN 1 " +
-            "       WHEN r.district = :district AND r.neighborhood <> :neighborhood THEN 2 " +
-            "       WHEN r.district = :district AND " +
-            "            (FUNCTION('STR_TO_DATE', wsch.startTime, '%H:%i:%s') > FUNCTION('STR_TO_DATE', sschd.endTime, '%H:%i:%s') OR " +
-            "             FUNCTION('STR_TO_DATE', wsch.endTime, '%H:%i:%s') < FUNCTION('STR_TO_DATE', sschd.startTime, '%H:%i:%s')) THEN 3 " +
-            "       ELSE 4 " +
-            "   END, wc.workerConditionId ASC")
+            "CASE " +
+            " WHEN r.neighborhood = :neighborhood THEN 1 " +
+            " WHEN r.district = :district THEN 2 " +
+            " ELSE 3 " +
+            "END, wc.workerConditionId ASC")
     List<WorkerCondition> findWorkerByMatchingSchedule(
             @Param("neighborhood") String neighborhood,
-            @Param("district") String district);
+            @Param("district") String district,
+            @Param("prefer") Gender prefer);
 
 
 }

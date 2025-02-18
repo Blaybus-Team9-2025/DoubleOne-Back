@@ -4,20 +4,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.worker.dto.response.WorkerDetailResponse;
 import org.doubleone.domain.worker.dto.response.WorkerLicenseDto;
 import org.doubleone.domain.worker.dto.response.WorkerRegionDto;
 import org.doubleone.domain.worker.dto.response.WorkerScheduleDto;
+import org.doubleone.domain.worker.entity.Gender;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.worker.repository.WorkerRepository;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.doubleone.domain.workerCondition.repository.WorkerConditionRepository;
-import org.doubleone.domain.workerLicense.entity.WorkerLicense;
 import org.doubleone.domain.workerLicense.repository.WorkerLicenseRepository;
-import org.doubleone.domain.workerRegion.entity.WorkerRegion;
 import org.doubleone.domain.workerRegion.repository.WorkerRegionRepository;
-import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;
 import org.doubleone.domain.workerSchedule.repository.WorkerScheduleRepository;
 import org.doubleone.global.exception.CustomException;
 import org.doubleone.global.exception.ErrorCode;
@@ -37,12 +36,13 @@ public class WorkerService {
     private final WorkerScheduleRepository workerScheduleRepository;
 
     //매칭된 요양사 찾기
-    public List<WorkerCondition> getMatchedWorkerBySenior(Senior senior) {
+    public List<WorkerCondition> getMatchedWorkerBySenior(Senior senior, Condition condition) {
         String[] addressParts = senior.getAddress().split(" ");
         String district = addressParts[addressParts.length - 2]; // "강남구"
         String neighborhood = addressParts[addressParts.length - 1]; // "역삼동"
+        Gender prefer = condition.getPreferGender();//선호하는 성별
 
-        return workerConditionRepository.findWorkerByMatchingSchedule(neighborhood, district);
+        return workerConditionRepository.findWorkerByMatchingSchedule(neighborhood, district, prefer);
     }
 
 //    // 요양사 정보 수정

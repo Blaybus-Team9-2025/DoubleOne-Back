@@ -21,6 +21,7 @@ public record WorkerConditionRequestDto(
     boolean hasTrained,
     @NotNull
     boolean hasVehicle,
+    Map<String, List<String>> services,
     List<WorkPeriod> workPeriods,
     List<WorkerLicenseDto> licenseDtoList,
     List<WorkerScheduleDto> scheduleDtoList,
@@ -35,7 +36,8 @@ public record WorkerConditionRequestDto(
         .introduce(introduce)
         .hasTrained(hasTrained)
         .hasVehicle(hasVehicle)
-        .workPeriods(workPeriods)
+            .workPeriods(workPeriods)
+            .services(services)
         .build();
   }
 }

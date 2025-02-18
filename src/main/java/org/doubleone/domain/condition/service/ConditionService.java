@@ -46,7 +46,7 @@ public class ConditionService {
     public void updateCondition(Long seniorConditionId, ConditionRequestDto requestDto){
         Condition condition = conditionRepository.findById(seniorConditionId)
                 .orElseThrow(()->new CustomException(ErrorCode.SENIOR_NOT_FOUND));
-        condition.updateCondition(requestDto.wage(), requestDto.welfares(), requestDto.workType(), requestDto.services());
+        condition.updateCondition(requestDto.wage(), requestDto.welfares(), requestDto.preferGender(),requestDto.workType(), requestDto.services());
         if(requestDto.seniorSchedules()!=null && !requestDto.seniorSchedules().isEmpty()){
             requestDto.seniorSchedules().forEach(scheduleDto ->
                     seniorScheduleService.update(condition, scheduleDto));
