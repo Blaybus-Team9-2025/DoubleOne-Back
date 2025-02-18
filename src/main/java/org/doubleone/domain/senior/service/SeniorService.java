@@ -1,6 +1,7 @@
 package org.doubleone.domain.senior.service;
 
 import lombok.RequiredArgsConstructor;
+import org.doubleone.domain.matching.entity.MatchingStatus;
 import org.doubleone.domain.senior.dto.SeniorRequestDto;
 import org.doubleone.domain.senior.dto.SeniorResponseDto;
 import org.doubleone.domain.senior.dto.SeniorUpdateDto;
@@ -25,6 +26,10 @@ public class SeniorService {
 
   public void registerSenior(SeniorRequestDto seniorRequestDto) {
     Senior senior = seniorRequestDto.toEntity();
+
+    // 추가: 등록 시 matchingStatus 기본값 설정
+    senior.setMatchingStatus(MatchingStatus.BEFORE_REQUEST);
+
     seniorRepository.save(senior);
   }
 
@@ -73,4 +78,20 @@ public class SeniorService {
             .map(SeniorResponseDto::new)
             .collect(Collectors.toList());
   }
+
+  @Transactional(readOnly = true)
+  public List<SeniorResponseDto> getSeniorList(String sort) {
+    List<Senior> seniors;
+
+    if ("unmatched".equals(sort)) {
+      seniors = seniorRepository.findByMatchingStatusOrderByCreatedAtDesc(MatchingStatus.BEFORE_REQUEST);
+    } else { // 기본: 최신순
+      seniors = seniorRepository.findAllByOrderByCreatedAtDesc();
+    }
+
+    return seniors.stream()
+            .map(SeniorResponseDto::new)
+            .collect(Collectors.toList());
+  }
+
 }

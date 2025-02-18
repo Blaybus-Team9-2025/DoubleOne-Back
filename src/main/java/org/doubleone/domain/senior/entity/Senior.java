@@ -1,12 +1,12 @@
 package org.doubleone.domain.senior.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.manager.entity.Gender;
+import org.doubleone.domain.matching.entity.MatchingStatus;
 import org.doubleone.global.BaseTimeEntity;
 import org.hibernate.annotations.Type;
 
@@ -68,6 +68,15 @@ public class Senior extends BaseTimeEntity {
 
   @Column(name = "etc_disease")
   private String etcDisease;
+
+  @Column(name = "matching_status")
+  @Enumerated(EnumType.STRING)
+  private MatchingStatus matchingStatus = MatchingStatus.BEFORE_REQUEST;
+
+  // matchingStatus 변경을 위한 setter 추가
+  public void setMatchingStatus(MatchingStatus matchingStatus) {
+    this.matchingStatus = matchingStatus;
+  }
 
   public void update(CareLevel careLevel, String address, String profileImg, String etcDisease) {
     if (careLevel != null) this.careLevel = careLevel;

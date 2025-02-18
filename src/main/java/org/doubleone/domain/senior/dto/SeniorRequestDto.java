@@ -3,6 +3,7 @@ package org.doubleone.domain.senior.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.doubleone.domain.manager.entity.Gender;
+import org.doubleone.domain.matching.entity.MatchingStatus;
 import org.doubleone.domain.senior.entity.CareLevel;
 import org.doubleone.domain.senior.entity.CohabitationStatus;
 import org.doubleone.domain.senior.entity.Senior;
@@ -36,6 +37,7 @@ public class SeniorRequestDto {
                 .cohabitationStatus(CohabitationStatus.valueOf(cohabitationStatus.toUpperCase()))
                 .dementiaSymptoms(dementiaSymptoms)
                 .etcDisease(etcDisease)
+                .matchingStatus(MatchingStatus.BEFORE_REQUEST)
                 .build();
     }
 
