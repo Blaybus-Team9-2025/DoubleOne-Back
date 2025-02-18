@@ -68,6 +68,14 @@ public class Worker extends BaseTimeEntity {
     @NotNull
     private String address;
 
+    @Column(name = "zipcode")
+    @NotNull
+    private String zipcode;
+
+    @Column(name = "detail_address")
+    @NotNull
+    private String detailAddress;
+
   @Builder
   public Worker(String name, Member member, LocalDate birthDate, org.doubleone.domain.worker.entity.Gender gender, String phoneNum, String address) {
       this.name = name;
