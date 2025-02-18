@@ -2,7 +2,6 @@ package org.doubleone.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.manager.repository.ManagerRepository;
 import org.doubleone.domain.member.dto.request.MemberProfileUpdateRequestDto;
 import org.doubleone.domain.member.entity.Member;
@@ -53,7 +52,7 @@ public class MemberService {
       member.updateAddress(requestDto.getAddress());
 
       // member에 해당하는 manager가 있는 경우 manager에도 반영
-      managerRepository.findByMember(member).ifPresent(manager -> manager.updateAddress(requestDto.getAddress()));
+      managerRepository.findOptionalByMember(member).ifPresent(manager -> manager.updateAddress(requestDto.getAddress()));
     }
   }
 }

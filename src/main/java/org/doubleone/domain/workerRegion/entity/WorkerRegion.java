@@ -37,7 +37,7 @@ public class WorkerRegion extends BaseTimeEntity {
   private Long workerRegionId;
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-  @JoinColumn(name = "worker_contion_id", updatable = false)
+  @JoinColumn(name = "worker_condition_id", updatable = false)
   @NotNull
   @JsonIgnore
   private WorkerCondition workerCondition;

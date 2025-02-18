@@ -1,15 +1,28 @@
 package org.doubleone.domain.worker.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.doubleone.domain.chat.entity.ChatRoom;
+import org.doubleone.domain.chat.service.ChatRoomService;
+import org.doubleone.domain.matching.entity.MatchingStatus;
+import org.doubleone.domain.matching.repository.MatchingRepository;
+import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.member.entity.Member;
+import org.doubleone.domain.senior.dto.SeniorScheduleDto;
+import org.doubleone.domain.senior.entity.SeniorSchedule;
+import org.doubleone.domain.senior.repository.SeniorScheduleRepository;
 import org.doubleone.domain.worker.dto.request.WorkerUpdateRequest;
 import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.worker.dto.response.WorkerDetailResponse;
 import org.doubleone.domain.worker.dto.response.WorkerLicenseDto;
+import org.doubleone.domain.worker.dto.response.WorkerMatchingAlarmUnitDto;
 import org.doubleone.domain.worker.dto.response.WorkerRegionDto;
+import org.doubleone.domain.worker.dto.response.WorkerMyPageResponseDto;
+import org.doubleone.domain.worker.entity.Gender;
 import org.doubleone.domain.schedule.dto.ScheduleDto;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.worker.repository.WorkerRepository;
@@ -30,22 +43,58 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class WorkerService {
-
+    private final ChatRoomService chatRoomService;
     private final WorkerRepository workerRepository;
     private final WorkerConditionRepository workerConditionRepository;
     private final WorkerLicenseRepository workerLicenseRepository;
     private final WorkerRegionRepository workerRegionRepository;
     private final WorkerScheduleRepository workerScheduleRepository;
+    private final SeniorScheduleRepository seniorScheduleRepository;
+    private final MatchingRepository matchingRepository;
     private final PasswordEncoder passwordEncoder;
     private final S3Util s3Util;
 
     //매칭된 요양사 찾기
-    public List<WorkerCondition> getMatchedWorkerBySenior(Senior senior) {
+    public List<WorkerCondition> getMatchedWorkerBySenior(Senior senior, Condition condition) {
         String[] addressParts = senior.getAddress().split(" ");
+        String city = addressParts[addressParts.length - 3]; //"서울시"
         String district = addressParts[addressParts.length - 2]; // "강남구"
         String neighborhood = addressParts[addressParts.length - 1]; // "역삼동"
+        Gender prefer = condition.getPreferGender();//선호하는 성별
+        boolean hasDementiaSymptoms = !senior.getDementiaSymptoms().contains("false"); // 치매라면 FALSE, 치매가 아니면 TRUE
+        return workerConditionRepository.findWorkerByMatchingSchedule(neighborhood, district, city, prefer, hasDementiaSymptoms, condition)
+                .stream()
+                .filter(workerCondition -> isServiceMatching(condition.getServices(), workerCondition.getServices()))
+                .collect(Collectors.toList());
+    }
 
-        return workerConditionRepository.findWorkerByMatchingSchedule(neighborhood, district);
+    private boolean isServiceMatching(Map<String, List<String>> seniorServices, Map<String, List<String>> workerServices) {
+        if (seniorServices == null || workerServices == null) {
+            return false;
+        }
+
+        int totalServices = 0; //총 서비스갯수
+        int matchedServices = 0; //일치하는 서비스 개수
+
+        for (Map.Entry<String, List<String>> entry : seniorServices.entrySet()) {
+            String category = entry.getKey();
+            List<String> seniorServiceList = entry.getValue();
+            List<String> workerServiceList = workerServices.getOrDefault(category, new ArrayList<>());
+
+            totalServices += seniorServiceList.size();
+
+            for (String service : seniorServiceList) {
+                if (workerServiceList.contains(service)) {
+                    matchedServices++;
+                }
+            }
+        }
+
+        // 매칭률 계산 (일치하는 서비스 / 총 서비스 개수)
+        double matchPercentage = totalServices > 0 ? ((double) matchedServices / totalServices) * 100 : 0;
+
+        // 30% 이상 매칭되는 경우 true 반환
+        return matchPercentage >= 30.0;
     }
 
     // 요양사 정보 수정
@@ -62,9 +111,7 @@ public class WorkerService {
 
         worker.updateWorker(
             workerUpdateRequest.phoneNum(),
-            workerUpdateRequest.address(),
-            workerUpdateRequest.hasVehicle(),
-            workerUpdateRequest.hasTrained()
+            workerUpdateRequest.address()
         );
         if (workerUpdateRequest.password() != null && workerUpdateRequest.passwordConfirm() != null) {
             if (!workerUpdateRequest.password().equals(workerUpdateRequest.passwordConfirm())) {
@@ -93,5 +140,21 @@ public class WorkerService {
         return WorkerDetailResponse.from(worker, workerCondition, licenses, regions, schedules);
     }
 
-
+    @Transactional(readOnly = true)
+    public WorkerMyPageResponseDto getWorkerMyPage(Long workerId) {
+        Worker worker = workerRepository.findById(workerId)
+            .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
+        List<WorkerMatchingAlarmUnitDto> matchingAlarmlist = matchingRepository.findByWorkerAndRunningStatus(worker, MatchingStatus.IN_PROGRESS)
+            .stream()
+            .map(matching -> {
+                ChatRoom chatRoom = chatRoomService.createChatRoom(matching);
+                List<ScheduleDto> seniorSchedules = matching.getCondition().getSeniorSchedules()
+                    .stream()
+                    .map(ScheduleDto::from)
+                    .collect(Collectors.toList());
+                return WorkerMatchingAlarmUnitDto.from(matching, chatRoom, seniorSchedules);
+            })
+            .collect(Collectors.toList());
+        return WorkerMyPageResponseDto.from(worker, matchingAlarmlist);
+    }
 }
