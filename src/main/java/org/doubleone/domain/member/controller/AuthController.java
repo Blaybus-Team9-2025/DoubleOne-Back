@@ -110,7 +110,7 @@ public class AuthController {
   }
 
   @Operation(summary = "이메일 인증번호 확인", description = "이메일 인증번호를 확인")
-  @GetMapping("/email/verify")
+  @PostMapping("/email/verify")
   public ResponseEntity<EmailVerificationResponseDto> verifyEmail(@Valid @RequestBody EmailVerificationConfirmRequestDto emailVerificationConfirmRequestDto) {
     boolean isValid = emailSenderService.verifyCode(emailVerificationConfirmRequestDto.getEmail(), emailVerificationConfirmRequestDto.getVerificationCode());
     if (isValid) {
