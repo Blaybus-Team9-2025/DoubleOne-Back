@@ -37,7 +37,7 @@ public class ConditionService {
                 .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_CONDITION_NOT_FOUND));
 
         condition.updateCondition(requestDto.title(), requestDto.amount(), requestDto.payType(),
-                requestDto.wage(), requestDto.welfares(), requestDto.workType(), requestDto.services());
+                requestDto.wage(), requestDto.welfares(), requestDto.preferGender(), requestDto.workType(), requestDto.services());
     }
 
     // 삭제
