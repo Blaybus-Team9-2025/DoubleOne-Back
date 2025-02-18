@@ -25,6 +25,7 @@ public enum ErrorCode {
   MEMBER_NOT_FOUND(404, "멤버를 찾을 수 없습니다."),
   MEMBER_ALREADY_EXISTS(409, "해당 이메일을 가진 멤버가 존재합니다."),
   PASSWORD_MISMATCH(400, "비밀번호가 일치하지 않습니다."),
+  MEMBER_ALREADY_WITHDRAWN(409, "탈퇴한 이메일로는 재가입이 불가능합니다."),
 
   // Manager
   MANAGER_CANNOT_CREATE_CHAT(409, "관리자는 채팅을 시작할 수 없습니다."),

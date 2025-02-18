@@ -1,12 +1,16 @@
 package org.doubleone.domain.member.service;
 
+import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.doubleone.domain.center.entity.Center;
 import org.doubleone.domain.center.repository.CenterRepository;
 import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.manager.repository.ManagerRepository;
+import org.doubleone.domain.member.dto.request.LoginForKakaoRequestDto;
 import org.doubleone.domain.member.dto.request.LoginRequestDto;
 import org.doubleone.domain.member.dto.request.SignupManagerDto;
 import org.doubleone.domain.member.dto.request.SignupManagerForKakaoDto;
@@ -15,6 +19,7 @@ import org.doubleone.domain.member.dto.request.SignupWorkerForKakaoDto;
 import org.doubleone.domain.member.dto.response.LoginResponseDto;
 import org.doubleone.domain.member.dto.response.TokenResponseDto;
 import org.doubleone.domain.member.entity.Member;
+import org.doubleone.domain.member.entity.MemberStatus;
 import org.doubleone.domain.member.entity.MemberType;
 import org.doubleone.domain.member.repository.MemberRepository;
 import org.doubleone.domain.worker.entity.Worker;
@@ -46,8 +51,14 @@ public class AuthService {
 
 
   public void signUpManager(SignupManagerDto requestDto) {
-    // 이메일 중복 체크
-    if (memberRepository.existsByEmail(requestDto.getEmail())) {
+    Optional<Member> memberOptional = memberRepository.findByEmail(requestDto.getEmail());
+    if (memberOptional.isPresent()) {
+      Member member = memberOptional.get();
+      // 탈퇴한 사용자 에러 처리
+      if (member.getMemberstatus() == MemberStatus.INACTIVE) {
+        throw new CustomException(ErrorCode.MEMBER_ALREADY_WITHDRAWN);
+      }
+      // 중복 이메일 에러 처리
       throw new CustomException(ErrorCode.MEMBER_ALREADY_EXISTS);
     }
     // 비밀번호 일치 검사
@@ -66,12 +77,16 @@ public class AuthService {
     Manager manager = Manager.builder()
         .name(requestDto.getName())
         .centerName(requestDto.getCenterName())
+            .birthDate(requestDto.getBirthDate())
+            .gender(requestDto.getGender())
         .phoneNum(requestDto.getPhoneNum())
         .address(requestDto.getAddress())
         .hasTruck(requestDto.isHasTruck())
+            .zipcode(requestDto.getZipcode())
+            .detailAddress(requestDto.getDetailAddress())
+            .centerName(requestDto.getCenterName())
         .centerGrade(requestDto.getCenterGrade())
         .centerPeriod(requestDto.getCenterPeriod())
-        .centerGrade(requestDto.getCenterGrade())
         .member(member)
         .build();
     managerRepository.save(manager);
@@ -80,14 +95,18 @@ public class AuthService {
   public void signUpManagerForKakao(SignupManagerForKakaoDto requestDto) {
     Member member = memberRepository.findById(requestDto.memberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-    if(member.getMemberType() != MemberType.UNKNOWN){
+    if (member.getMemberType() != MemberType.UNKNOWN){
       throw new CustomException(ErrorCode.ACCESS_DENIED);
     }
     Manager manager = Manager.builder()
         .name(requestDto.name())
         .centerName(requestDto.centerName())
+            .gender(requestDto.gender())
+            .birthDate(requestDto.birthDate())
         .phoneNum(requestDto.phoneNum())
         .address(requestDto.address())
+            .zipcode(requestDto.zipcode())
+            .detailAddress(requestDto.detailAddress())
         .hasTruck(requestDto.hasTruck())
         .centerGrade(requestDto.centerGrade())
         .centerPeriod(requestDto.centerPeriod())
@@ -98,8 +117,14 @@ public class AuthService {
   }
 
   public void signUpWorker(SignupWorkerDto requestDto) {
-    // 이메일 중복 체크
-    if (memberRepository.existsByEmail(requestDto.getEmail())) {
+    Optional<Member> memberOptional = memberRepository.findByEmail(requestDto.getEmail());
+    if (memberOptional.isPresent()) {
+      Member member = memberOptional.get();
+      // 탈퇴한 사용자 에러 처리
+      if (member.getMemberstatus() == MemberStatus.INACTIVE) {
+        throw new CustomException(ErrorCode.MEMBER_ALREADY_WITHDRAWN);
+      }
+      // 중복 이메일 에러 처리
       throw new CustomException(ErrorCode.MEMBER_ALREADY_EXISTS);
     }
     // 멤버에 기본정보 등록
@@ -116,6 +141,8 @@ public class AuthService {
         .phoneNum(requestDto.getPhoneNum())
         .birthDate(requestDto.getBirthDate())
         .address(requestDto.getAddress())
+            .detailAddress(requestDto.getDetailAddress())
+            .zipcode(requestDto.getZipcode())
         .gender(requestDto.getGender())
         .member(member)
         .build();
@@ -134,6 +161,8 @@ public class AuthService {
         .phoneNum(requestDto.phoneNum())
         .birthDate(requestDto.birthDate())
         .address(requestDto.address())
+            .detailAddress(requestDto.detailAddress())
+            .zipcode(requestDto.zipcode())
         .gender(requestDto.gender())
         .member(member)
         .build();
@@ -165,6 +194,30 @@ public class AuthService {
 
     }
 
+  public LoginResponseDto login(LoginForKakaoRequestDto requestDto){
+    String email = requestDto.account_email();
+    Member member = memberRepository.findByEmail(email)
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+    // Worker, Manager 조회
+    Worker worker = workerRepository.findOptionalByMember(member).orElse(null);
+    Manager manager = managerRepository.findOptionalByMember(member).orElse(null);
+
+    Long workerId = (worker != null) ? worker.getWorkerId() : null;
+    Long managerId = (manager != null) ? manager.getManagerId() : null;
+
+    // AccessToken, RefreshToken 발급
+    String accessToken = tokenProvider.createAccessToken(member);
+    String refreshToken = tokenProvider.createRefreshToken(member);
+
+    // 리프레시 토큰 저장
+    tokenProvider.saveRefreshToken(member.getMemberId(), refreshToken);
+
+    // LoginResponseDto 반환
+    return LoginResponseDto.from(accessToken, refreshToken, member, workerId, managerId);
+
+  }
+
   public TokenResponseDto reissueAccessToken(String refreshToken){
     // 전달받은 리프레시 토큰에서 이메일을 추출하여 사용자 정보 가져오기
     String email = tokenProvider.extractEmail(refreshToken);
@@ -191,14 +244,22 @@ public class AuthService {
   @Transactional(readOnly = true)
   public List<String> getCentersByKeyword(String keyword) {
     return centerRepository.findByCenterNameContaining(keyword).stream()
-        .map(center -> center.getCenterCode() + "," + center.getCenterName())
+        .map(Center::getCenterName)
         .collect(Collectors.toList());
   }
 
-
-//  public void deactivateMember(Long memberId) {
-//    Member member = memberRepository.findById(memberId)
-//        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-//    member.deactivateMember()
-//  }
+  public void deactivateMember(Long memberId) {
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+    member.deactivateMember();
+    if (member.getMemberType() == MemberType.WORKER){
+      Worker worker = workerRepository.findByMember(member);
+      worker.deactivateMember();
+    } else if (member.getMemberType() == MemberType.MANAGER){
+      Manager manager = managerRepository.findByMember(member);
+      manager.deactivateMember();
+    } else {
+      throw new CustomException(ErrorCode.ACCESS_DENIED);
+    }
+  }
 }

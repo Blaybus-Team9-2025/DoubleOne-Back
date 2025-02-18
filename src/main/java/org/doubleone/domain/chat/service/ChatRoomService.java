@@ -16,6 +16,7 @@ import org.doubleone.domain.chat.repository.ChatMessageRepository;
 import org.doubleone.domain.chat.repository.ChatRoomRepository;
 import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.manager.repository.ManagerRepository;
+import org.doubleone.domain.matching.entity.Matching;
 import org.doubleone.domain.member.entity.Member;
 import org.doubleone.domain.member.entity.MemberType;
 import org.doubleone.domain.member.service.MemberService;
@@ -58,10 +59,28 @@ public class ChatRoomService {
     ChatRoom chatRoom = ChatRoom.builder()
         .worker(worker)
         .manager(manager)
-        .title(requestDto.title())
         .build();
     chatRoomRepository.save(chatRoom);
     return ChatRoomResponseDto.from(chatRoom, true);
+  }
+
+  public ChatRoom createChatRoom(Matching matching) {
+    Manager manager = matching.getCondition().getSenior().getManager();
+    Worker worker = matching.getWorkerCondition().getWorker();
+
+    // 기존 채팅방 존재하는지 확인
+    Optional<ChatRoom> existingChatRoom = chatRoomRepository.findByManagerAndWorker(manager, worker);
+    if (existingChatRoom.isPresent()) {
+      // 기존 채팅방 반환
+      return existingChatRoom.get();
+//      return ChatRoomResponseDto.from(existingChatRoom.get(), false);
+    }
+    ChatRoom chatRoom = ChatRoom.builder()
+        .worker(worker)
+        .manager(manager)
+        .build();
+    return chatRoomRepository.save(chatRoom);
+//    return ChatRoomResponseDto.from(chatRoom, true);
   }
 
   @Transactional(readOnly = true)

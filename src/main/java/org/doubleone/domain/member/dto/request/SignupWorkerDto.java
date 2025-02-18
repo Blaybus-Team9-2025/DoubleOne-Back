@@ -37,6 +37,12 @@ public class SignupWorkerDto {
     @NotBlank(message = "전화번호는 필수입니다.")
     private String phoneNum;
 
-    @NotBlank(message = "주소는 필수입니다.")
+    @NotBlank(message = "지번 주소는 필수입니다.")
     private String address;
+
+    @NotBlank(message = "상세 주소는 필수입니다.")
+    private String detailAddress;
+
+    @NotBlank(message = "우편 번호는 필수입니다.")
+    private String zipcode;
 }

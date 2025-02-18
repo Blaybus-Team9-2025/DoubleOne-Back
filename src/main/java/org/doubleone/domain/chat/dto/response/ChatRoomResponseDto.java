@@ -6,7 +6,7 @@ import org.doubleone.domain.chat.entity.ChatRoom;
 @Builder
 public record ChatRoomResponseDto(
     Long chatRoomId,
-    String title,
+//    String title,
     Long workerId,
     Long managerId,
     boolean hasUnRead
@@ -15,7 +15,7 @@ public record ChatRoomResponseDto(
   public static ChatRoomResponseDto from(ChatRoom chatRoom, boolean hasUnRead){
     return ChatRoomResponseDto.builder()
         .chatRoomId(chatRoom.getChatRoomId())
-        .title(chatRoom.getTitle())
+//        .title(chatRoom.getTitle())
         .workerId(chatRoom.getWorker().getWorkerId())
         .managerId(chatRoom.getManager().getManagerId())
         .hasUnRead(hasUnRead)

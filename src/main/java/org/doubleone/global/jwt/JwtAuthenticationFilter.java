@@ -6,7 +6,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.doubleone.global.exception.CustomException;
+import org.doubleone.global.exception.ErrorDto;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ObjectUtils;
@@ -28,20 +31,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request,
       HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
-    // 요청 헤더의 Authorization 키 값 조회
-    String authorizationHeader = request.getHeader(HEADER);
+    try {
+      // 요청 헤더의 Authorization 키 값 조회
+      String authorizationHeader = request.getHeader(HEADER);
 
-    // Bearer 접두사를 제거하여 토큰 추출
-    String token = getAccessToken(authorizationHeader);
+      // Bearer 접두사를 제거하여 토큰 추출
+      String token = getAccessToken(authorizationHeader);
 
-    // 토큰이 유효한 경우, 인증 정보를 설정(SecurityContext에 인증정보 저장)하여 해당 요청동안 인증된 사용자 정보를 받아올 수 있게 함
-    if(!ObjectUtils.isEmpty(token) && tokenProvider.isValidToken(token)){
-      Authentication authentication = tokenProvider.getAuthentication(token);
-      SecurityContextHolder.getContext().setAuthentication(authentication);
+      // 토큰이 유효한 경우, 인증 정보를 설정(SecurityContext에 인증정보 저장)
+      if (!ObjectUtils.isEmpty(token) && tokenProvider.isValidToken(token)) {
+        Authentication authentication = tokenProvider.getAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+      }
+
+      // 다음 필터로 요청 전달
+      filterChain.doFilter(request, response);
+
+    } catch (CustomException e) {
+      handleJwtException(response, e, request);
+      return; // 예외 발생 시 종료
     }
-
-    // 다음 필터로 요청과 응답 전달
-    filterChain.doFilter(request, response);
   }
 
   /**
@@ -54,5 +63,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       return authorizationHeader.substring(BEARER.length());
     }
     return null;
+  }
+
+  private void handleJwtException(HttpServletResponse response, CustomException e, HttpServletRequest request) throws IOException {
+    ErrorDto errorDto = ErrorDto.builder()
+        .timestamp(LocalDateTime.now().toString())
+        .status(e.getErrorCode().getStatus())
+        .message(e.getErrorCode().getMessage())
+        .path(request.getRequestURI())
+        .build();
+
+    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    response.setContentType("application/json");
+    response.getWriter().write(errorDtoToJson(errorDto));
+  }
+
+  private String errorDtoToJson(ErrorDto errorDto) {
+    return String.format("{\"timestamp\": \"%s\", \"status\": %d, \"message\": \"%s\", \"path\": \"%s\"}",
+        errorDto.getTimestamp(), errorDto.getStatus(), errorDto.getMessage(), errorDto.getPath());
   }
 }
