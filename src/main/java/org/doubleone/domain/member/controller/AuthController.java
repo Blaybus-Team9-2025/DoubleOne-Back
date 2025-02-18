@@ -71,6 +71,12 @@ public class AuthController {
     return ResponseEntity.status(HttpStatus.OK).body(authService.login(loginRequestDto));
   }
 
+  @Operation(summary = "카카오 로그인")
+  @PostMapping("/login/kakao")
+  public ResponseEntity<?> signInForKakao(@RequestBody LoginForKakaoRequestDto loginRequestDto) {
+    return ResponseEntity.status(HttpStatus.OK).body(authService.login(loginRequestDto));
+  }
+
   @Operation(summary = "개인정보 수정", description = "회원이 개인정보를 수정")
   @PatchMapping("/members/profile")
   public ResponseEntity<Void> updateProfile(
@@ -87,6 +93,13 @@ public class AuthController {
   public ResponseEntity<?> getCentersByKeyword(@RequestParam String keyword) {
     return ResponseEntity.ok(authService.getCentersByKeyword(keyword));
   }
+
+//  @Operation(summary = "회원 탈퇴", description = "회원을 INACTIVE 상태로 변경")
+//  @GetMapping("/deactivate/{memberId}")
+//  public ResponseEntity<?> deactivate(@PathVariable("memberId") Long memberId) {
+//    authService.deactivateMember(memberId);
+//    return ResponseEntity.ok().build();
+//  }
 
   @Operation(summary = "이메일 인증번호 전송", description = "이메일 인증번호를 전송")
   @PostMapping("/email/send")

@@ -1,12 +1,15 @@
 package org.doubleone.domain.member.service;
 
+import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.doubleone.domain.center.entity.Center;
 import org.doubleone.domain.center.repository.CenterRepository;
 import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.manager.repository.ManagerRepository;
+import org.doubleone.domain.member.dto.request.LoginForKakaoRequestDto;
 import org.doubleone.domain.member.dto.request.LoginRequestDto;
 import org.doubleone.domain.member.dto.request.SignupManagerDto;
 import org.doubleone.domain.member.dto.request.SignupManagerForKakaoDto;
@@ -165,6 +168,30 @@ public class AuthService {
 
     }
 
+  public LoginResponseDto login(LoginForKakaoRequestDto requestDto){
+    String email = requestDto.account_email();
+    Member member = memberRepository.findByEmail(email)
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+    // Worker, Manager 조회
+    Worker worker = workerRepository.findOptionalByMember(member).orElse(null);
+    Manager manager = managerRepository.findOptionalByMember(member).orElse(null);
+
+    Long workerId = (worker != null) ? worker.getWorkerId() : null;
+    Long managerId = (manager != null) ? manager.getManagerId() : null;
+
+    // AccessToken, RefreshToken 발급
+    String accessToken = tokenProvider.createAccessToken(member);
+    String refreshToken = tokenProvider.createRefreshToken(member);
+
+    // 리프레시 토큰 저장
+    tokenProvider.saveRefreshToken(member.getMemberId(), refreshToken);
+
+    // LoginResponseDto 반환
+    return LoginResponseDto.from(accessToken, refreshToken, member, workerId, managerId);
+
+  }
+
   public TokenResponseDto reissueAccessToken(String refreshToken){
     // 전달받은 리프레시 토큰에서 이메일을 추출하여 사용자 정보 가져오기
     String email = tokenProvider.extractEmail(refreshToken);
@@ -191,7 +218,7 @@ public class AuthService {
   @Transactional(readOnly = true)
   public List<String> getCentersByKeyword(String keyword) {
     return centerRepository.findByCenterNameContaining(keyword).stream()
-        .map(center -> center.getCenterCode() + "," + center.getCenterName())
+        .map(Center::getCenterName)
         .collect(Collectors.toList());
   }
 
