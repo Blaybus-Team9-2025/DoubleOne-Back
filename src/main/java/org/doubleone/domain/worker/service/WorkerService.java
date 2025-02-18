@@ -6,13 +6,22 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.doubleone.domain.chat.entity.ChatRoom;
+import org.doubleone.domain.chat.service.ChatRoomService;
+import org.doubleone.domain.matching.entity.MatchingStatus;
+import org.doubleone.domain.matching.repository.MatchingRepository;
 import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.member.entity.Member;
+import org.doubleone.domain.senior.dto.SeniorScheduleDto;
+import org.doubleone.domain.senior.entity.SeniorSchedule;
+import org.doubleone.domain.senior.repository.SeniorScheduleRepository;
 import org.doubleone.domain.worker.dto.request.WorkerUpdateRequest;
 import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.worker.dto.response.WorkerDetailResponse;
 import org.doubleone.domain.worker.dto.response.WorkerLicenseDto;
+import org.doubleone.domain.worker.dto.response.WorkerMatchingAlarmUnitDto;
 import org.doubleone.domain.worker.dto.response.WorkerRegionDto;
+import org.doubleone.domain.worker.dto.response.WorkerMyPageResponseDto;
 import org.doubleone.domain.worker.entity.Gender;
 import org.doubleone.domain.schedule.dto.ScheduleDto;
 import org.doubleone.domain.worker.entity.Worker;
@@ -34,12 +43,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class WorkerService {
-
+    private final ChatRoomService chatRoomService;
     private final WorkerRepository workerRepository;
     private final WorkerConditionRepository workerConditionRepository;
     private final WorkerLicenseRepository workerLicenseRepository;
     private final WorkerRegionRepository workerRegionRepository;
     private final WorkerScheduleRepository workerScheduleRepository;
+    private final SeniorScheduleRepository seniorScheduleRepository;
+    private final MatchingRepository matchingRepository;
     private final PasswordEncoder passwordEncoder;
     private final S3Util s3Util;
 
@@ -129,5 +140,21 @@ public class WorkerService {
         return WorkerDetailResponse.from(worker, workerCondition, licenses, regions, schedules);
     }
 
-
+    @Transactional(readOnly = true)
+    public WorkerMyPageResponseDto getWorkerMyPage(Long workerId) {
+        Worker worker = workerRepository.findById(workerId)
+            .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
+        List<WorkerMatchingAlarmUnitDto> matchingAlarmlist = matchingRepository.findByWorkerAndRunningStatus(worker, MatchingStatus.IN_PROGRESS)
+            .stream()
+            .map(matching -> {
+                ChatRoom chatRoom = chatRoomService.createChatRoom(matching);
+                List<ScheduleDto> seniorSchedules = matching.getCondition().getSeniorSchedules()
+                    .stream()
+                    .map(ScheduleDto::from)
+                    .collect(Collectors.toList());
+                return WorkerMatchingAlarmUnitDto.from(matching, chatRoom, seniorSchedules);
+            })
+            .collect(Collectors.toList());
+        return WorkerMyPageResponseDto.from(worker, matchingAlarmlist);
+    }
 }

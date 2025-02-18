@@ -25,5 +25,5 @@ public interface MatchingRepository extends JpaRepository<Matching, Long> {
     int countByManagerAndRunningStatus(@Param("manager") Manager manager, @Param("status") RunningStatus status);
 
     @Query("SELECT m FROM Matching m WHERE m.workerCondition.worker = :worker AND m.matchingStatus = :matchingStatus")
-    List<WorkerMatchingAlarmUnitDto> findByWorkerAndRunningStatus(Worker worker, MatchingStatus matchingStatus);
+    List<Matching> findByWorkerAndRunningStatus(Worker worker, MatchingStatus matchingStatus);
 }

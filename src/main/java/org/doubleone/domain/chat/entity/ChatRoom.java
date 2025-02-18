@@ -34,10 +34,6 @@ public class ChatRoom {
   @Column(name = "chatRoom_id", updatable = false)
   private Long chatRoomId;
 
-  @Column(name = "title")
-  @NotNull
-  private String title;
-
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "worker_id")
   private Worker worker;
