@@ -1,9 +1,9 @@
 package org.doubleone.domain.senior.dto;
 
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-
 import lombok.Setter;
 import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.matching.entity.MatchingStatus;
