@@ -10,6 +10,8 @@ public record WorkerUpdateRequest(
     MultipartFile imgFile,
     String phoneNum,
     String address,
+    String detailAddress,
+    String zipcode,
     boolean hasVehicle,
     boolean hasTrained,
     // 비밀번호 변경

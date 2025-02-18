@@ -55,9 +55,17 @@ public class ManagerService {
       manager.updatePhoneNum(requestDto.phoneNum());
     }
 
-    // 주소 수정
+    // 지번 주소 수정
     if (requestDto.address() != null) {
       manager.updateAddress(requestDto.address());
+    }
+    // 상세 주소 수정
+    if (requestDto.detailAddress() != null) {
+      manager.updateDetailAddress(requestDto.detailAddress());
+    }
+    //우편번호 수정
+    if (requestDto.zipcode() != null) {
+      manager.updateZipcode(requestDto.zipcode());
     }
 
     // 비밀번호 변경
