@@ -2,12 +2,19 @@ package org.doubleone.domain.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.member.dto.request.*;
+import org.doubleone.domain.member.dto.response.EmailVerificationResponseDto;
 import org.doubleone.domain.member.dto.response.TokenResponseDto;
 import org.doubleone.domain.member.service.AuthService;
+import org.doubleone.domain.member.service.EmailSenderService;
 import org.doubleone.domain.member.service.MemberService;
+import org.doubleone.global.exception.CustomException;
+import org.doubleone.global.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,6 +29,7 @@ public class AuthController {
 
   private final AuthService authService;
   private final MemberService memberService;
+  private final EmailSenderService emailSenderService;
 
   @Operation(summary = "토큰 재발급", description = "refreshToken을 통해 accessToken을 재발급")
   @PostMapping("/token")
@@ -78,5 +86,24 @@ public class AuthController {
   @GetMapping("/center")
   public ResponseEntity<?> getCentersByKeyword(@RequestParam String keyword) {
     return ResponseEntity.ok(authService.getCentersByKeyword(keyword));
+  }
+
+  @Operation(summary = "이메일 인증번호 전송", description = "이메일 인증번호를 전송")
+  @PostMapping("/email/send")
+  public ResponseEntity<EmailVerificationResponseDto> sendVerificationEmail(@Valid @RequestBody EmailVerificationRequestDto requestDto) throws MessagingException {
+    emailSenderService.sendVerificationEmail(requestDto.getEmail());
+//    return ResponseEntity.ok(new EmailVerificationResponseDto(true, "인증번호 전송 완료"));
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
+  @Operation(summary = "이메일 인증번호 확인", description = "이메일 인증번호를 확인")
+  @GetMapping("/email/verify")
+  public ResponseEntity<EmailVerificationResponseDto> verifyEmail(@Valid @RequestBody EmailVerificationRequestDto verificationRequestDto) {
+    boolean isValid = emailSenderService.verifyCode(verificationRequestDto.getEmail(), verificationRequestDto.getVerificationCode());
+    if (isValid) {
+      return ResponseEntity.status(HttpStatus.OK).build();
+    } else {
+      throw new CustomException(ErrorCode.INCORRECT_VERIFICATION_CODE);
+    }
   }
 }
