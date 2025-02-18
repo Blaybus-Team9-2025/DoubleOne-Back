@@ -5,10 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 @Getter
-public class EmailVerificationRequestDto {
+public class EmailVerificationConfirmRequestDto {
 
     @NotBlank
     @Email
     private String email;
 
+    @NotBlank
+    private String verificationCode;
 }
