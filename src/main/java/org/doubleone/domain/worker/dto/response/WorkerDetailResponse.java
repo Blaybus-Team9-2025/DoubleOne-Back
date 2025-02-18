@@ -16,7 +16,11 @@ public class WorkerDetailResponse {
     private String phoneNum;
     private boolean hasTrained;
     private boolean hasVehicle;
+
+    private String zipCode;
     private String address;
+    private String detailAddress;
+
     private String introduction;
     private Long memberId;
     private String password; // test
@@ -38,7 +42,9 @@ public class WorkerDetailResponse {
             .phoneNum(worker.getPhoneNum())
             .hasTrained(workerCondition.isHasTrained())
             .hasVehicle(workerCondition.isHasVehicle())
-            .address(worker.getAddress())
+            .zipCode(worker.getZipcode()) // 우편번호
+            .address(worker.getAddress()) // 주소
+            .detailAddress(worker.getDetailAddress()) // 상세주소
             .introduction(workerCondition.getIntroduce())
             .memberId(worker.getMember().getMemberId())
             .password(worker.getMember().getPassword()) // test
