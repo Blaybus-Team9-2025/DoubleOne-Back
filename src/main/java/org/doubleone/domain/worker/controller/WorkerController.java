@@ -79,7 +79,7 @@ public class WorkerController {
     }
 
     @Operation(summary = "요양사 정보 및 매칭 요청 알림 목록 조회", description = "요양사의 마이페이지 회원정보 및 매칭 요청 알림 목록을 조회")
-    @GetMapping("/{workerId}")
+    @GetMapping("/{workerId}/myPage")
     public ResponseEntity<?> getWorkerMyPage(@PathVariable("workerId") Long workerId) {
         return ResponseEntity.ok(workerService.getWorkerMyPage(workerId));
     }
