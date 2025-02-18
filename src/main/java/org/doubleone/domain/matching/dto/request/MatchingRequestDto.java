@@ -18,8 +18,8 @@ public record MatchingRequestDto(
     return Matching.builder()
         .workerCondition(workerCondition)
         .condition(condition)
-        .matchingStatus(MatchingStatus.BEFORE_REQUEST)
-        .runningStatus(RunningStatus.BEFORE_REQUEST)
+        .matchingStatus(MatchingStatus.IN_PROGRESS)
+        .runningStatus(RunningStatus.WAITING)
         .build();
   }
 }

@@ -8,7 +8,6 @@ import org.doubleone.domain.chat.entity.ChatRoom;
 @Builder
 public record ChatRoomUnitDto(
     Long chatRoomId,
-    String title,
     String latestChat,
     LocalDateTime latestChatAt
 ) {
@@ -16,7 +15,6 @@ public record ChatRoomUnitDto(
   public static ChatRoomUnitDto from(ChatRoom chatRoom, ChatMessage latestChat) {
     return ChatRoomUnitDto.builder()
         .chatRoomId(chatRoom.getChatRoomId())
-        .title(chatRoom.getTitle())
         .latestChat(latestChat.getContent())
         .latestChatAt(latestChat.getCreatedAt())
         .build();
