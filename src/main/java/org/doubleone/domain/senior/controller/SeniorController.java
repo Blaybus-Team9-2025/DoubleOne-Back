@@ -2,7 +2,6 @@ package org.doubleone.domain.senior.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.doubleone.domain.senior.dto.SeniorRequestDto;
 import org.doubleone.domain.senior.dto.SeniorResponseDto;
@@ -30,39 +29,27 @@ public class SeniorController {
     @Operation(summary = "노인 정보 등록", description = "관리자가 노인 정보를 등록")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> registerSenior(
-            @RequestPart(value = "managerId") Long managerId,
-            @RequestPart(value = "name") String name,
-            @RequestPart(value = "gender") String gender,
-            @RequestPart(value = "birthDate") String birthDate,
-            @RequestPart(value = "careLevel") String careLevel,
-            @RequestPart(value = "weight") int weight,
-            @RequestPart(value = "address") String address,
-            @RequestPart(value = "cohabitationStatus") String cohabitationStatus,
-            @RequestPart(value = "dementiaSymptoms", required = false) List<String> dementiaSymptoms,
-            @RequestPart(value = "etcDisease", required = false) String etcDisease,
-            @RequestPart(value = "imgFile", required = false) MultipartFile imgFile
+            @RequestPart("data") SeniorRequestDto seniorRequestDto, // JSON 데이터
+            @RequestPart(value = "imgFile", required = false) MultipartFile imgFile // 파일
     ) {
-        SeniorRequestDto seniorRequestDto = new SeniorRequestDto(
-                managerId, name, gender, birthDate, careLevel, weight, address, imgFile, cohabitationStatus, dementiaSymptoms, etcDisease
-        );
-
+        seniorRequestDto.setImgFile(imgFile); // 파일 따로 세팅
         seniorService.registerSenior(seniorRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @Operation(summary = "노인 정보 편집", description = "관리자가 노인 정보를 편집")
     @PatchMapping(value = "/{seniorId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateSenior(
             @PathVariable Long seniorId,
-            @RequestPart(value = "careLevel", required = false) String careLevel,
-            @RequestPart(value = "address", required = false) String address,
-            @RequestPart(value = "etcDisease", required = false) String etcDisease,
-            @RequestPart(value = "imgFile", required = false) MultipartFile imgFile
+            @RequestPart("data") SeniorUpdateDto seniorUpdateDto, // JSON 데이터 받기
+            @RequestPart(value = "imgFile", required = false) MultipartFile imgFile // 파일 받기
     ) {
-        SeniorUpdateDto seniorUpdateDto = new SeniorUpdateDto(seniorId, careLevel, address, etcDisease, imgFile);
+        seniorUpdateDto.setSeniorId(seniorId); // ID 설정
+        seniorUpdateDto.setImgFile(imgFile); // 파일 설정
         seniorService.updateSenior(seniorUpdateDto);
         return ResponseEntity.ok().build();
     }
+
+
 
     @Operation(summary = "노인 정보 삭제")
     @DeleteMapping("/{seniorId}")

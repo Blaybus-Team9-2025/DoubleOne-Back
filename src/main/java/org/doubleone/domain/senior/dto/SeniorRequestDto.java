@@ -4,10 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import lombok.Setter;
 import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.matching.entity.MatchingStatus;
-
-import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.member.entity.Gender;
 import org.doubleone.domain.senior.entity.CareLevel;
 import org.doubleone.domain.senior.entity.CohabitationStatus;
@@ -18,6 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class SeniorRequestDto {
@@ -26,13 +26,13 @@ public class SeniorRequestDto {
     private String gender;
     private String birthDate;
     private String careLevel;
+    private int height; //
     private int weight;
     private String address;
     private MultipartFile imgFile;
     private String cohabitationStatus;
     private List<String> dementiaSymptoms;
     private String etcDisease;
-
 
     public Senior toEntity(Manager manager, String profileImg) {
         return Senior.builder()
@@ -41,13 +41,14 @@ public class SeniorRequestDto {
                 .gender(Gender.valueOf(gender.toUpperCase()))
                 .birthDate(LocalDate.parse(birthDate))
                 .careLevel(CareLevel.valueOf(careLevel.toUpperCase()))
+                .height(height) //
                 .weight(weight)
                 .address(address)
                 .profileImg(profileImg)
                 .cohabitationStatus(CohabitationStatus.valueOf(cohabitationStatus.toUpperCase()))
                 .dementiaSymptoms(dementiaSymptoms)
                 .etcDisease(etcDisease)
-                .matchingStatus(MatchingStatus.BEFORE_REQUEST) // 등록 시 기본값 설정
+                .matchingStatus(MatchingStatus.BEFORE_REQUEST)
                 .build();
     }
 }

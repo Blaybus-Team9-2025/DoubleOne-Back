@@ -45,22 +45,25 @@ public class SeniorService {
 
 
   public void updateSenior(SeniorUpdateDto seniorUpdateDto) {
-    Senior senior = seniorRepository.findById(seniorUpdateDto.seniorId())
+    Senior senior = seniorRepository.findById(seniorUpdateDto.getSeniorId())
             .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_NOT_FOUND));
 
-    if (seniorUpdateDto.imgFile() != null) {
+    if (seniorUpdateDto.getImgFile() != null) {
       if (senior.getProfileImg() != null) {
         s3Util.deleteImage(senior.getProfileImg());
       }
-      senior.updateProfileImg(s3Util.uploadImage(seniorUpdateDto.imgFile(), "profile/senior"));
+      senior.updateProfileImg(s3Util.uploadImage(seniorUpdateDto.getImgFile(), "profile/senior"));
     }
 
     senior.update(
-            CareLevel.valueOf(seniorUpdateDto.careLevel().toUpperCase()),
-            seniorUpdateDto.address(),
+            seniorUpdateDto.getCareLevel() != null ? CareLevel.valueOf(seniorUpdateDto.getCareLevel().toUpperCase()) : senior.getCareLevel(),
+            seniorUpdateDto.getAddress() != null ? seniorUpdateDto.getAddress() : senior.getAddress(),
             null,
-            seniorUpdateDto.etcDisease()
+            seniorUpdateDto.getEtcDisease() != null ? seniorUpdateDto.getEtcDisease() : senior.getEtcDisease()
     );
+
+
+
 
   }
 
