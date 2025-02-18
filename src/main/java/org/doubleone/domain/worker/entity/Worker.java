@@ -88,4 +88,9 @@ public class Worker extends BaseTimeEntity {
   public void updateProfileImg(String profileImg) {
     this.profileImg = profileImg;
   }
+
+  public void deactivateMember() {
+    this.name = "(알 수 없음)";
+    this.profileImg = null;
+  }
 }

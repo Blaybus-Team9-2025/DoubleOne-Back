@@ -94,12 +94,12 @@ public class AuthController {
     return ResponseEntity.ok(authService.getCentersByKeyword(keyword));
   }
 
-//  @Operation(summary = "회원 탈퇴", description = "회원을 INACTIVE 상태로 변경")
-//  @GetMapping("/deactivate/{memberId}")
-//  public ResponseEntity<?> deactivate(@PathVariable("memberId") Long memberId) {
-//    authService.deactivateMember(memberId);
-//    return ResponseEntity.ok().build();
-//  }
+  @Operation(summary = "회원 탈퇴", description = "회원을 INACTIVE 상태로 변경")
+  @GetMapping("/deactivate/{memberId}")
+  public ResponseEntity<?> deactivate(@PathVariable("memberId") Long memberId) {
+    authService.deactivateMember(memberId);
+    return ResponseEntity.noContent().build();
+  }
 
   @Operation(summary = "이메일 인증번호 전송", description = "이메일 인증번호를 전송")
   @PostMapping("/email/send")

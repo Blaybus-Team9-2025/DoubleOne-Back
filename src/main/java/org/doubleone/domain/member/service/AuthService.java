@@ -222,10 +222,18 @@ public class AuthService {
         .collect(Collectors.toList());
   }
 
-
-//  public void deactivateMember(Long memberId) {
-//    Member member = memberRepository.findById(memberId)
-//        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-//    member.deactivateMember()
-//  }
+  public void deactivateMember(Long memberId) {
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+    member.deactivateMember();
+    if (member.getMemberType() == MemberType.WORKER){
+      Worker worker = workerRepository.findByMember(member);
+      worker.deactivateMember();
+    } else if (member.getMemberType() == MemberType.MANAGER){
+      Manager manager = managerRepository.findByMember(member);
+      manager.deactivateMember();
+    } else {
+      throw new CustomException(ErrorCode.ACCESS_DENIED);
+    }
+  }
 }

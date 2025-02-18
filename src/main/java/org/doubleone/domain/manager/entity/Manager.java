@@ -123,10 +123,11 @@ public class Manager extends BaseTimeEntity {
     this.hasTruck = hasTruck;
   }
 
-  // 회원탈퇴 처리
-  public void withdraw() {
-    this.isActive = false;
-  }
 
   public void updateCenterImg(String centerImg){this.centerImg = centerImg;}
+
+  public void deactivateMember() {
+    this.name = "(알 수 없음)";
+    this.profileImg = null;
+  }
 }

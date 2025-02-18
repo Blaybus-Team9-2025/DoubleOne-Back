@@ -65,4 +65,7 @@ public class Member extends BaseTimeEntity {
   }
 
 
+  public void deactivateMember() {
+    this.memberstatus = MemberStatus.INACTIVE;
+  }
 }
