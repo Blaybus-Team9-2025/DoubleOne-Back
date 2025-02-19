@@ -1,5 +1,6 @@
 package org.doubleone.domain.condition.service;
 
+import java.util.Comparator;
 import lombok.RequiredArgsConstructor;
 import org.doubleone.domain.condition.dto.ConditionRequestDto;
 import org.doubleone.domain.condition.dto.ConditionResponseDto;
@@ -105,8 +106,13 @@ public class ConditionService {
                 boolean isEnded = endMatchingRepository.existsByCondition(condition);
                 return SeniorConditionResponseDto.from(condition, isEnded);
             })
+            .sorted(Comparator
+                .comparing(SeniorConditionResponseDto::isEndMatch)
+                .thenComparing(SeniorConditionResponseDto::seniorConditionId, Comparator.reverseOrder())
+            )
             .collect(Collectors.toList());
     }
+
 
 
 }
