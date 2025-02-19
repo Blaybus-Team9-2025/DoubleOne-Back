@@ -47,7 +47,7 @@ public class ManagerController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "구인 공고 목록 조회")
+    @Operation(summary = "현재 매칭 중인 어르신 목록 (구인공고) 조회")
     @GetMapping("/{managerId}/conditions")
     public ResponseEntity<List<SeniorMatchingResponseDto>> getMatchingSeniors(@PathVariable("managerId") Long managerId) {
         List<SeniorMatchingResponseDto> response = managerService.getMatchingSeniors(managerId);
