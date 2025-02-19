@@ -1,5 +1,6 @@
 package org.doubleone.domain.matching.repository;
 
+import java.time.LocalDate;
 import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.matching.entity.Matching;
