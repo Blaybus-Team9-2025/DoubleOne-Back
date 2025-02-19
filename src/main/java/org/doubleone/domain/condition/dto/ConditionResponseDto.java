@@ -25,9 +25,10 @@ public class ConditionResponseDto {
     private MatchingStatus matchingStatus;
     private String profileImg;
 
+
     public static ConditionResponseDto from(Condition condition, Senior senior) {
         return ConditionResponseDto.builder()
-                .seniorConditionId(condition.getSeniorConditionId())
+                .seniorConditionId(condition.getConditionId())
                 .seniorId(senior.getSeniorId())
                 .seniorName(senior.getName())
                 .matchingStatus(senior.getMatchingStatus())
@@ -35,3 +36,4 @@ public class ConditionResponseDto {
                 .build();
     }
 }
+

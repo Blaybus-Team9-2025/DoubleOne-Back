@@ -1,31 +1,10 @@
 package org.doubleone.domain.workerCondition.entity;
 
-
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Map;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.doubleone.domain.worker.entity.Worker;
 import org.doubleone.domain.workerLicense.entity.WorkerLicense;
@@ -33,6 +12,10 @@ import org.doubleone.domain.workerRegion.entity.WorkerRegion;
 import org.doubleone.domain.workerSchedule.entity.WorkerSchedule;
 import org.doubleone.global.BaseTimeEntity;
 import org.hibernate.annotations.Type;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "worker_condition")
@@ -86,14 +69,17 @@ public class WorkerCondition extends BaseTimeEntity {
   @Type(JsonType.class)
   private List<WorkPeriod> workPeriods;
 
+  @Builder.Default
   @OneToMany(mappedBy = "workerCondition", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<WorkerLicense> workerLicenses;
+  private List<WorkerLicense> workerLicenses = new ArrayList<>();
 
+  @Builder.Default
   @OneToMany(mappedBy = "workerCondition", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<WorkerRegion> workerRegions;
+  private List<WorkerRegion> workerRegions = new ArrayList<>();
 
+  @Builder.Default
   @OneToMany(mappedBy = "workerCondition", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<WorkerSchedule> workerSchedules;
+  private List<WorkerSchedule> workerSchedules = new ArrayList<>();
 
   public void update(WageType wageType, int wage, String introduce, List<WorkPeriod> workPeriods) {
     if (wageType != null) this.wageType = wageType;
