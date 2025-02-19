@@ -1,6 +1,7 @@
 package org.doubleone.domain.worker.dto.response;
 
 import java.util.List;
+import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
 import org.doubleone.domain.schedule.dto.ScheduleDto;
@@ -23,6 +24,7 @@ public class WorkerDetailResponse {
     private List<WorkerLicenseDto> workerLicenses;
     private List<WorkerRegionDto> workerRegions;
     private List<ScheduleDto> workerSchedules;
+    private Map<String, List<String>> services;
 
     public static WorkerDetailResponse from(
         Worker worker,
@@ -45,6 +47,7 @@ public class WorkerDetailResponse {
             .workerLicenses(licenses)
             .workerRegions(regions)
             .workerSchedules(schedules)
+            .services(workerCondition.getServices())
             .build();
     }
 }
