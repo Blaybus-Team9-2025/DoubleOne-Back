@@ -5,6 +5,8 @@ import org.doubleone.domain.condition.dto.ConditionRequestDto;
 import org.doubleone.domain.condition.dto.ConditionResponseDto;
 import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.condition.repository.ConditionRepository;
+import org.doubleone.domain.matching.entity.Matching;
+import org.doubleone.domain.matching.entity.MatchingStatus;
 import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.senior.repository.SeniorRepository;
 import org.doubleone.global.exception.CustomException;
@@ -53,7 +55,8 @@ public class ConditionService {
     public ConditionResponseDto getConditionDetail(Long conditionId) {
         Condition condition = conditionRepository.findById(conditionId)
             .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_CONDITION_NOT_FOUND));
-        return ConditionResponseDto.from(condition);
+        Senior senior = condition.getSenior();
+        return ConditionResponseDto.from(condition, senior);
     }
 
     // 목록 조회 (필터 추가)
@@ -68,7 +71,10 @@ public class ConditionService {
         }
 
         return conditions.stream()
-                .map(ConditionResponseDto::from)
+                .map(condition -> {
+                    Senior senior = condition.getSenior();
+                    return ConditionResponseDto.from(condition,senior);
+                })
                 .collect(Collectors.toList());
     }
 }
