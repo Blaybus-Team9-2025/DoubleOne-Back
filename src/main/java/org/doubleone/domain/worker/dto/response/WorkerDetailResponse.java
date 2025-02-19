@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.doubleone.domain.schedule.dto.ScheduleDto;
 import org.doubleone.domain.worker.entity.Worker;
+import org.doubleone.domain.workerCondition.entity.WageType;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 
 @Getter
@@ -22,6 +23,8 @@ public class WorkerDetailResponse {
     private String introduction;
     private Long memberId;
     private String password; // test
+    private WageType wageType;
+    private int wage;
     private List<WorkerLicenseDto> workerLicenses;
     private List<WorkerRegionDto> workerRegions;
     private List<ScheduleDto> workerSchedules;
@@ -44,6 +47,8 @@ public class WorkerDetailResponse {
             .discuss(workerCondition.isDiscuss())
             .address(worker.getAddress())
             .introduction(workerCondition.getIntroduce())
+            .wageType(workerCondition.getWageType())
+            .wage(workerCondition.getWage())
             .memberId(worker.getMember().getMemberId())
             .password(worker.getMember().getPassword()) // test
             .workerLicenses(licenses)
