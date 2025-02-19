@@ -31,13 +31,11 @@ public class WorkerMatchService {
     private final WorkerService workerService;
     private final SeniorRepository seniorRepository;
     private final ConditionRepository conditionRepository;
-    private final MatchingRepository matchingRepository;
 
-    public WorkerMatchService(WorkerService workerService, SeniorRepository seniorRepository, ConditionRepository conditionRepository, MatchingRepository matchingRepository) {
+    public WorkerMatchService(WorkerService workerService, SeniorRepository seniorRepository, ConditionRepository conditionRepository) {
         this.workerService = workerService;
         this.seniorRepository = seniorRepository;
         this.conditionRepository = conditionRepository;
-        this.matchingRepository = matchingRepository;
     }
 
     public WorkerMatchResponseDto findWorkersBySenior(Long seniorId) {
@@ -66,23 +64,12 @@ public class WorkerMatchService {
                             workPeriod.getEndDate()
                     )).collect(Collectors.toList()) : List.of();
 
-            Matching matching = matchingRepository.findByConditionAndWorkerCondition(condition, workerCondition)
-                    .orElseGet(() -> {
-                        Matching newMatching = Matching.builder()
-                                .condition(condition)
-                                .workerCondition(workerCondition)
-                                .matchingStatus(MatchingStatus.BEFORE_REQUEST)
-                                .runningStatus(RunningStatus.WAITING)
-                                .build();
-                        return matchingRepository.save(newMatching);
-                    });
 
             return WorkerDetailDto.builder()
                     .workerId(worker.getWorkerId())
                     .workerName(worker.getName())
                     .workerRegions(regionDtos)
                     .workPeriods(workPeriods)
-                    .matchingId(matching.getMatchingId())
                     .build();
         }).collect(Collectors.toList());
 
