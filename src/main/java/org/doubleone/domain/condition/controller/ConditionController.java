@@ -44,7 +44,7 @@ public class ConditionController {
 
     @Operation(summary = "근무 조건 상세정보 조회", description = "노인에 대한 근무 조건 상세정보 조회")
     @GetMapping("/{conditionId}")
-    public ResponseEntity<ConditionResponseDto> getConditionDetail(@PathVariable Long conditionId) {
+    public ResponseEntity<?> getConditionDetail(@PathVariable Long conditionId) {
         return ResponseEntity.ok(conditionService.getConditionDetail(conditionId));
     }
 

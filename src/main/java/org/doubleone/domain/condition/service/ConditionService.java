@@ -2,6 +2,7 @@ package org.doubleone.domain.condition.service;
 
 import java.util.Comparator;
 import lombok.RequiredArgsConstructor;
+import org.doubleone.domain.condition.dto.ConditionDetailsResponseDto;
 import org.doubleone.domain.condition.dto.ConditionRequestDto;
 import org.doubleone.domain.condition.dto.ConditionResponseDto;
 import org.doubleone.domain.condition.entity.Condition;
@@ -12,6 +13,8 @@ import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.manager.repository.ManagerRepository;
 import org.doubleone.domain.matching.entity.Matching;
 import org.doubleone.domain.matching.repository.MatchingRepository;
+import org.doubleone.domain.schedule.dto.ScheduleDto;
+import org.doubleone.domain.senior.dto.SeniorScheduleDto;
 import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.senior.repository.SeniorRepository;
 import org.doubleone.domain.worker.dto.response.WorkerLicenseDto;
@@ -60,10 +63,13 @@ public class ConditionService {
 
     // 상세 조회
     @Transactional(readOnly = true)
-    public ConditionResponseDto getConditionDetail(Long conditionId) {
+    public ConditionDetailsResponseDto getConditionDetail(Long conditionId) {
         Condition condition = conditionRepository.findById(conditionId)
             .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_CONDITION_NOT_FOUND));
-        return ConditionResponseDto.from(condition);
+        List<ScheduleDto> schedules = condition.getSeniorSchedules().stream()
+            .map(ScheduleDto::from)
+            .toList();
+        return ConditionDetailsResponseDto.from(condition, schedules);
     }
 
     // 목록 조회 (필터 추가)

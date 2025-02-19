@@ -21,7 +21,6 @@ public record ConditionRequestDto(
         List<SeniorScheduleDto> seniorSchedules,
         Map<String, List<String>> welfares,
         WorkType workType,
-
         Gender preferGender,
         Map<String, List<String>> services
 ) {
