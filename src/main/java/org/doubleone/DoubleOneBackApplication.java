@@ -10,9 +10,11 @@ import io.swagger.v3.oas.annotations.servers.Server;
 @EnableJpaAuditing
 @OpenAPIDefinition(
     servers = {
-        @Server(url = "https://api.doubleone.p-e.kr", description = "Default Server URL")
+        @Server(url = "https://api.doubleone.p-e.kr", description = "Production Server"),
+        @Server(url = "http://localhost:8080", description = "Local Development Server")
     }
 )
+
 public class DoubleOneBackApplication {
 
   public static void main(String[] args) {
