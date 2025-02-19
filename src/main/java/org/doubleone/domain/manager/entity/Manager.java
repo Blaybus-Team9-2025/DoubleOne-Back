@@ -3,12 +3,14 @@ package org.doubleone.domain.manager.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.doubleone.domain.member.entity.Gender;
 import org.doubleone.domain.member.entity.Member;
 import org.doubleone.global.BaseTimeEntity;
 
@@ -32,9 +34,17 @@ public class Manager extends BaseTimeEntity {
   @JsonIgnore
   private Member member;
 
-  @Column(name = "name", unique = true)
+  @Column(name = "name")
   @NotNull
   private String name;
+
+  @Column(name = "gender")
+  @NotNull
+  private Gender gender;
+
+  @Column(name = "birth_date")
+  @NotNull
+  private LocalDate birthDate;
 
   @Column(name = "profile_img", columnDefinition = "TEXT")
   private String profileImg;
@@ -47,9 +57,17 @@ public class Manager extends BaseTimeEntity {
   @NotNull
   private boolean hasTruck;
 
-  @Column(name = "address")
+  @Column(name = "center_address")
   @NotNull
   private String address;
+
+  @Column(name = "zipcode")
+  @NotNull
+  private String zipcode;
+
+  @Column(name = "detail_address")
+  @NotNull
+  private String detailAddress;
 
   @Column(name = "center_name")
   @NotNull
@@ -60,6 +78,9 @@ public class Manager extends BaseTimeEntity {
 
   @Column(name = "center_period")
   private String centerPeriod;
+
+  @Column(name = "center_info", length = 500)
+  private String centerInfo;
 
   @Column(name = "center_message", length = 500)
   private String centerMessage;
@@ -77,21 +98,6 @@ public class Manager extends BaseTimeEntity {
     if (isActive == null) {
       isActive = true;
     }
-  }
-
-  @Builder
-  public Manager(String name, String profileImg, Member member, String phoneNum, boolean hasTruck, String address, String centerName, String centerGrade, String centerPeriod, String centerMessage) {
-    this.name = name;
-    this.profileImg = profileImg;
-    this.member = member;
-    this.phoneNum = phoneNum;
-    this.hasTruck = hasTruck;
-    this.address = address;
-    this.centerName = centerName;
-    this.centerGrade = centerGrade;
-    this.centerPeriod = centerPeriod;
-    this.centerMessage = centerMessage;
-    this.isActive = true;
   }
 
 
@@ -123,6 +129,10 @@ public class Manager extends BaseTimeEntity {
     this.hasTruck = hasTruck;
   }
 
+  // 회원탈퇴 처리
+  public void withdraw() {
+    this.isActive = false;
+  }
 
   public void updateCenterImg(String centerImg){this.centerImg = centerImg;}
 
@@ -130,4 +140,8 @@ public class Manager extends BaseTimeEntity {
     this.name = "(알 수 없음)";
     this.profileImg = null;
   }
+
+  public void updateDetailAddress(String detailAddress) { this.detailAddress = detailAddress; }
+
+  public void updateZipcode(String zipcode) { this.zipcode = zipcode;}
 }

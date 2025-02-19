@@ -1,6 +1,7 @@
 package org.doubleone.domain.senior.service;
 
 import lombok.RequiredArgsConstructor;
+import org.doubleone.domain.matching.entity.MatchingStatus;
 import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.manager.repository.ManagerRepository;
 import org.doubleone.domain.senior.dto.SeniorRequestDto;
@@ -18,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -31,32 +31,40 @@ public class SeniorService {
 
   // 등록
   public void registerSenior(SeniorRequestDto seniorRequestDto) {
-    Manager manager = managerRepository.findById(seniorRequestDto.managerId())
-        .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
+    Manager manager = managerRepository.findById(seniorRequestDto.getManagerId())
+            .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
+
     Senior senior = seniorRequestDto.toEntity(manager, null);
-    if (seniorRequestDto.imgFile() != null && !seniorRequestDto.imgFile().isEmpty()) {
-      if (senior.getProfileImg() != null && !senior.getProfileImg().isEmpty()) {
-        s3Util.deleteImage(senior.getProfileImg());
-      }
-      senior.updateProfileImg(s3Util.uploadImage(seniorRequestDto.imgFile(), "profile/senior"));
+
+    if (seniorRequestDto.getImgFile() != null && !seniorRequestDto.getImgFile().isEmpty()) {
+      senior.updateProfileImg(s3Util.uploadImage(seniorRequestDto.getImgFile(), "profile/senior"));
     }
+
     seniorRepository.save(senior);
   }
 
+
   public void updateSenior(SeniorUpdateDto seniorUpdateDto) {
-    Senior senior = seniorRepository.findById(seniorUpdateDto.seniorId())
+    Senior senior = seniorRepository.findById(seniorUpdateDto.getSeniorId())
             .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_NOT_FOUND));
-    if (seniorUpdateDto.imgFile() != null){
+
+    if (seniorUpdateDto.getImgFile() != null) {
       if (senior.getProfileImg() != null) {
-        s3Util.deleteImage(senior.getProfileImg());}
-      senior.updateProfileImg(s3Util.uploadImage(seniorUpdateDto.imgFile(), "profile/senior"));
+        s3Util.deleteImage(senior.getProfileImg());
+      }
+      senior.updateProfileImg(s3Util.uploadImage(seniorUpdateDto.getImgFile(), "profile/senior"));
     }
 
     senior.update(
-            CareLevel.valueOf(seniorUpdateDto.careLevel().toUpperCase()),
-            seniorUpdateDto.address(),
-            seniorUpdateDto.etcDisease()
+            seniorUpdateDto.getCareLevel() != null ? CareLevel.valueOf(seniorUpdateDto.getCareLevel().toUpperCase()) : senior.getCareLevel(),
+            seniorUpdateDto.getAddress() != null ? seniorUpdateDto.getAddress() : senior.getAddress(),
+            null,
+            seniorUpdateDto.getEtcDisease() != null ? seniorUpdateDto.getEtcDisease() : senior.getEtcDisease()
     );
+
+
+
+
   }
 
   public void deleteSenior(Long seniorId) {
@@ -87,6 +95,21 @@ public class SeniorService {
             .filter(senior -> age == null || LocalDate.now().getYear() - senior.getBirthDate().getYear() == age)
             .filter(senior -> gender == null || senior.getGender().name().equalsIgnoreCase(gender))
             .filter(senior -> region == null || senior.getAddress().contains(region))
+            .map(SeniorResponseDto::new)
+            .collect(Collectors.toList());
+  }
+
+  @Transactional(readOnly = true)
+  public List<SeniorResponseDto> getSeniorList(String sort) {
+    List<Senior> seniors;
+
+    if ("unmatched".equals(sort)) {
+      seniors = seniorRepository.findByMatchingStatusOrderByCreatedAtDesc(MatchingStatus.BEFORE_REQUEST);
+    } else { // 기본: 최신순
+      seniors = seniorRepository.findAllByOrderByCreatedAtDesc();
+    }
+
+    return seniors.stream()
             .map(SeniorResponseDto::new)
             .collect(Collectors.toList());
   }
