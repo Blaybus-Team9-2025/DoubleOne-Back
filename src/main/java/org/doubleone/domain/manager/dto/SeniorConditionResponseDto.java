@@ -8,6 +8,7 @@ import org.doubleone.domain.matching.entity.RunningStatus;
 @Builder
 public record SeniorConditionResponseDto(
     Long seniorId,
+    String name,
     String profileImg,
     boolean isEndMatch,
     Long seniorConditionId
@@ -16,6 +17,7 @@ public record SeniorConditionResponseDto(
   public static SeniorConditionResponseDto from(Condition condition, boolean isEndMatch){
     return SeniorConditionResponseDto.builder()
         .seniorId(condition.getSenior().getSeniorId())
+        .name(condition.getSenior().getName())
         .profileImg(condition.getSenior().getProfileImg())
         .isEndMatch(isEndMatch)
         .seniorConditionId(condition.getConditionId())
