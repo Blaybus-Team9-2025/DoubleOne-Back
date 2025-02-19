@@ -44,7 +44,7 @@ public class Worker extends BaseTimeEntity {
     @JsonIgnore
     private Member member;
 
-    @Column(name = "name", unique = true)
+    @Column(name = "name")
     @NotNull
     private String name;
 
@@ -56,7 +56,7 @@ public class Worker extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-  @Column(name = "birth_date", unique = true)
+  @Column(name = "birth_date")
   @NotNull
   private LocalDate birthDate;
 

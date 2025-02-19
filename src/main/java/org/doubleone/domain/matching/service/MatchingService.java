@@ -18,6 +18,7 @@ import org.doubleone.domain.matching.dto.request.MatchingRequestDto;
 import org.doubleone.domain.matching.dto.request.MatchingUpdateRequestDto;
 import org.doubleone.domain.matching.dto.request.WorkerMatchingScheduleRequestDto;
 import org.doubleone.domain.matching.dto.response.ManagerMatchingStatResponseDto;
+import org.doubleone.domain.matching.dto.response.ManagerSeniorMatchingListResponseDto;
 import org.doubleone.domain.matching.dto.response.WorkerMatchingUnitDto;
 import org.doubleone.domain.matching.entity.Matching;
 import org.doubleone.domain.matching.entity.MatchingStatus;
@@ -105,10 +106,8 @@ public class MatchingService {
   }
 
   @Transactional(readOnly = true)
-  public ManagerMatchingStatResponseDto getMatchingStat(Long memberId) {
-    Member member = memberRepository.findById(memberId)
-        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-    Manager manager = managerRepository.findOptionalByMember(member)
+  public ManagerMatchingStatResponseDto getMatchingStat(Long managerId) {
+    Manager manager = managerRepository.findById(managerId)
         .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
     // 전체 매칭
     int matchCount = matchingRepository.countByManager(manager);
@@ -162,4 +161,9 @@ public class MatchingService {
         (double) acceptedMatchCount / (acceptedMatchCount + rejectedMatchCount),
         (double) rejectedMatchCount / (acceptedMatchCount + rejectedMatchCount));
   }
+
+//  @Transactional(readOnly = true)
+//  public ManagerSeniorMatchingListResponseDto getMatchingSeniorList(Long managerId, RunningStatus status) {
+//
+//  }
 }

@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.matching.dto.request.MatchingRequestDto;
 import org.doubleone.domain.matching.dto.request.MatchingUpdateRequestDto;
 import org.doubleone.domain.matching.dto.request.WorkerMatchingScheduleRequestDto;
+import org.doubleone.domain.matching.entity.MatchingStatus;
+import org.doubleone.domain.matching.entity.RunningStatus;
 import org.doubleone.domain.matching.service.MatchingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -63,9 +66,15 @@ public class MatchingController {
   }
 
   @Operation(summary = "매칭 현황 조회 (관리자 대시보드)", description = "매칭 현황 조회 (메인홈, 관리자 대시보드)")
-  @GetMapping("/{memberId}/stat")
-  public ResponseEntity<?> getMatchingStat(@PathVariable("memberId") Long memberId) {
-    return ResponseEntity.status(HttpStatus.OK).body(matchingService.getMatchingStat(memberId));
+  @GetMapping("/{managerId}/stat")
+  public ResponseEntity<?> getMatchingStat(@PathVariable("managerId") Long managerId) {
+    return ResponseEntity.status(HttpStatus.OK).body(matchingService.getMatchingStat(managerId));
   }
+
+//  @Operation(summary = "매칭 상태 목록 조회", description = "매칭 상태에 따른 어르신 목록 조회")
+//  @GetMapping("/{managerId}/seniors")
+//  public ResponseEntity<?> getMatchingSeniorList(@PathVariable("managerId") Long managerId, @RequestParam RunningStatus status) {
+//    return ResponseEntity.status(HttpStatus.OK).body(matchingService.getMatchingSeniorList(managerId, status));
+//  }
 
 }
