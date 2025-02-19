@@ -1,10 +1,13 @@
 package org.doubleone.domain.manager.service;
 
 import jakarta.validation.Valid;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.doubleone.domain.condition.entity.Condition;
+import org.doubleone.domain.condition.repository.ConditionRepository;
 import org.doubleone.domain.manager.dto.CenterUpdateRequestDto;
 import org.doubleone.domain.manager.dto.ManagerDetailsResponseDto;
 import org.doubleone.domain.manager.dto.ManagerUpdateRequestDto;
@@ -34,6 +37,7 @@ public class ManagerService {
   private final ManagerRepository managerRepository;
   private final MemberRepository memberRepository;
   private final MatchingRepository matchingRepository;
+  private final ConditionRepository conditionRepository;
   private final PasswordEncoder passwordEncoder;
   private final S3Util s3Util;
 
@@ -115,17 +119,22 @@ public class ManagerService {
 
   // 현재 매칭 중인 어르신 목록 조회
   @Transactional(readOnly = true)
-  public List<SeniorMatchingResponseDto> getMatchingSeniors() {
-    List<Matching> matchingList = matchingRepository.findByMatchingStatus(MatchingStatus.IN_PROGRESS);
+  public List<SeniorMatchingResponseDto> getMatchingSeniors(Long managerId) {
+    Manager manager = managerRepository.findById(managerId)
+        .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
 
-    return matchingList.stream()
-            .map(matching -> {
-              Senior senior = matching.getCondition().getSenior();
-              return SeniorMatchingResponseDto.of(senior, matchingList.size());
-            })
-            .distinct()
-            .collect(Collectors.toList());
+    List<Condition> conditionList = conditionRepository.findByManager(manager);
+
+    return conditionList.stream()
+        .sorted(Comparator.comparingLong(Condition::getConditionId.reversed()) // conditionId 내림차순 정렬
+        .map(condition -> {
+          Senior senior = condition.getSenior();
+          return SeniorMatchingResponseDto.of(senior);
+        })
+        .distinct()
+        .collect(Collectors.toList());
   }
+
 
   @Transactional(readOnly = true)
   public ManagerDetailsResponseDto getManagerDetails(Long managerId) {

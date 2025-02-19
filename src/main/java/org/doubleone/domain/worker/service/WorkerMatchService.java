@@ -1,5 +1,7 @@
 package org.doubleone.domain.worker.service;
 
+import java.time.LocalDate;
+import java.time.Period;
 import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.condition.repository.ConditionRepository;
 import org.doubleone.domain.matching.entity.Matching;
@@ -31,18 +33,20 @@ public class WorkerMatchService {
     private final WorkerService workerService;
     private final SeniorRepository seniorRepository;
     private final ConditionRepository conditionRepository;
+    private final MatchingRepository matchingRepository;
 
-    public WorkerMatchService(WorkerService workerService, SeniorRepository seniorRepository, ConditionRepository conditionRepository) {
+    public WorkerMatchService(WorkerService workerService, SeniorRepository seniorRepository, ConditionRepository conditionRepository,
+        MatchingRepository matchingRepository) {
         this.workerService = workerService;
         this.seniorRepository = seniorRepository;
         this.conditionRepository = conditionRepository;
+        this.matchingRepository = matchingRepository;
     }
 
-    public WorkerMatchResponseDto findWorkersBySenior(Long seniorId) {
-        Senior senior = seniorRepository.findById(seniorId)
-                .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_NOT_FOUND));
-        Condition condition = conditionRepository.findById(seniorId)
+    public WorkerMatchResponseDto findWorkersBySenior(Long conditionId) {
+        Condition condition = conditionRepository.findById(conditionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_CONDITION_NOT_FOUND));
+        Senior senior = condition.getSenior();
 
         List<WorkerCondition> workerConditions = workerService.getMatchedWorkerBySenior(senior, condition);
         List<WorkerDetailDto> workers = workerConditions.stream().map(workerCondition -> {
@@ -64,10 +68,12 @@ public class WorkerMatchService {
                             workPeriod.getEndDate()
                     )).collect(Collectors.toList()) : List.of();
 
+            boolean isRequestMatching = matchingRepository.existsByConditionAndWorkerCondition(condition, workerCondition);
 
             return WorkerDetailDto.builder()
                     .workerId(worker.getWorkerId())
                     .workerName(worker.getName())
+                    .isRequestMatching(isRequestMatching)
                     .workerRegions(regionDtos)
                     .workPeriods(workPeriods)
                     .build();
@@ -76,7 +82,13 @@ public class WorkerMatchService {
         return WorkerMatchResponseDto.builder()
                 .seniorName(senior.getName())
                 .seniorAddress(senior.getAddress())
+                .age(calculateAge(senior.getBirthDate()))
+                .profileImg(senior.getProfileImg())
                 .workers(workers)
                 .build();
+    }
+
+    private int calculateAge(LocalDate birthDate) {
+        return Period.between(birthDate, LocalDate.now()).getYears();
     }
 }

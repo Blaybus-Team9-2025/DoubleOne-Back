@@ -47,10 +47,10 @@ public class ManagerController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "현재 매칭 중인 어르신 목록 조회")
-    @GetMapping("/matching-senior")
-    public ResponseEntity<List<SeniorMatchingResponseDto>> getMatchingSeniors() {
-        List<SeniorMatchingResponseDto> response = managerService.getMatchingSeniors();
+    @Operation(summary = "구인 공고 목록 조회")
+    @GetMapping("/{managerId}/conditions")
+    public ResponseEntity<List<SeniorMatchingResponseDto>> getMatchingSeniors(@PathVariable("managerId") Long managerId) {
+        List<SeniorMatchingResponseDto> response = managerService.getMatchingSeniors(managerId);
         return ResponseEntity.ok(response);
     }
 }

@@ -11,15 +11,13 @@ public class SeniorMatchingResponseDto {
     private String name;
     private String address;
     private String profileImg;
-    private int matchingCount; // 매칭중인 요양사 수
 
-    public static SeniorMatchingResponseDto of(Senior senior, int matchingCount) {
+    public static SeniorMatchingResponseDto of(Senior senior) {
         return SeniorMatchingResponseDto.builder()
                 .seniorId(senior.getSeniorId())
                 .name(senior.getName())
                 .address(senior.getAddress())
                 .profileImg(senior.getProfileImg())
-                .matchingCount(matchingCount)
                 .build();
     }
 }
