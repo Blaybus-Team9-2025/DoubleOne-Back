@@ -5,8 +5,15 @@ import org.doubleone.domain.condition.dto.ConditionRequestDto;
 import org.doubleone.domain.condition.dto.ConditionResponseDto;
 import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.condition.repository.ConditionRepository;
+import org.doubleone.domain.endMatching.repository.EndMatchingRepository;
+import org.doubleone.domain.manager.dto.SeniorConditionResponseDto;
+import org.doubleone.domain.manager.entity.Manager;
+import org.doubleone.domain.manager.repository.ManagerRepository;
+import org.doubleone.domain.matching.entity.Matching;
+import org.doubleone.domain.matching.repository.MatchingRepository;
 import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.senior.repository.SeniorRepository;
+import org.doubleone.domain.worker.dto.response.WorkerLicenseDto;
 import org.doubleone.global.exception.CustomException;
 import org.doubleone.global.exception.ErrorCode;
 import org.springframework.stereotype.Service;
@@ -22,6 +29,8 @@ public class ConditionService {
 
     private final ConditionRepository conditionRepository;
     private final SeniorRepository seniorRepository;
+    private final ManagerRepository managerRepository;
+    private final EndMatchingRepository endMatchingRepository;
 
     // 등록
     public Long createCondition(Long seniorId, ConditionRequestDto requestDto) {
@@ -58,7 +67,10 @@ public class ConditionService {
 
     // 목록 조회 (필터 추가)
     @Transactional(readOnly = true)
-    public List<ConditionResponseDto> getConditionList(String filter) {
+    public List<ConditionResponseDto> getConditionFilterList(Long managerId, String filter) {
+        Manager manager = managerRepository.findById(managerId)
+            .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
+
         List<Condition> conditions;
 
         if ("unmatched".equals(filter)) {
@@ -68,7 +80,33 @@ public class ConditionService {
         }
 
         return conditions.stream()
-                .map(ConditionResponseDto::from)
-                .collect(Collectors.toList());
+            .filter(condition -> condition.getSenior().getManager().equals(manager))
+            .map(ConditionResponseDto::from)
+            .collect(Collectors.toList());
     }
+
+
+    @Transactional(readOnly = true)
+    public List<SeniorConditionResponseDto> getConditionList(Long managerId, String filter) {
+        Manager manager = managerRepository.findById(managerId)
+            .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
+
+        List<Condition> conditions;
+
+        if ("unmatched".equals(filter)) {
+            conditions = conditionRepository.findUnmatchedConditions();
+        } else {
+            conditions = conditionRepository.findAllByOrderByCreatedAtDesc();
+        }
+
+        return conditions.stream()
+            .filter(condition -> condition.getSenior().getManager().equals(manager))
+            .map(condition -> {
+                boolean isEnded = endMatchingRepository.existsByCondition(condition);
+                return SeniorConditionResponseDto.from(condition, isEnded);
+            })
+            .collect(Collectors.toList());
+    }
+
+
 }
