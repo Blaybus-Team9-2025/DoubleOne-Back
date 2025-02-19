@@ -150,7 +150,7 @@ public class MatchingService {
     int rejectedMatchCount = matchingRepository.countByManagerAndRunningStatus(manager, RunningStatus.REJECTED);
 
     // 매칭 기록이 있는 어르신
-    double avgMatchesPerSenior = matchingRepository.avgMatchesPerSenior(manager);
+    int matchSeniorCount = matchingRepository.countSeniorByManager(manager);
 
     return ManagerMatchingStatResponseDto.from(manager,
         matchCount,
@@ -163,7 +163,7 @@ public class MatchingService {
         pendingMatchCount,
         acceptedMatchCount,
         rejectedMatchCount,
-        avgMatchesPerSenior,
+        (double) matchSeniorCount / matchCount,
         (double) acceptedMatchCount / (acceptedMatchCount + rejectedMatchCount),
         (double) rejectedMatchCount / (acceptedMatchCount + rejectedMatchCount));
   }
