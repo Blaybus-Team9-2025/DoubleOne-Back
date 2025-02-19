@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.doubleone.domain.chat.entity.ChatRoom;
+import org.doubleone.domain.chat.repository.ChatRoomRepository;
 import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.condition.repository.ConditionRepository;
 import org.doubleone.domain.endMatching.entity.EndMatching;
@@ -19,6 +21,7 @@ import org.doubleone.domain.manager.repository.ManagerRepository;
 import org.doubleone.domain.matching.dto.request.MatchingRequestDto;
 import org.doubleone.domain.matching.dto.request.MatchingUpdateRequestDto;
 import org.doubleone.domain.matching.dto.request.WorkerMatchingScheduleRequestDto;
+import org.doubleone.domain.matching.dto.response.CreateMatchingResponseDto;
 import org.doubleone.domain.matching.dto.response.ManagerMatchingStatResponseDto;
 import org.doubleone.domain.matching.dto.response.ManagerSeniorMatchingListResponseDto;
 import org.doubleone.domain.matching.dto.response.SeniorMatchingUnitDto;
@@ -55,15 +58,21 @@ public class MatchingService {
   private final EndMatchingService endMatchingService;
   private final ManagerRepository managerRepository;
   private final SeniorRepository seniorRepository;
+  private final ChatRoomRepository chatRoomRepository;
 
-  public Long createMatchingRequest(MatchingRequestDto requestDto) {
+  public CreateMatchingResponseDto createMatchingRequest(MatchingRequestDto requestDto) {
     Condition seniorCondition = conditionRepository.findById(requestDto.conditionId())
             .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_CONDITION_NOT_FOUND));
     WorkerCondition workerCondition = workerConditionRepository.findById(requestDto.workConditionId())
             .orElseThrow(() -> new CustomException(ErrorCode.WORKER_CONDITION_NOT_FOUND));
     Matching matching = requestDto.toEntity(workerCondition, seniorCondition);
     matchingRepository.save(matching);
-    return matching.getMatchingId();
+    ChatRoom chatRoom = ChatRoom.builder()
+        .worker(workerCondition.getWorker())
+        .manager(seniorCondition.getSenior().getManager())
+        .build();
+    chatRoomRepository.save(chatRoom);
+    return new CreateMatchingResponseDto(matching.getMatchingId(), chatRoom.getChatRoomId());
   }
 
 
