@@ -16,7 +16,7 @@ import java.util.Map;
 @Builder
 public class ConditionResponseDto {
 
-    private Long seniorConditionId;
+    private Long conditionId;
     private String title;
     private int amount;
     private String payType;
@@ -27,7 +27,7 @@ public class ConditionResponseDto {
 
     public static ConditionResponseDto from(Condition condition) {
         return ConditionResponseDto.builder()
-                .seniorConditionId(condition.getSeniorConditionId())
+                .conditionId(condition.getConditionId())
                 .title(condition.getTitle())
                 .amount(condition.getAmount())
                 .payType(condition.getPayType().name())
@@ -38,3 +38,4 @@ public class ConditionResponseDto {
                 .build();
     }
 }
+

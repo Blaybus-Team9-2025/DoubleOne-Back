@@ -24,12 +24,15 @@ public class ConditionService {
     private final SeniorRepository seniorRepository;
 
     // 등록
-    public void createCondition(Long seniorId, ConditionRequestDto requestDto) {
+    public Long createCondition(Long seniorId, ConditionRequestDto requestDto) {
         Senior senior = seniorRepository.findById(seniorId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_NOT_FOUND));
 
         Condition condition = conditionRepository.save(requestDto.toEntity(senior));
+
+        return condition.getConditionId(); // 등록 후 conditionId 반환
     }
+
 
     // 수정
     public void updateCondition(Long seniorConditionId, ConditionRequestDto requestDto) {

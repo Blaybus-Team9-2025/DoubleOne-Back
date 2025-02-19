@@ -37,23 +37,35 @@ public class WorkerConditionService {
   private final WorkerScheduleRepository workerScheduleRepository;
 
 
-  public void createWorkerCondition(Long workerId, WorkerConditionRequestDto requestDto) {
+  public Long createWorkerCondition(Long workerId, WorkerConditionRequestDto requestDto) {
     Worker worker = workerRepository.findById(workerId)
-        .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
-    WorkerCondition workerCondition = workerConditionRepository.save(requestDto.toEntity(worker));
+            .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
+
+    WorkerCondition workerCondition = requestDto.toEntity(worker);
+    workerConditionRepository.save(workerCondition); // 먼저 저장
+
+    // 스케줄 등록
     if (requestDto.scheduleDtoList() != null && !requestDto.scheduleDtoList().isEmpty()) {
       requestDto.scheduleDtoList().forEach(scheduleDto ->
-          workerScheduleService.createWorkerSchedule(workerCondition, scheduleDto));
+              workerScheduleService.createWorkerSchedule(workerCondition, scheduleDto));
     }
+
+    // 지역 등록
     if (requestDto.regionDtoList() != null && !requestDto.regionDtoList().isEmpty()) {
       requestDto.regionDtoList().forEach(regionDto ->
-          workerRegionService.createWorkerRegion(workerCondition, regionDto));
+              workerRegionService.createWorkerRegion(workerCondition, regionDto));
     }
+
+    // 자격증 등록
     if (requestDto.licenseDtoList() != null && !requestDto.licenseDtoList().isEmpty()) {
       requestDto.licenseDtoList().forEach(licenseDto ->
-          workerLicenseService.createWorkerLicense(workerCondition, licenseDto));
+              workerLicenseService.createWorkerLicense(workerCondition, licenseDto));
     }
+
+    return workerCondition.getWorkerConditionId();
   }
+
+
 
   // 희망 근무 조건 조회
   public WorkerPreferenceDto readWorkerCondition(Long workerConditionId) {

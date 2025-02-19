@@ -56,14 +56,16 @@ public class MatchingService {
   private final ManagerRepository managerRepository;
   private final SeniorRepository seniorRepository;
 
-  public void createMatchingRequest(MatchingRequestDto requestDto) {
+  public Long createMatchingRequest(MatchingRequestDto requestDto) {
     Condition seniorCondition = conditionRepository.findById(requestDto.conditionId())
-        .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_CONDITION_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_CONDITION_NOT_FOUND));
     WorkerCondition workerCondition = workerConditionRepository.findById(requestDto.workConditionId())
-        .orElseThrow(() -> new CustomException(ErrorCode.WORKER_CONDITION_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.WORKER_CONDITION_NOT_FOUND));
     Matching matching = requestDto.toEntity(workerCondition, seniorCondition);
     matchingRepository.save(matching);
+    return matching.getMatchingId();
   }
+
 
   public void updateMatching(Long matchingId, MatchingUpdateRequestDto requestDto) {
     Matching matching = matchingRepository.findById(matchingId)

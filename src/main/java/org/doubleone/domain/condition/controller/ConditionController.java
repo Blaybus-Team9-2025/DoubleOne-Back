@@ -22,10 +22,11 @@ public class ConditionController {
 
     @Operation(summary = "근무 조건 등록", description = "관리자가 노인에 대한 근무 조건을 등록")
     @PostMapping("/{seniorId}")
-    public ResponseEntity<Void> createCondition(@PathVariable Long seniorId, @RequestBody ConditionRequestDto requestDto) {
-        conditionService.createCondition(seniorId, requestDto);
-        return ResponseEntity.status(201).build();
+    public ResponseEntity<Long> createCondition(@PathVariable Long seniorId, @RequestBody ConditionRequestDto requestDto) {
+        Long conditionId = conditionService.createCondition(seniorId, requestDto);
+        return ResponseEntity.ok(conditionId); // conditionId 반환하도록 변경
     }
+
 
     @Operation(summary = "근무 조건 편집", description = "관리자가 노인에 대한 근무 조건을 편집")
     @PatchMapping("/{seniorId}/workerConditions/{seniorConditionId}")

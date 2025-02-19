@@ -22,18 +22,22 @@ public class WorkerRegionService {
 
   public void createWorkerRegion(WorkerCondition workerCondition, WorkerRegionDto regionDto) {
     Region region = regionRepository.findByCityAndDistrictAndNeighborhood(
-        regionDto.city(), regionDto.district(), regionDto.neighborhood()
+            regionDto.city(), regionDto.district(), regionDto.neighborhood()
     ).orElseGet(() -> {
       Region newRegion = Region.builder()
-          .city(regionDto.city())
-          .district(regionDto.district())
-          .neighborhood(regionDto.neighborhood())
-          .build();
+              .city(regionDto.city())
+              .district(regionDto.district())
+              .neighborhood(regionDto.neighborhood())
+              .build();
       return regionRepository.save(newRegion);
     });
+
     WorkerRegion workerRegion = regionDto.toEntity(workerCondition, region);
+    workerRegion.setWorkerCondition(workerCondition); // 관계 설정 추가
+
     workerRegionRepository.save(workerRegion);
   }
+
 
   public void update(WorkerCondition workerCondition, WorkerRegionDto regionDto) {
     // regionDto에 해당하는 region 존재하는지 조회
