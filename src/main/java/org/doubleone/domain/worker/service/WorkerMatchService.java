@@ -76,6 +76,7 @@ public class WorkerMatchService {
                     .isRequestMatching(isRequestMatching)
                     .workerRegions(regionDtos)
                     .workPeriods(workPeriods)
+                    .workerConditionId(workerCondition.getWorkerConditionId())
                     .build();
         }).collect(Collectors.toList());
 

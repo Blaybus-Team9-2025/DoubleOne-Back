@@ -14,4 +14,5 @@ public class WorkerDetailDto {
     private boolean isRequestMatching;
     private List<WorkerRegionDto> workerRegions;
     private List<WorkPeriodDto> workPeriods;
+    private Long workerConditionId;
 }
