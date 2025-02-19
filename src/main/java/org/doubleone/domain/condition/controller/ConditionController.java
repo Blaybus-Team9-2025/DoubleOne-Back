@@ -48,9 +48,15 @@ public class ConditionController {
         return ResponseEntity.ok(conditionService.getConditionDetail(conditionId));
     }
 
-    @Operation(summary = "근무 조건 목록 조회", description = "관리자가 등록한 근무 조건 목록을 조회 (필터 가능)")
-    @GetMapping
-    public ResponseEntity<List<ConditionResponseDto>> getConditionList(@RequestParam(required = false) String filter) {
-        return ResponseEntity.ok(conditionService.getConditionList(filter));
+//    @Operation(summary = "근무 조건 목록 필터 조회", description = "관리자가 등록한 근무 조건 목록을 조회 (필터 가능)")
+//    @GetMapping("/{managerId}/filters")
+//    public ResponseEntity<List<ConditionResponseDto>> getConditionFilterList(@PathVariable Long managerId, @RequestParam(required = false) String filter) {
+//        return ResponseEntity.ok(conditionService.getConditionFilterList(managerId, filter));
+//    }
+
+    @Operation(summary = "근무 조건 목록 필터 조회", description = "관리자가 등록한 근무 조건 목록을 조회 (필터 가능)")
+    @GetMapping("/{managerId}")
+    public ResponseEntity<?> getConditionList(@PathVariable Long managerId, @RequestParam(required = false) String filter) {
+        return ResponseEntity.ok(conditionService.getConditionList(managerId, filter));
     }
 }

@@ -17,4 +17,6 @@ public interface ConditionRepository extends JpaRepository<Condition, Long> {
     @Query("SELECT c FROM Condition c WHERE c.conditionId NOT IN (SELECT m.condition.conditionId FROM Matching m)")
     List<Condition> findUnmatchedConditions();
 
+    @Query("SELECT c FROM Condition c WHERE c.senior.manager = :manager")
+    List<Condition> findByManager(Manager manager);
 }
