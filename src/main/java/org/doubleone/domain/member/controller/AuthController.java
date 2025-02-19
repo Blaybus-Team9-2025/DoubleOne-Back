@@ -1,17 +1,23 @@
 package org.doubleone.domain.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.doubleone.domain.member.dto.request.*;
+import org.doubleone.domain.member.dto.response.AuthResponseDto;
 import org.doubleone.domain.member.dto.response.EmailVerificationResponseDto;
+import org.doubleone.domain.member.dto.response.LoginResponseDto;
 import org.doubleone.domain.member.dto.response.TokenResponseDto;
 import org.doubleone.domain.member.service.AuthService;
 import org.doubleone.domain.member.service.EmailSenderService;
+import org.doubleone.domain.member.service.KakaoService;
 import org.doubleone.domain.member.service.MemberService;
 import org.doubleone.global.exception.CustomException;
 import org.doubleone.global.exception.ErrorCode;
@@ -30,6 +36,7 @@ public class AuthController {
   private final AuthService authService;
   private final MemberService memberService;
   private final EmailSenderService emailSenderService;
+  private final KakaoService kakaoService;
 
   @Operation(summary = "토큰 재발급", description = "refreshToken을 통해 accessToken을 재발급")
   @PostMapping("/token")
@@ -75,6 +82,12 @@ public class AuthController {
   @PostMapping("/login/kakao")
   public ResponseEntity<?> signInForKakao(@RequestBody LoginForKakaoRequestDto loginRequestDto) {
     return ResponseEntity.status(HttpStatus.OK).body(authService.login(loginRequestDto));
+  }
+
+  @Operation(summary = "kakao에 정보 요청 메서드", description = "카카오 로그인 정보를 바탕으로 토큰 및 멤버 정보 반환")
+  @PostMapping("/login/token")
+  public LoginResponseDto login(@RequestBody AuthRequestDto authRequestDto) {
+    return kakaoService.signIn(authRequestDto.getCode(), authRequestDto.getRedirectUri());
   }
 
   @Operation(summary = "개인정보 수정", description = "회원이 개인정보를 수정")

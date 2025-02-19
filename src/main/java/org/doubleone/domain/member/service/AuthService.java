@@ -1,6 +1,5 @@
 package org.doubleone.domain.member.service;
 
-import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
