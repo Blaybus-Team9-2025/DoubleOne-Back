@@ -126,7 +126,7 @@ public class ManagerService {
     List<Condition> conditionList = conditionRepository.findByManager(manager);
 
     return conditionList.stream()
-        .sorted(Comparator.comparingLong(Condition::getConditionId.reversed()) // conditionId 내림차순 정렬
+        .sorted(Comparator.comparingLong(Condition::getConditionId).reversed()) // conditionId 내림차순 정렬
         .map(condition -> {
           Senior senior = condition.getSenior();
           return SeniorMatchingResponseDto.of(senior);
