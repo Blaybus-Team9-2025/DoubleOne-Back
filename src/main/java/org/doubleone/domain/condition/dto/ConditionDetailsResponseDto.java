@@ -18,6 +18,7 @@ import org.doubleone.domain.worker.entity.Gender;
 public class ConditionDetailsResponseDto {
 
   private Long conditionId;
+  private Long managerId;
   private String title;
   private int amount;
   private String payType;
@@ -31,6 +32,7 @@ public class ConditionDetailsResponseDto {
   public static ConditionDetailsResponseDto from(Condition condition, List<ScheduleDto> seniorSchedules) {
     return ConditionDetailsResponseDto.builder()
         .conditionId(condition.getConditionId())
+        .managerId(condition.getSenior().getManager().getManagerId())
         .title(condition.getTitle())
         .amount(condition.getAmount())
         .payType(condition.getPayType().name())
