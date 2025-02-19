@@ -129,7 +129,7 @@ public class ManagerService {
         .sorted(Comparator.comparingLong(Condition::getConditionId).reversed()) // conditionId 내림차순 정렬
         .map(condition -> {
           Senior senior = condition.getSenior();
-          return SeniorMatchingResponseDto.of(senior);
+          return SeniorMatchingResponseDto.of(senior, condition);
         })
         .distinct()
         .collect(Collectors.toList());
