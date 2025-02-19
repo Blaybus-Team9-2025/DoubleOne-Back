@@ -2,6 +2,10 @@ package org.doubleone.domain.worker.service;
 
 import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.condition.repository.ConditionRepository;
+import org.doubleone.domain.matching.entity.Matching;
+import org.doubleone.domain.matching.entity.MatchingStatus;
+import org.doubleone.domain.matching.entity.RunningStatus;
+import org.doubleone.domain.matching.repository.MatchingRepository;
 import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.senior.repository.SeniorRepository;
 import org.doubleone.domain.worker.dto.WorkPeriodDto;
@@ -27,11 +31,13 @@ public class WorkerMatchService {
     private final WorkerService workerService;
     private final SeniorRepository seniorRepository;
     private final ConditionRepository conditionRepository;
+    private final MatchingRepository matchingRepository;
 
-    public WorkerMatchService(WorkerService workerService, SeniorRepository seniorRepository, ConditionRepository conditionRepository) {
+    public WorkerMatchService(WorkerService workerService, SeniorRepository seniorRepository, ConditionRepository conditionRepository, MatchingRepository matchingRepository) {
         this.workerService = workerService;
         this.seniorRepository = seniorRepository;
         this.conditionRepository = conditionRepository;
+        this.matchingRepository = matchingRepository;
     }
 
     public WorkerMatchResponseDto findWorkersBySenior(Long seniorId) {
@@ -60,11 +66,23 @@ public class WorkerMatchService {
                             workPeriod.getEndDate()
                     )).collect(Collectors.toList()) : List.of();
 
+            Matching matching = matchingRepository.findByConditionAndWorkerCondition(condition, workerCondition)
+                    .orElseGet(() -> {
+                        Matching newMatching = Matching.builder()
+                                .condition(condition)
+                                .workerCondition(workerCondition)
+                                .matchingStatus(MatchingStatus.BEFORE_REQUEST)
+                                .runningStatus(RunningStatus.WAITING)
+                                .build();
+                        return matchingRepository.save(newMatching);
+                    });
+
             return WorkerDetailDto.builder()
                     .workerId(worker.getWorkerId())
                     .workerName(worker.getName())
                     .workerRegions(regionDtos)
                     .workPeriods(workPeriods)
+                    .matchingId(matching.getMatchingId())
                     .build();
         }).collect(Collectors.toList());
 
