@@ -42,7 +42,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
             .requestMatchers("/error", "/favicon.ico",
-                "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs", "/v3/api-docs/**")
+                "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs", "/v3/api-docs/**", "/swagger.html")
             .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
@@ -58,7 +58,8 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList(
             "http://localhost:8080",
             "http://localhost:3000",
-            "http://localhost:5174"));
+            "http://localhost:5173",
+            "https://api.doubleone.p-e.kr"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"));
         configuration.addAllowedHeader("*");
         configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Location"));
