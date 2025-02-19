@@ -12,7 +12,7 @@ public interface ConditionRepository extends JpaRepository<Condition, Long> {
     List<Condition> findAllByOrderByCreatedAtDesc();
 
     // 매칭 미완료 조회
-    @Query("SELECT c FROM Condition c WHERE c.seniorConditionId NOT IN (SELECT m.condition.seniorConditionId FROM Matching m)")
+    @Query("SELECT c FROM Condition c WHERE c.conditionId NOT IN (SELECT m.condition.conditionId FROM Matching m)")
     List<Condition> findUnmatchedConditions();
 
 }

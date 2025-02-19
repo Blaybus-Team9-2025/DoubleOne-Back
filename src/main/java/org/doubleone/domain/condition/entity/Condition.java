@@ -26,7 +26,8 @@ public class Condition extends BaseTimeEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "senior_condition_id", updatable = false)
-  private Long seniorConditionId;
+  private Long conditionId;
+
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "senior_id", updatable = false)
