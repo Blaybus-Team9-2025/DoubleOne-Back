@@ -17,11 +17,7 @@ import org.doubleone.domain.senior.entity.SeniorSchedule;
 import org.doubleone.domain.senior.repository.SeniorScheduleRepository;
 import org.doubleone.domain.worker.dto.request.WorkerUpdateRequest;
 import org.doubleone.domain.senior.entity.Senior;
-import org.doubleone.domain.worker.dto.response.WorkerDetailResponse;
-import org.doubleone.domain.worker.dto.response.WorkerLicenseDto;
-import org.doubleone.domain.worker.dto.response.WorkerMatchingAlarmUnitDto;
-import org.doubleone.domain.worker.dto.response.WorkerRegionDto;
-import org.doubleone.domain.worker.dto.response.WorkerMyPageResponseDto;
+import org.doubleone.domain.worker.dto.response.*;
 import org.doubleone.domain.worker.entity.Gender;
 import org.doubleone.domain.schedule.dto.ScheduleDto;
 import org.doubleone.domain.worker.entity.Worker;
@@ -143,6 +139,12 @@ public class WorkerService {
     }
 
     @Transactional(readOnly = true)
+    public WorkerResponse getWorker(Long workerId) {
+        Worker worker = workerRepository.findById(workerId)
+                .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
+        return WorkerResponse.from(worker);
+    }
+    @Transactional(readOnly = true)
     public WorkerMyPageResponseDto getWorkerMyPage(Long workerId) {
         Worker worker = workerRepository.findById(workerId)
             .orElseThrow(() -> new CustomException(ErrorCode.WORKER_NOT_FOUND));
@@ -159,4 +161,5 @@ public class WorkerService {
             .collect(Collectors.toList());
         return WorkerMyPageResponseDto.from(worker, matchingAlarmlist);
     }
+
 }

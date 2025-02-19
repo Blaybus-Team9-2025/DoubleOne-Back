@@ -9,6 +9,7 @@ import org.doubleone.domain.worker.dto.request.WorkerUpdateRequest;
 import org.doubleone.domain.worker.dto.response.WorkerDetailResponse;
 import org.doubleone.domain.worker.dto.request.WorkerConditionRequestDto;
 import org.doubleone.domain.worker.dto.response.WorkerPreferenceDto;
+import org.doubleone.domain.worker.dto.response.WorkerResponse;
 import org.doubleone.domain.worker.service.WorkerService;
 import org.doubleone.domain.workerCondition.service.WorkerConditionService;
 import org.springframework.http.HttpStatus;
@@ -62,12 +63,20 @@ public class WorkerController {
       return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    // 요양사 상세 정보 조회
+    // 요양사 상세 정보 조회(수정)
     @Operation(summary = "요양사 상세 정보 조회", description = "요양사 상세 정보를 조회합니다.")
     @GetMapping("/{workerConditionId}")
     public ResponseEntity<?> getWorkDetail(@PathVariable Long workerConditionId) {
       WorkerDetailResponse response = workerService.getWorkerDetail(workerConditionId);
       return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Operation(summary = "요양사 정보 조회", description = "요양사 정보를 조회합니다.")
+    @GetMapping("/{workerId}/getworker")
+    public ResponseEntity<?> getWorker(@PathVariable Long workerId)
+    {
+        WorkerResponse response = workerService.getWorker(workerId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 요양사 정보 수정
