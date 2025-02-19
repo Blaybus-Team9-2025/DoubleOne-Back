@@ -26,7 +26,7 @@ public class ManagerController {
 
     // 개인정보 수정
     @Operation(summary = "관리자 기본정보 조회", description = "관리자의 기본정보를 조회")
-    @PatchMapping("/{managerId}")
+    @GetMapping("/{managerId}")
     public ResponseEntity<?> getManagerDetails(@PathVariable("managerId") Long managerId) {
         return ResponseEntity.ok(managerService.getManagerDetails(managerId));
     }
