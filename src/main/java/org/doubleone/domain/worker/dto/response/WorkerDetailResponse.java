@@ -17,6 +17,7 @@ public class WorkerDetailResponse {
     private String phoneNum;
     private boolean hasTrained;
     private boolean hasVehicle;
+    private boolean discuss;
     private String address;
     private String introduction;
     private Long memberId;
@@ -40,6 +41,7 @@ public class WorkerDetailResponse {
             .phoneNum(worker.getPhoneNum())
             .hasTrained(workerCondition.isHasTrained())
             .hasVehicle(workerCondition.isHasVehicle())
+            .discuss(workerCondition.isDiscuss())
             .address(worker.getAddress())
             .introduction(workerCondition.getIntroduce())
             .memberId(worker.getMember().getMemberId())
