@@ -1,6 +1,7 @@
 package org.doubleone.domain.matching.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.doubleone.domain.condition.repository.ConditionRepository;
 import org.doubleone.domain.endMatching.entity.EndMatching;
 import org.doubleone.domain.endMatching.repository.EndMatchingRepository;
 import org.doubleone.domain.endMatching.service.EndMatchingService;
+import org.doubleone.domain.manager.dto.SeniorMatchingResponseDto;
 import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.manager.repository.ManagerRepository;
 import org.doubleone.domain.matching.dto.request.MatchingRequestDto;
@@ -19,7 +21,9 @@ import org.doubleone.domain.matching.dto.request.MatchingUpdateRequestDto;
 import org.doubleone.domain.matching.dto.request.WorkerMatchingScheduleRequestDto;
 import org.doubleone.domain.matching.dto.response.ManagerMatchingStatResponseDto;
 import org.doubleone.domain.matching.dto.response.ManagerSeniorMatchingListResponseDto;
+import org.doubleone.domain.matching.dto.response.SeniorMatchingUnitDto;
 import org.doubleone.domain.matching.dto.response.WorkerMatchingUnitDto;
+import org.doubleone.domain.matching.dto.response.WorkerMatchingUnitPerSeniorDto;
 import org.doubleone.domain.matching.entity.Matching;
 import org.doubleone.domain.matching.entity.MatchingStatus;
 import org.doubleone.domain.matching.entity.RunningStatus;
@@ -27,6 +31,8 @@ import org.doubleone.domain.matching.repository.MatchingRepository;
 import org.doubleone.domain.member.entity.Member;
 import org.doubleone.domain.member.repository.MemberRepository;
 import org.doubleone.domain.schedule.dto.ScheduleDto;
+import org.doubleone.domain.senior.entity.Senior;
+import org.doubleone.domain.senior.repository.SeniorRepository;
 import org.doubleone.domain.worker.repository.WorkerRepository;
 import org.doubleone.domain.workerCondition.entity.WorkerCondition;
 import org.doubleone.domain.workerCondition.repository.WorkerConditionRepository;
@@ -48,7 +54,7 @@ public class MatchingService {
   private final EndMatchingRepository endMatchingRepository;
   private final EndMatchingService endMatchingService;
   private final ManagerRepository managerRepository;
-  private final MemberRepository memberRepository;
+  private final SeniorRepository seniorRepository;
 
   public void createMatchingRequest(MatchingRequestDto requestDto) {
     Condition seniorCondition = conditionRepository.findById(requestDto.conditionId())
@@ -113,14 +119,14 @@ public class MatchingService {
     int matchCount = matchingRepository.countByManager(manager);
 
     // 신규 매칭 (기준: 2주 내)
-    LocalDate now = LocalDate.now();
-    LocalDate twoWeeksAgo = now.minusWeeks(2);
+    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime twoWeeksAgo = now.minusWeeks(2);
     int newMatchCount = matchingRepository.countByManagerAndDate(manager, twoWeeksAgo, now);
 
     // 달별 매칭
     Map<String, Integer> monthlyMatchCounts = new LinkedHashMap<>();
     for (int i = 0; i < 12; i++) {
-      LocalDate monthStart = now.minusMonths(i).withDayOfMonth(1);
+      LocalDate monthStart = LocalDate.from(now.minusMonths(i).withDayOfMonth(1));
       int year = monthStart.getYear();
       int month = monthStart.getMonthValue();
       int count = matchingRepository.countByManagerAndMonth(manager, year, month);
@@ -162,8 +168,31 @@ public class MatchingService {
         (double) rejectedMatchCount / (acceptedMatchCount + rejectedMatchCount));
   }
 
-//  @Transactional(readOnly = true)
-//  public ManagerSeniorMatchingListResponseDto getMatchingSeniorList(Long managerId, RunningStatus status) {
-//
-//  }
+  @Transactional(readOnly = true)
+  public ManagerSeniorMatchingListResponseDto getMatchingSeniorList(Long managerId, RunningStatus status) {
+    Manager manager = managerRepository.findById(managerId)
+        .orElseThrow(() -> new CustomException(ErrorCode.MANAGER_NOT_FOUND));
+    // List<Condition> 추출
+    List<Condition> conditionList = matchingRepository.findByManagerAndRunningStatus(manager, status).stream()
+        .map(Matching::getCondition)
+        .toList();
+    // 각 Condition마다 WorkerConditionList 조회 후 SeniorMatchingUnitDto 생성
+    List<SeniorMatchingUnitDto> seniorMatchingList = conditionList.stream()
+        .map(condition -> {
+          Senior senior = condition.getSenior();
+          List<WorkerCondition> workerConditionList = matchingRepository.findByCondition(condition).stream()
+              .map(Matching::getWorkerCondition)
+              .toList();
+          List<WorkerMatchingUnitPerSeniorDto> workerMatchingList = workerConditionList.stream()
+              .map(WorkerMatchingUnitPerSeniorDto::from)
+              .collect(Collectors.toList());
+          return SeniorMatchingUnitDto.from(condition, workerMatchingList);
+        })
+        .collect(Collectors.toList());
+
+    return new ManagerSeniorMatchingListResponseDto(seniorMatchingList);
+  }
+
+
+
 }

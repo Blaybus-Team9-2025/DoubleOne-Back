@@ -1,8 +1,11 @@
 package org.doubleone.domain.matching.repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collection;
 import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.manager.entity.Manager;
+import org.doubleone.domain.matching.dto.response.SeniorMatchingUnitDto;
 import org.doubleone.domain.matching.entity.Matching;
 import org.doubleone.domain.matching.entity.MatchingStatus;
 import org.doubleone.domain.matching.entity.RunningStatus;
@@ -34,7 +37,7 @@ public interface MatchingRepository extends JpaRepository<Matching, Long> {
     List<Matching> findByWorkerAndRunningStatus(Worker worker, MatchingStatus matchingStatus);
 
     @Query("SELECT COUNT(m) FROM Matching m WHERE m.condition.senior.manager = :manager AND m.createdAt BETWEEN :startDate AND :endDate")
-    int countByManagerAndDate(Manager manager, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    int countByManagerAndDate(Manager manager, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     @Query("SELECT COUNT(m) FROM Matching m WHERE m.condition.senior.manager = :manager AND FUNCTION('YEAR', m.createdAt) = :year AND FUNCTION('MONTH', m.createdAt) = :month")
     int countByManagerAndMonth(@Param("manager") Manager manager, @Param("year") int year, @Param("month") int month);
@@ -45,4 +48,10 @@ public interface MatchingRepository extends JpaRepository<Matching, Long> {
         + "WHERE m.condition.senior.manager = :manager "
         + "GROUP BY m.condition.senior.senior_id) AS subquery", nativeQuery = true)
     double avgMatchesPerSenior(@Param("manager") Manager manager);
+
+    @Query("SELECT m FROM Matching m WHERE m.condition.senior.manager = :manager AND m.runningStatus = :status")
+    List<Matching> findByManagerAndRunningStatus(Manager manager, RunningStatus status);
+
+    @Query("SELECT m FROM Matching m WHERE m.condition = :condition")
+    List<Matching> findByCondition(Condition condition);
 }

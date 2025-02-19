@@ -83,7 +83,7 @@ public class Senior extends BaseTimeEntity {
   @Column(name = "matching_status")
   @Enumerated(EnumType.STRING)
   private MatchingStatus matchingStatus;
-  
+
   public void update(CareLevel careLevel, String address, String profileImg, String etcDisease) {
     if (careLevel != null) this.careLevel = careLevel;
     if (address != null) this.address = address;
