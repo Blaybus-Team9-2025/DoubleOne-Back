@@ -82,13 +82,8 @@ public class Senior extends BaseTimeEntity {
 
   @Column(name = "matching_status")
   @Enumerated(EnumType.STRING)
-  private MatchingStatus matchingStatus = MatchingStatus.BEFORE_REQUEST;
-
-  // matchingStatus 변경을 위한 setter 추가
-  public void setMatchingStatus(MatchingStatus matchingStatus) {
-    this.matchingStatus = matchingStatus;
-  }
-
+  private MatchingStatus matchingStatus;
+  
   public void update(CareLevel careLevel, String address, String profileImg, String etcDisease) {
     if (careLevel != null) this.careLevel = careLevel;
     if (address != null) this.address = address;
