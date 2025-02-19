@@ -2,10 +2,6 @@ package org.doubleone.domain.worker.service;
 
 import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.condition.repository.ConditionRepository;
-import org.doubleone.domain.matching.entity.Matching;
-import org.doubleone.domain.matching.entity.MatchingStatus;
-import org.doubleone.domain.matching.entity.RunningStatus;
-import org.doubleone.domain.matching.repository.MatchingRepository;
 import org.doubleone.domain.senior.entity.Senior;
 import org.doubleone.domain.senior.repository.SeniorRepository;
 import org.doubleone.domain.worker.dto.WorkPeriodDto;

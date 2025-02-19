@@ -36,9 +36,10 @@ public class WorkerController {
 
     @Operation(summary = "희망 근무 조건 등록", description = "요양사의 희망 근무 조건을 등록")
     @PostMapping("/{workerId}/workerConditions")
-    public ResponseEntity<?> createWorkerCondition(@PathVariable("workerId") Long workerId, @RequestBody @Valid WorkerConditionRequestDto requestDto) {
+    public ResponseEntity<Long> createWorkerCondition(@PathVariable("workerId") Long workerId, @RequestBody @Valid WorkerConditionRequestDto requestDto) {
       workerConditionService.createWorkerCondition(workerId, requestDto);
-      return ResponseEntity.status(HttpStatus.CREATED).build();
+
+      return ResponseEntity.status(HttpStatus.CREATED).body(workerId);
     }
 
     // 희망 근무 조건 조회
