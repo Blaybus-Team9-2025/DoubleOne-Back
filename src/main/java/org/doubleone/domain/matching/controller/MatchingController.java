@@ -33,9 +33,8 @@ public class MatchingController {
 
   @Operation(summary = "매칭 요청", description = "관리자가 요양사에게 매칭 요청")
   @PostMapping
-  public ResponseEntity<Long> createMatchingRequest(@RequestBody @Valid MatchingRequestDto requestDto) {
-    Long matchingId = matchingService.createMatchingRequest(requestDto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(matchingId);
+  public ResponseEntity<?> createMatchingRequest(@RequestBody @Valid MatchingRequestDto requestDto) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(matchingService.createMatchingRequest(requestDto));
   }
 
   @Operation(summary = "매칭 상태 변경", description = "관리자 혹은 요양사의 매칭 상태 변경")
