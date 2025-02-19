@@ -18,8 +18,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface MatchingRepository extends JpaRepository<Matching, Long> {
     List<Matching> findByMatchingStatus(MatchingStatus matchingStatus);
-    Optional<Matching> findByConditionAndWorkerCondition(Condition condition, WorkerCondition workerCondition);
-
     @Query("SELECT COUNT(DISTINCT m.condition.senior) FROM Matching m WHERE m.condition.senior.manager = :manager")
     int countByManager(@Param("manager") Manager manager);
 

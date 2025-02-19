@@ -13,5 +13,4 @@ public class WorkerDetailDto {
     private String workerName;
     private List<WorkerRegionDto> workerRegions;
     private List<WorkPeriodDto> workPeriods;
-    private Long matchingId;
 }
