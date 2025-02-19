@@ -1,6 +1,8 @@
 package org.doubleone.domain.condition.repository;
 
+import java.util.Collection;
 import org.doubleone.domain.condition.entity.Condition;
+import org.doubleone.domain.manager.entity.Manager;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

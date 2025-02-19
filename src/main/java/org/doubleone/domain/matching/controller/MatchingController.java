@@ -71,10 +71,10 @@ public class MatchingController {
     return ResponseEntity.status(HttpStatus.OK).body(matchingService.getMatchingStat(managerId));
   }
 
-//  @Operation(summary = "매칭 상태 목록 조회", description = "매칭 상태에 따른 어르신 목록 조회")
-//  @GetMapping("/{managerId}/seniors")
-//  public ResponseEntity<?> getMatchingSeniorList(@PathVariable("managerId") Long managerId, @RequestParam RunningStatus status) {
-//    return ResponseEntity.status(HttpStatus.OK).body(matchingService.getMatchingSeniorList(managerId, status));
-//  }
+  @Operation(summary = "매칭 상태 목록 조회", description = "매칭 상태에 따른 어르신 목록 조회")
+  @GetMapping("/{managerId}/seniors")
+  public ResponseEntity<?> getMatchingSeniorList(@PathVariable("managerId") Long managerId, @RequestParam RunningStatus status) {
+    return ResponseEntity.status(HttpStatus.OK).body(matchingService.getMatchingSeniorList(managerId, status));
+  }
 
 }
