@@ -38,11 +38,10 @@ public class WorkerMatchService {
         this.conditionRepository = conditionRepository;
     }
 
-    public WorkerMatchResponseDto findWorkersBySenior(Long seniorId) {
-        Senior senior = seniorRepository.findById(seniorId)
-                .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_NOT_FOUND));
-        Condition condition = conditionRepository.findById(seniorId)
+    public WorkerMatchResponseDto findWorkersBySenior(Long conditionId) {
+        Condition condition = conditionRepository.findById(conditionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SENIOR_CONDITION_NOT_FOUND));
+        Senior senior = condition.getSenior();
 
         List<WorkerCondition> workerConditions = workerService.getMatchedWorkerBySenior(senior, condition);
         List<WorkerDetailDto> workers = workerConditions.stream().map(workerCondition -> {
