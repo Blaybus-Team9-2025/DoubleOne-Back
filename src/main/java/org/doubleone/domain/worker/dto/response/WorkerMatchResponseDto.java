@@ -12,5 +12,7 @@ import java.util.List;
 public class WorkerMatchResponseDto {
     private String seniorName;
     private String seniorAddress;
+    private int age;
+    private String profileImg;
     private List<WorkerDetailDto> workers;
 }

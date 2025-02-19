@@ -56,4 +56,7 @@ public interface MatchingRepository extends JpaRepository<Matching, Long> {
 
     @Query("SELECT COUNT(DISTINCT m.condition.senior)  FROM Matching m WHERE m.condition.senior.manager = :manager")
     int countSeniorByManager(Manager manager);
+
+    @Query("SELECT CASE WHEN COUNT(m) > 0 THEN true ELSE false END FROM Matching m WHERE m.condition = :condition AND m.workerCondition = :workerCondition")
+    boolean existsByConditionAndWorkerCondition(@Param("condition") Condition condition, @Param("workerCondition") WorkerCondition workerCondition);
 }

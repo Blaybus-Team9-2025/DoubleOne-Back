@@ -11,6 +11,7 @@ import java.util.List;
 public class WorkerDetailDto {
     private Long workerId;
     private String workerName;
+    private boolean isRequestMatching;
     private List<WorkerRegionDto> workerRegions;
     private List<WorkPeriodDto> workPeriods;
 }
