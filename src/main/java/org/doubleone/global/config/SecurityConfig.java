@@ -8,6 +8,7 @@ import org.doubleone.global.jwt.TokenProvider;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -46,7 +47,7 @@ public class SecurityConfig {
     }
 
     private static final String[] AUTH_WHITELIST = {
-        "/signup/**", "/login", "/token"
+        "/signup/**", "/login/**", "/token", "/center", "/email/**"
     };
 
     // CORS 설정
@@ -99,6 +100,7 @@ public class SecurityConfig {
             .headers(header -> header
                 .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)) // X-Frame-Options 설정
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(AUTH_WHITELIST).permitAll()
                 .requestMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated() // 나머지 요청은 인증 필요
