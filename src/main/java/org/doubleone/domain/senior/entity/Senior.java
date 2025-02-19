@@ -80,6 +80,8 @@ public class Senior extends BaseTimeEntity {
   @Column(name = "etc_disease")
   private String etcDisease;
 
+  // matchingStatus 변경을 위한 setter 추가
+  @Setter
   @Column(name = "matching_status")
   @Enumerated(EnumType.STRING)
   private MatchingStatus matchingStatus;
