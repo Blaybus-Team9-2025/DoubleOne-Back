@@ -13,7 +13,8 @@ public record WorkerMatchingAlarmUnitDto(
     Long chatRoomId,
     List<ScheduleDto> seniorSchedules,
     String centerName,
-    String address
+    String address,
+    Long managerId
 ) {
 
   public static WorkerMatchingAlarmUnitDto from(Matching matching, ChatRoom chatRoom, List<ScheduleDto> seniorSchedules){
@@ -23,6 +24,7 @@ public record WorkerMatchingAlarmUnitDto(
         .seniorSchedules(seniorSchedules)
         .centerName(matching.getCondition().getSenior().getManager().getCenterName())
         .address(matching.getCondition().getSenior().getManager().getAddress())
+        .managerId(matching.getCondition().getSenior().getManager().getManagerId())
         .build();
   }
 }
