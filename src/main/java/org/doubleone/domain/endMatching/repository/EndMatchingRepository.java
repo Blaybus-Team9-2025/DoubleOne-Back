@@ -2,6 +2,7 @@ package org.doubleone.domain.endMatching.repository;
 
 import java.util.List;
 import java.util.Optional;
+import org.doubleone.domain.condition.entity.Condition;
 import org.doubleone.domain.endMatching.entity.EndMatching;
 import org.doubleone.domain.manager.entity.Manager;
 import org.doubleone.domain.matching.entity.Matching;
@@ -22,5 +23,10 @@ public interface EndMatchingRepository extends JpaRepository<EndMatching, Long> 
 
   @Query("SELECT COUNT(DISTINCT e.matching.condition.senior) FROM EndMatching e WHERE e.matching.condition.senior.manager = :manager")
   int countByManager(@Param("manager") Manager manager);
+
+  @Query("SELECT CASE WHEN COUNT(em) > 0 THEN true ELSE false END " +
+      "FROM EndMatching em " +
+      "WHERE em.matching.condition = :condition")
+  boolean existsByCondition(@Param("condition") Condition condition);
 
 }
