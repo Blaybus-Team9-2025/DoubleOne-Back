@@ -34,7 +34,7 @@ public class TokenProvider {
 
   // 토큰 만료시간 설정
   private static final long ACCESS_TOKEN_EXPIRE_TIME =
-      1000 * 60 * 60L; // 1시간
+      1000 * 60 * 60 * 24; // 1일
   private static final long REFRESH_TOKEN_EXPIRE_TIME =
       1000 * 60 * 60 * 25 * 14L; // 2주
 
